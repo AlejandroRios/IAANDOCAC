@@ -10,9 +10,10 @@ print(iris)
 # Declaring Model
 dbscan = DBSCAN()
 
+
 # Fitting
 dbscan.fit(iris.data)
-
+# print(dbscan.fit)
 # Transoring Using PCA
 pca = PCA(n_components=2).fit(iris.data)
 pca_2d = pca.transform(iris.data)
