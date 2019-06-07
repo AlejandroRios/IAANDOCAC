@@ -1,4 +1,4 @@
-0# Importing Modules
+# Importing Modules
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -20,9 +20,7 @@ from itertools import cycle
 from itertools import islice
 from datetime import datetime
 
-
-CHUNK_SIZE = 95 # number of icaos to be processed in chunks
-
+# Import data
 df = pd.read_csv('ENGFRA_GERNED.csv', header=0, delimiter=',')
 df_head = df.head()
 
@@ -38,47 +36,16 @@ mapa = {"hit" : "hit",
     "estarrivalairport" : "arrair",
     "onground" : "ongrnd"}
 
+# Rename data
 df = df.rename(columns = mapa)
 
-# print("[1] %d Imported data:" "\n",  df.head())
-
-t = int(df.time)
+print("[1] %d Imported data:" "\n",  df.head())
 
 lat = df['lat']
 lon = df['lon']
 alt = df['alt']
 time = df['time']
 
-
-
-gb = df.groupby("icao")
-
-gb.get_group("3991ea").head()
-print(gb.get_group("3991ea"))
-# lat_new = []
-# for i in range(len(icaos)):
-#
-#     y = counts[i]
-#     print(y)
-#     for j in range(len(counts)):
-#         lat_new.append(lat[j])
-#         lat_new = lat_new
-#
-#         print(y)
-#         # x = np.arange(y.size)
-#         #
-#         # # Interpolate the data using a cubic spline to "new_length" samples
-#         # new_length = 50
-#         # new_x = np.linspace(x.min(), x.max(), new_length)
-#         # new_y = sp.interpolate.interp1d(x, y, kind='cubic')(new_x)
-#
-#
-# lat_new = np.asarray(lat_new)
-# print(lat_new[1])
-#
-#
-# # # using sorted() + groupby()
-# # # Categorize by string size
-# # util_func = lambda x: len(x)
-# # temp = sorted(df, key = icaos)
-# # res = [list(ele) for i, ele in groupby(temp, util_func)]
+icaos_gb = df.groupby('icao').size().reset_index(name='counts')
+icaos = icaos_gb[icaos_gb.counts>100].icao.tolist()
+icao_counts = icaos_gb.counts
