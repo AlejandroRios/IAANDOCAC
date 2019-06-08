@@ -54,10 +54,11 @@ print("[2] %d number of valid ICAOs." % len(icaos))
 # Resizing vector length working
 
 y = lat[0:476]
+print(y)
 x = np.arange(y.size)
 
 # Interpolate the data using a cubic spline to "new_length" samples
-new_length = 50
+new_length = 5
 new_x = np.linspace(x.min(), x.max(), new_length)
 new_y = sp.interpolate.interp1d(x, y, kind='cubic')(new_x)
 
