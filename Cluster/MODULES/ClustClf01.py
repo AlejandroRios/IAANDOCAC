@@ -8,45 +8,22 @@ import scipy as sp
 import math
 import sklearn
 import haversine
-import matplotlib as mpl
-import seaborn as sns
-import plotly.graph_objs as go
-import plotly.plotly as py
-
-
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits.basemap import Basemap
 
 from sklearn.cluster import DBSCAN
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import permutation_test_score
-from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
 from haversine import haversine, Unit
-
 
 from sklearn import metrics
 from sklearn import preprocessing
 
-from collections import Counter
-from collections import OrderedDict
-
 from scipy import interpolate
-# from scipy.spatial import distance
 from scipy.spatial.distance import directed_hausdorff
 
-from itertools import cycle
-from itertools import islice
-
-from datetime import datetime
 from geopy.distance import great_circle
 from geopy.distance import distance
-from statistics import mean 
-from fractions import Fraction as fr 
 
 ########################################################################################
 """Importing Data"""
@@ -178,22 +155,14 @@ def plot_cluster(traj_lst, cluster_lst):
     for traj, cluster in zip(traj_lst, cluster_lst):
         
         if cluster == -1:
-            # Means it it a noisy trajectory, paint it black
             plt.plot(traj[:, 0], traj[:, 1], c='k', linestyle='dashed',linewidth=0.1)
-            plt.legend(cluster)
-        
         elif cluster == 0:
-        # else:
-            plt.plot(traj[:, 0], traj[:, 1], c=color_lst[cluster % len(color_lst)],linestyle = '--',linewidth=0.1)
-            plt.legend(color_lst[cluster])
+            plt.plot(traj[:, 0], traj[:, 1], c=color_lst[cluster % len(color_lst)], marker='.',linestyle = '--',linewidth=0.1)
         elif cluster == 1:
-        # else:
-            plt.plot(traj[:, 0], traj[:, 1], c=color_lst[cluster % len(color_lst)],linestyle = '-.',linewidth=0.1)
-            plt.legend(color_lst[cluster])
+            plt.plot(traj[:, 0], traj[:, 1], c=color_lst[cluster % len(color_lst)], marker='1',linestyle = '-.',linewidth=0.1)           
         elif cluster == 2:
-        # else:
-            plt.plot(traj[:, 0], traj[:, 1], c=color_lst[cluster % len(color_lst)],linestyle = ':',linewidth=0.1)
-            plt.legend(color_lst[cluster])
+            plt.plot(traj[:, 0], traj[:, 1], c=color_lst[cluster % len(color_lst)], marker='+',linestyle = ':',linewidth=0.1)
+            
     
 ########################################################################################
 """Clustering"""
@@ -201,7 +170,7 @@ def plot_cluster(traj_lst, cluster_lst):
 print('--------------------------------------------------------------------------------\n')
 print('[4] Start clustering.\n')
 # dbscan = DBSCAN(eps=0.8, min_samples=1)
-dbscan = DBSCAN(eps=0.8, min_samples=50)
+dbscan = DBSCAN(eps=0.5, min_samples=100)
 cluster_lst = dbscan.fit_predict(D)
 
 plot_cluster(coordinates_vec, cluster_lst)
@@ -302,6 +271,23 @@ print('[6] Testing model.\n')
 # Definition of trajectories to test
 
 # Trajectory cluster 0
+
+# lon_FRA = 0.34
+# lat_FRA = 0.90
+
+# lon_ITA = 0.83
+# lat_ITA = 0.087
+
+# lon0 = 0.52
+# lat0 = 0.81
+
+# lon1 = 0.75
+# lat1 = 0.62
+
+# lon2 = 0.76
+# lat2 = 0.22
+
+# Trajectory cluster 1
 # lon_FRA = 0.1
 # lat_FRA = 0.87
 
@@ -316,23 +302,6 @@ print('[6] Testing model.\n')
 
 # lon2 = 0.49
 # lat2 = 0.21
-
-# Trajectory cluster 1
-
-lon_FRA = 0.34
-lat_FRA = 0.90
-
-lon_ITA = 0.83
-lat_ITA = 0.087
-
-lon0 = 0.52
-lat0 = 0.81
-
-lon1 = 0.75
-lat1 = 0.62
-
-lon2 = 0.76
-lat2 = 0.22
 
 # Trajectory cluster 2
 
@@ -353,21 +322,38 @@ lat2 = 0.22
 
 # Trajectory cluster -1
 
-# lon_FRA = 0.1
-# lat_FRA = 0.87
+lon_FRA = 0.83
+lat_FRA = 0.99
 
-# lon_ITA = 0.68
-# lat_ITA = 0.04
+lon_ITA = 0.96
+lat_ITA = 0.06
 
 
-# lon0 = 0.0019
-# lat0 = 0.55
+lon0 = 0.95
+lat0 = 0.84
 
-# lon1 = 0.15
-# lat1 = 0.28
+lon1 = 0.93
+lat1 = 0.65
 
-# lon2 = 0.36
-# lat2 = 0.12
+lon2 = 0.90
+lat2 = 0.19
+
+#  Trajectory cluster -1
+# lon_FRA = 0.01
+# lat_FRA = 0.88
+
+# lon_ITA = 0.57
+# lat_ITA = 0.01
+
+
+# lon0 = 0.04
+# lat0 = 0.25
+
+# lon1 = 0.06
+# lat1 = 0.07
+
+# lon2 = 0.45
+# lat2 = 0.045
 
 
 lat = (lat_FRA,
@@ -418,4 +404,5 @@ print('- The test trajectory belongs to cluster: \n', predictions)
 
 print('--------------------------------------------------------------------------------\n')
 print('[5] All completed.\n')
+
 plt.show()
