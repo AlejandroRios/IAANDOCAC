@@ -403,6 +403,6 @@ predictions = model.predict(teste)
 print('- The test trajectory belongs to cluster: \n', predictions)
 
 print('--------------------------------------------------------------------------------\n')
-print('[5] All completed.\n')
+print('[7] All completed.\n')
 
 plt.show()
