@@ -25,8 +25,8 @@ from datetime import datetime
 
 
 # Import data
-df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
-# df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
+# df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
+df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
 df_head = df.head()
 
 mapa = {"hit" : "hit",
