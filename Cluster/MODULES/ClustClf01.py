@@ -8,6 +8,7 @@ import scipy as sp
 import math
 import sklearn
 import haversine
+import seaborn as sns
 
 from sklearn.cluster import DBSCAN
 from sklearn.svm import LinearSVC
@@ -100,28 +101,6 @@ for i in range(len(Nflights)-1):
 ########################################################################################
 print('--------------------------------------------------------------------------------\n')
 print('[3] Meassuring Hausdorff distance between trajectories.\n')
-    
-# degree_threshold = 5
-
-# for traj_index, traj in enumerate(coordinates_vec):
-    
-#     hold_index_lst = []
-#     previous_azimuth= 1000
-    
-#     for point_index, point in enumerate(traj[:-1]):
-#         next_point = traj[point_index + 1]
-#         diff_vector = next_point - point
-#         azimuth = (math.degrees(math.atan2(*diff_vector)) + 360) % 360
-        
-#         if abs(azimuth - previous_azimuth) > degree_threshold:
-#             hold_index_lst.append(point_index)
-#             previous_azimuth = azimuth
-#     hold_index_lst.append(traj.shape[0] - 1) # Last point of trajectory is always added
-    
-#     coordinates_vec[traj_index] = traj[hold_index_lst, :]
-
-# print(coordinates_vec)
-
 
 def hausdorff(u, v):
     d = max(directed_hausdorff(u, v)[0], directed_hausdorff(v, u)[0])
@@ -146,10 +125,6 @@ color_lst.extend(['b', 'dimgray', 'indigo', 'khaki', 'teal', 'saddlebrown',
                  'skyblue', 'coral', 'darkorange', 'lime', 'darkorchid', 'olive'])
 
 def plot_cluster(traj_lst, cluster_lst):
-    '''
-    Plots given trajectories with a color that is specific for every trajectory's own cluster index.
-    Outlier trajectories which are specified with -1 in `cluster_lst` are plotted dashed with black color
-    '''
     cluster_count = np.max(cluster_lst) + 1
     
     for traj, cluster in zip(traj_lst, cluster_lst):
@@ -170,7 +145,7 @@ def plot_cluster(traj_lst, cluster_lst):
 print('--------------------------------------------------------------------------------\n')
 print('[4] Start clustering.\n')
 # dbscan = DBSCAN(eps=0.8, min_samples=1)
-dbscan = DBSCAN(eps=0.5, min_samples=100)
+dbscan = DBSCAN(eps=0.8, min_samples=50)
 cluster_lst = dbscan.fit_predict(D)
 
 plot_cluster(coordinates_vec, cluster_lst)
@@ -270,7 +245,7 @@ print('[6] Testing model.\n')
 ########################################################################################
 # Definition of trajectories to test
 
-# Trajectory cluster 0
+# Trajectory cluster 1
 
 # lon_FRA = 0.34
 # lat_FRA = 0.90
@@ -287,7 +262,7 @@ print('[6] Testing model.\n')
 # lon2 = 0.76
 # lat2 = 0.22
 
-# Trajectory cluster 1
+# Trajectory cluster 0
 # lon_FRA = 0.1
 # lat_FRA = 0.87
 
@@ -305,38 +280,38 @@ print('[6] Testing model.\n')
 
 # Trajectory cluster 2
 
-# lon_FRA = 0.15
-# lat_FRA = 0.87
+lon_FRA = 0.08
+lat_FRA = 0.88
 
-# lon_ITA = 0.82
-# lat_ITA = 0.07
+lon_ITA = 0.82
+lat_ITA = 0.07
 
-# lon0 = 0.28
-# lat0 = 0.64
+lon0 = 0.14
+lat0 = 0.74
 
-# lon1 = 0.53
-# lat1 = 0.45
+lon1 = 0.53
+lat1 = 0.45
 
-# lon2 = 0.73
-# lat2 = 0.22
+lon2 = 0.73
+lat2 = 0.22
 
 # Trajectory cluster -1
 
-lon_FRA = 0.83
-lat_FRA = 0.99
+# lon_FRA = 0.83
+# lat_FRA = 0.99
 
-lon_ITA = 0.96
-lat_ITA = 0.06
+# lon_ITA = 0.96
+# lat_ITA = 0.06
 
 
-lon0 = 0.95
-lat0 = 0.84
+# lon0 = 0.95
+# lat0 = 0.84
 
-lon1 = 0.93
-lat1 = 0.65
+# lon1 = 0.93
+# lat1 = 0.65
 
-lon2 = 0.90
-lat2 = 0.19
+# lon2 = 0.90
+# lat2 = 0.19
 
 #  Trajectory cluster -1
 # lon_FRA = 0.01
