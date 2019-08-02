@@ -157,7 +157,7 @@ print('- Number of flights: \n', Numflights )
 
 print('[5] Saving processed data into new .csv.\n')
 
-df.to_csv('Data4Clustering.csv') 
+# df.to_csv('Data4Clustering.csv') 
 
 print('[6] All completed.\n')
 
