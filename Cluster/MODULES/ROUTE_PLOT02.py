@@ -31,7 +31,7 @@ from datetime import datetime
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('Data4Clustering.csv', header=0, delimiter=',')
+df = pd.read_csv('Data4Clustering_3.csv', header=0, delimiter=',')
 df_head = df.head()
 
 Nflights = df.sort_index().query('count == 0')
@@ -43,9 +43,14 @@ print('- Number of flights: \n', Numflights )
 
 #########################################################################################
 
-x1 = 5.
-x2 = 14.
-y1 = 40.
+# x1 = 5.
+# x2 = 14.
+# y1 = 40.
+# y2 = 51.
+
+x1 = 2.
+x2 = 9.
+y1 = 49.
 y2 = 51.
 
 lat_ff = []
@@ -59,13 +64,16 @@ lat_FRA = 50.110924
 
 coor_FRA = (lat_FRA,lon_FRA)
 
-lon_ITA = 12.2461111111
-lat_ITA = 41.7997222222
+lon_ITA = 2.547778
+lat_ITA = 49.009724
+
+lat_CDG = 49.009724
+lon_CDG = 2.547778
 
 coor_ITA = (lat_ITA,lon_ITA)
 
 fig, ax = plt.subplots()
-m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=51, llcrnrlon=5, urcrnrlon=14)
+m = Basemap(resolution='i', projection='merc', llcrnrlat=48, urcrnrlat=51, llcrnrlon=1, urcrnrlon=14)
 m.drawmapboundary(fill_color='aqua')
 m.fillcontinents(color='0.8',lake_color='aqua')
 m.drawcoastlines()
@@ -215,8 +223,8 @@ for i in range(len(names)):
 
 ##############################################################
 
-lon_ITA = 12.2461111111
-lat_ITA = 41.7997222222
+lon_ITA = 2.547778
+lat_ITA = 49.009724
 def radius_for_tissot(dist_km):
     return np.rad2deg(dist_km/6367.)
 

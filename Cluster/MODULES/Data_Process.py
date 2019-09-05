@@ -16,8 +16,8 @@ from geopy.distance import distance
 
 print('[0] Load dataset.\n')
     
-# df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
+# df = pd.read_csv('FRACDG_5day.csv', header=0, delimiter=',')
+df = pd.read_csv('FRACDG_month17.csv', header=0, delimiter=',')
 df_head = df.head()
 
 ########################################################################################
@@ -42,15 +42,15 @@ mapa = {"hit" : "hit",
 df = df.rename(columns = mapa)
 
 # Check if data contains null values
-# print('Data containing NAN: \n',df.isnull().sum())
+print('Data containing NAN: \n',df.isnull().sum())
 
 # Sort values - organize flights
 # query - takes all index with hit = 0 of sorted data
-# flights = df.sort_index().query('hit == 0')
+flights = df.sort_index().query('hit == 0')
 
 # # Number of flights
-# Numflights = len(flights)
-# print('[1] Number of flights: ', Numflights )
+Numflights = len(flights)
+print('[1] Number of flights: ', Numflights )
 
 # Size data without filter
 print('- Sample size without filters: \n', len(df))
@@ -68,9 +68,9 @@ lon_FRA = 8.682127
 coor_FRA = (lat_FRA,lon_FRA)
 
 # Rome airport coordinates
-lat_ITA = 41.7997222222
-lon_ITA = 12.2461111111
-coor_ITA = (lat_ITA,lon_ITA)
+lat_CDG = 49.009724
+lon_CDG = 2.547778
+coor_CDG = (lat_CDG,lon_CDG)
 
 lat = np.asarray(df['lat'])
 lat = lat[:,None]
@@ -79,7 +79,7 @@ lon = np.asarray(df['lon'])
 lon = lon[:,None]
 
 Hdist_FRA = []
-Hdist_ITA = []
+Hdist_CDG = []
 
 ########################################################################################
 """Filtering lat and long data out of lat lon bounds"""
@@ -99,21 +99,21 @@ df = df.drop(df[df.lon < -90].index)
 for idx, row, in df.iterrows():
 
     Airport_FRA = coor_FRA
-    Airport_ITA = coor_ITA
+    Airport_CDG = coor_CDG
 
     coord = (lat[idx],lon[idx])
     
     Hdist_FRA.append(distance(coord, Airport_FRA).nm)
-    Hdist_ITA.append(distance(coord, Airport_ITA).nm)
+    Hdist_CDG.append(distance(coord, Airport_CDG).nm)
 
     # Hdist_FRA.append(haversine(coord, Airport_FRA, unit='nmi'))
-    # Hdist_ITA.append(haversine(coord, Airport_ITA, unit='nmi'))
+    # Hdist_CDG.append(haversine(coord, Airport_CDG, unit='nmi'))
 
 
 Hdist_FRA = np.asarray(Hdist_FRA)
-Hdist_ITA = np.asarray(Hdist_ITA)
+Hdist_CDG = np.asarray(Hdist_CDG)
 df['Hdist_FRA'] = Hdist_FRA
-df['Hdist_ITA'] = Hdist_ITA
+df['Hdist_CDG'] = Hdist_CDG
 
 
 ########################################################################################
@@ -122,16 +122,16 @@ df['Hdist_ITA'] = Hdist_ITA
 
 print('[3] Second data filter avoiding terminal area (60 mn).\n')
 
-# Drop outliers out of lat scale lat < -180, lat > 180
-df = df.drop(df[df.lat > 51].index)
-df = df.drop(df[df.lat < 42].index)
-# Drop outliers out of lon scale lon < -90, lon > 90
-df = df.drop(df[df.lon > 13].index)
-df = df.drop(df[df.lon < 8].index)
+# # Drop outliers out of lat scale lat < -180, lat > 180
+# df = df.drop(df[df.lat > 51].index)
+# df = df.drop(df[df.lat < 42].index)
+# # Drop outliers out of lon scale lon < -90, lon > 90
+# df = df.drop(df[df.lon > 13].index)
+# df = df.drop(df[df.lon < 8].index)
 
 # Identifing and saving data that is out of the terminal area
 df = df[df.Hdist_FRA > 60.0]
-df = df[df.Hdist_ITA > 60.0]
+df = df[df.Hdist_CDG > 60.0]
 
 print('- Sample size filtered: \n', len(df))
 
@@ -157,7 +157,7 @@ print('- Number of flights: \n', Numflights )
 
 print('[5] Saving processed data into new .csv.\n')
 
-# df.to_csv('Data4Clustering.csv') 
+df.to_csv('Data4Clustering_3.csv') 
 
 print('[6] All completed.\n')
 
