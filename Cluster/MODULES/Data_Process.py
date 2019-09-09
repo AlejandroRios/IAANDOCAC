@@ -16,8 +16,8 @@ from geopy.distance import distance
 
 print('[0] Load dataset.\n')
     
-# df = pd.read_csv('FRACDG_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRACDG_month17.csv', header=0, delimiter=',')
+# df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
+df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
 df_head = df.head()
 
 ########################################################################################
@@ -62,15 +62,15 @@ print('- Sample size without filters: \n', len(df))
 
 print('[2] Meassuring distance between samples and airpots.\n')
 
-# Frankfurt airport coordinates
-lat_FRA = 50.110924
-lon_FRA = 8.682127
-coor_FRA = (lat_FRA,lon_FRA)
+# AIRP1nkfurt airport coordinates
+lat_AIRP1 = 50.110924
+lon_AIRP1 = 8.682127
+coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
-lat_CDG = 49.009724
-lon_CDG = 2.547778
-coor_CDG = (lat_CDG,lon_CDG)
+lon_AIRP2 = 12.2461111111
+lat_AIRP2 = 41.7997222222
+coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 lat = np.asarray(df['lat'])
 lat = lat[:,None]
@@ -78,8 +78,8 @@ lat = lat[:,None]
 lon = np.asarray(df['lon'])
 lon = lon[:,None]
 
-Hdist_FRA = []
-Hdist_CDG = []
+Hdist_AIRP1 = []
+Hdist_AIRP2 = []
 
 ########################################################################################
 """Filtering lat and long data out of lat lon bounds"""
@@ -98,22 +98,22 @@ df = df.drop(df[df.lon < -90].index)
 
 for idx, row, in df.iterrows():
 
-    Airport_FRA = coor_FRA
-    Airport_CDG = coor_CDG
+    Airport_AIRP1 = coor_AIRP1
+    Airport_AIRP2 = coor_AIRP2
 
     coord = (lat[idx],lon[idx])
     
-    Hdist_FRA.append(distance(coord, Airport_FRA).nm)
-    Hdist_CDG.append(distance(coord, Airport_CDG).nm)
+    Hdist_AIRP1.append(distance(coord, Airport_AIRP1).nm)
+    Hdist_AIRP2.append(distance(coord, Airport_AIRP2).nm)
 
-    # Hdist_FRA.append(haversine(coord, Airport_FRA, unit='nmi'))
-    # Hdist_CDG.append(haversine(coord, Airport_CDG, unit='nmi'))
+    # Hdist_AIRP1.append(haversine(coord, Airport_AIRP1, unit='nmi'))
+    # Hdist_AIRP2.append(haversine(coord, Airport_AIRP2, unit='nmi'))
 
 
-Hdist_FRA = np.asarray(Hdist_FRA)
-Hdist_CDG = np.asarray(Hdist_CDG)
-df['Hdist_FRA'] = Hdist_FRA
-df['Hdist_CDG'] = Hdist_CDG
+Hdist_AIRP1 = np.asarray(Hdist_AIRP1)
+Hdist_AIRP2 = np.asarray(Hdist_AIRP2)
+df['Hdist_AIRP1'] = Hdist_AIRP1
+df['Hdist_AIRP2'] = Hdist_AIRP2
 
 
 ########################################################################################
@@ -122,16 +122,16 @@ df['Hdist_CDG'] = Hdist_CDG
 
 print('[3] Second data filter avoiding terminal area (60 mn).\n')
 
-# # Drop outliers out of lat scale lat < -180, lat > 180
-# df = df.drop(df[df.lat > 51].index)
-# df = df.drop(df[df.lat < 42].index)
-# # Drop outliers out of lon scale lon < -90, lon > 90
-# df = df.drop(df[df.lon > 13].index)
-# df = df.drop(df[df.lon < 8].index)
+# Drop outliers out of lat scale lat < -180, lat > 180
+df = df.drop(df[df.lat > 51].index)
+df = df.drop(df[df.lat < 42].index)
+# Drop outliers out of lon scale lon < -90, lon > 90
+df = df.drop(df[df.lon > 13].index)
+df = df.drop(df[df.lon < 8].index)
 
 # Identifing and saving data that is out of the terminal area
-df = df[df.Hdist_FRA > 60.0]
-df = df[df.Hdist_CDG > 60.0]
+df = df[df.Hdist_AIRP1 > 60.0]
+df = df[df.Hdist_AIRP2 > 60.0]
 
 print('- Sample size filtered: \n', len(df))
 

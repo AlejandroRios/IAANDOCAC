@@ -247,11 +247,11 @@ print('[6] Testing model.\n')
 
 # Trajectory cluster 1
 
-# lon_FRA = 0.34
-# lat_FRA = 0.90
+# lon_AIRP1 = 0.34
+# lat_AIRP1 = 0.90
 
-# lon_ITA = 0.83
-# lat_ITA = 0.087
+# lon_AIRP2 = 0.83
+# lat_AIRP2 = 0.087
 
 # lon0 = 0.52
 # lat0 = 0.81
@@ -263,11 +263,11 @@ print('[6] Testing model.\n')
 # lat2 = 0.22
 
 # Trajectory cluster 0
-# lon_FRA = 0.1
-# lat_FRA = 0.87
+# lon_AIRP1 = 0.1
+# lat_AIRP1 = 0.87
 
-# lon_ITA = 0.68
-# lat_ITA = 0.04
+# lon_AIRP2 = 0.68
+# lat_AIRP2 = 0.04
 
 # lon0 = 0.08
 # lat0 = 0.69
@@ -280,11 +280,11 @@ print('[6] Testing model.\n')
 
 # Trajectory cluster 2
 
-lon_FRA = 0.08
-lat_FRA = 0.88
+lon_AIRP1 = 0.08
+lat_AIRP1 = 0.88
 
-lon_ITA = 0.82
-lat_ITA = 0.07
+lon_AIRP2 = 0.82
+lat_AIRP2 = 0.07
 
 lon0 = 0.14
 lat0 = 0.74
@@ -297,11 +297,11 @@ lat2 = 0.22
 
 # Trajectory cluster -1
 
-# lon_FRA = 0.83
-# lat_FRA = 0.99
+# lon_AIRP1 = 0.83
+# lat_AIRP1 = 0.99
 
-# lon_ITA = 0.96
-# lat_ITA = 0.06
+# lon_AIRP2 = 0.96
+# lat_AIRP2 = 0.06
 
 
 # lon0 = 0.95
@@ -314,11 +314,11 @@ lat2 = 0.22
 # lat2 = 0.19
 
 #  Trajectory cluster -1
-# lon_FRA = 0.01
-# lat_FRA = 0.88
+# lon_AIRP1 = 0.01
+# lat_AIRP1 = 0.88
 
-# lon_ITA = 0.57
-# lat_ITA = 0.01
+# lon_AIRP2 = 0.57
+# lat_AIRP2 = 0.01
 
 
 # lon0 = 0.04
@@ -331,17 +331,17 @@ lat2 = 0.22
 # lat2 = 0.045
 
 
-lat = (lat_FRA,
+lat = (lat_AIRP1,
 lat0,
 lat1,
 lat2,
-lat_ITA)
+lat_AIRP2)
 
-lon = (lon_FRA,
+lon = (lon_AIRP1,
 lon0,
 lon1,
 lon2,
-lon_ITA)
+lon_AIRP2)
 
 lat = np.asarray(lat)
 lon = np.asarray(lon)

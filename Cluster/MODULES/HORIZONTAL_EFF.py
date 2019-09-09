@@ -49,14 +49,14 @@ df_head = df.head()
 
 
 # Frankfurt airport coordinates
-lat_FRA = 50.110924
-lon_FRA = 8.682127
-coor_FRA = (lat_FRA,lon_FRA)
+lat_AIRP1 = 50.110924
+lon_AIRP1 = 8.682127
+coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
-lat_ITA = 41.7997222222
-lon_ITA = 12.2461111111
-coor_ITA = (lat_ITA,lon_ITA)
+lat_AIRP2 = 41.7997222222
+lon_AIRP2 = 12.2461111111
+coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 ########################################################################################
 """Re-sizing flight vectors"""
@@ -117,11 +117,11 @@ print('-------------------------------------------------------------------------
 print('[2] Evaluating horizontal ineff..\n')
 
 distance_real = distance_real
-GCD_FRAITA = (great_circle(coor_FRA,coor_ITA).nm)-120
-print('Haversine distance : ',GCD_FRAITA)
+GCD_AIRP1AIRP2 = (great_circle(coor_AIRP1,coor_AIRP2).nm)-120
+print('Haversine distance : ',GCD_AIRP1AIRP2)
 print('Real distance : ', distance_real)
 
-Heff = (((distance_real)-GCD_FRAITA)/GCD_FRAITA)*100
+Heff = (((distance_real)-GCD_AIRP1AIRP2)/GCD_AIRP1AIRP2)*100
 print('HFE:', Heff)
 
 

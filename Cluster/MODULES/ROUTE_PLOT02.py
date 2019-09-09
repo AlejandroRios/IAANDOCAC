@@ -30,7 +30,7 @@ from datetime import datetime
 
 print('[0] Load dataset.\n')
     
-# df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
+# df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
 df = pd.read_csv('Data4Clustering_3.csv', header=0, delimiter=',')
 df_head = df.head()
 
@@ -43,15 +43,15 @@ print('- Number of flights: \n', Numflights )
 
 #########################################################################################
 
-# x1 = 5.
-# x2 = 14.
-# y1 = 40.
-# y2 = 51.
-
-x1 = 2.
-x2 = 9.
-y1 = 49.
+x1 = 5.
+x2 = 14.
+y1 = 40.
 y2 = 51.
+
+# x1 = 2.
+# x2 = 9.
+# y1 = 49.
+# y2 = 51.
 
 lat_ff = []
 lon_ff = []
@@ -59,21 +59,18 @@ alt_ff = []
 lat_teste_ff = []
 lon_teste_ff = []
 
-lon_FRA = 8.682127
-lat_FRA = 50.110924
+lon_AIRP1 = 8.682127
+lat_AIRP1 = 50.110924
 
-coor_FRA = (lat_FRA,lon_FRA)
+coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
-lon_ITA = 2.547778
-lat_ITA = 49.009724
+lon_AIRP2 = 12.2461111111
+lat_AIRP2 = 41.7997222222
 
-lat_CDG = 49.009724
-lon_CDG = 2.547778
-
-coor_ITA = (lat_ITA,lon_ITA)
+coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 fig, ax = plt.subplots()
-m = Basemap(resolution='i', projection='merc', llcrnrlat=48, urcrnrlat=51, llcrnrlon=1, urcrnrlon=14)
+m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=51, llcrnrlon=7, urcrnrlon=14)
 m.drawmapboundary(fill_color='aqua')
 m.fillcontinents(color='0.8',lake_color='aqua')
 m.drawcoastlines()
@@ -119,10 +116,10 @@ for i in range(len(Nflights)-1):
         # Defining cordinates of two points to messure distance      
         coordinates0 = (lat_rz[j],lon_rz[j])
         # Calculating haversine distance between two points in nautical miles
-        distance_to_FRA = float(haversine(coor_FRA,coordinates0,unit='nmi'))
-        distance_to_ITA = float(haversine(coor_ITA,coordinates0,unit='nmi'))
+        distance_to_AIRP1 = float(haversine(coor_AIRP1,coordinates0,unit='nmi'))
+        distance_to_AIRP2 = float(haversine(coor_AIRP2,coordinates0,unit='nmi'))
         
-        if distance_to_FRA > 60 and distance_to_ITA > 60:
+        if distance_to_AIRP1 > 60 and distance_to_AIRP2 > 60:
 
             lon_f = [lon_rz[j]]
             lat_f = [lat_rz[j]]
@@ -181,10 +178,10 @@ lon_ff = np.asarray(lon_ff)
 #             # Defining cordinates of two points to messure distance      
 #             coordinates0 = (lat_rz[j],lon_rz[j])
 #             # Calculating haversine distance between two points in nautical miles
-#             distance_to_FRA = float(haversine(coor_FRA,coordinates0,unit='nmi'))
-#             distance_to_ITA = float(haversine(coor_ITA,coordinates0,unit='nmi'))
+#             distance_to_AIRP1 = float(haversine(coor_AIRP1,coordinates0,unit='nmi'))
+#             distance_to_AIRP2 = float(haversine(coor_AIRP2,coordinates0,unit='nmi'))
             
-#             if distance_to_FRA > 60 and distance_to_ITA > 60:
+#             if distance_to_AIRP1 > 60 and distance_to_AIRP2 > 60:
 
 
 #                 lat_teste_f = [lat_teste[j]]
@@ -212,9 +209,9 @@ lon_ff = np.asarray(lon_ff)
 #PLOT JFK INTL AIRPORT
 # Plot station positions and names into the map
 # again we have to compute the projection of our lon/lat values
-lats = [lon_FRA, lon_ITA]
-lons = [lat_FRA, lat_ITA]
-names = ["FRA", "FCO"]
+lats = [lon_AIRP1, lon_AIRP2]
+lons = [lat_AIRP1, lat_AIRP2]
+names = ["AIRP1", "FCO"]
 x, y = m(lats, lons)
 m.scatter(x, y, 200, color="r", marker="v", edgecolor="k", zorder=3)
 for i in range(len(names)):
@@ -223,21 +220,19 @@ for i in range(len(names)):
 
 ##############################################################
 
-lon_ITA = 2.547778
-lat_ITA = 49.009724
 def radius_for_tissot(dist_km):
     return np.rad2deg(dist_km/6367.)
 
 
-x,y=m(lon_ITA,lat_ITA)
-x2,y2 = m(lon_ITA,lat_ITA+1) 
+x,y=m(lon_AIRP2,lat_AIRP2)
+x2,y2 = m(lon_AIRP2,lat_AIRP2+1) 
 circle1 = plt.Circle((x, y), 150000, color='black',fill=False)
 ax.add_patch(circle1)
 
 print(y2-y)
 
-x,y=m(lon_FRA,lat_FRA)
-x2,y2 = m(lon_FRA,lat_FRA+1) 
+x,y=m(lon_AIRP1,lat_AIRP1)
+x2,y2 = m(lon_AIRP1,lat_AIRP1+1) 
 circle1 = plt.Circle((x, y), 170000, color='black',fill=False)
 ax.add_patch(circle1)
 

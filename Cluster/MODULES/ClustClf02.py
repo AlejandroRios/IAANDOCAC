@@ -49,8 +49,8 @@ m.drawmeridians(meridians,labels=[True,False,False,True])
 
 print('[0] Load dataset.\n')
     
-# df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('Data4Clustering.csv', header=0, delimiter=',')
+# df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
+df = pd.read_csv('Data4Clustering_3.csv', header=0, delimiter=',')
 df_head = df.head()
 
 Nflights = df.sort_index().query('count == 0')
@@ -255,7 +255,7 @@ Distances = np.concatenate((xy1,xy2,xy3,xy4),axis=0)
 label_clus = np.concatenate((label_clust1,label_clust2,label_clust3,label_clust4),axis=0)
 
 
-# Creating data frame including cluster coordinates and labels
+# Creating data AIRP1me including cluster coordinates and labels
 data=pd.DataFrame()
 data = pd.DataFrame(data=Distances[:,:]) 
 label_clus = pd.Series(label_clus) 
@@ -306,11 +306,11 @@ print('[6] Testing model.\n')
 # lon2 = 10.91
 # lat2 = 42.94
 
-# lon_FRA = 8.49
-# lat_FRA = 49.12
+# lon_AIRP1 = 8.49
+# lat_AIRP1 = 49.12
 
-# lon_ITA = 11.31
-# lat_ITA = 42.51
+# lon_AIRP2 = 11.31
+# lat_AIRP2 = 42.51
 
 # lon0 = 8.66
 # lat0 = 46.11
@@ -322,11 +322,11 @@ print('[6] Testing model.\n')
 # lat2 = 42.76
 
 # Trajectory test 02
-lon_FRA = 9.68
-lat_FRA = 49.36
+lon_AIRP1 = 9.68
+lat_AIRP1 = 49.36
 
-lon_ITA = 12.19
-lat_ITA = 42.75
+lon_AIRP2 = 12.19
+lat_AIRP2 = 42.75
 
 lon0 = 11.08
 lat0 = 48.39
@@ -338,11 +338,11 @@ lon2 = 11.80
 lat2 = 44.10
 
 # Trajectory test 03
-# lon_FRA = 8.63
-# lat_FRA = 49.11
+# lon_AIRP1 = 8.63
+# lat_AIRP1 = 49.11
 
-# lon_ITA = 12.09
-# lat_ITA = 42.75
+# lon_AIRP2 = 12.09
+# lat_AIRP2 = 42.75
 
 # lon0 = 9.39
 # lat0 = 47.33
@@ -354,11 +354,11 @@ lat2 = 44.10
 # lat2 = 44.11
 
 # Trajectory test 04
-lon_FRA = 9.32
-lat_FRA = 49.16
+lon_AIRP1 = 9.32
+lat_AIRP1 = 49.16
 
-lon_ITA = 12.11
-lat_ITA = 42.75
+lon_AIRP2 = 12.11
+lat_AIRP2 = 42.75
 
 lon0 = 10.28
 lat0 = 48.06
@@ -370,17 +370,17 @@ lon2 = 11.59
 lat2 = 44.11
 
 
-lat = (lat_FRA,
+lat = (lat_AIRP1,
 lat0,
 lat1,
 lat2,
-lat_ITA)
+lat_AIRP2)
 
-lon = (lon_FRA,
+lon = (lon_AIRP1,
 lon0,
 lon1,
 lon2,
-lon_ITA)
+lon_AIRP2)
 
 lat = np.asarray(lat)
 lon = np.asarray(lon)
@@ -467,14 +467,14 @@ x3, y3 = m(meanlatc3,meanlonc3 )
 print('--------------------------------------------------------------------------------\n')
 print('[7] Plot definition .\n')
 
-lon_FRA = 8.682127
-lat_FRA = 50.110924
-lon_ITA = 12.2461111111
-lat_ITA = 41.7997222222
+lon_AIRP1 = 8.682127
+lat_AIRP1 = 50.110924
+lon_AIRP2 = 12.2461111111
+lat_AIRP2 = 41.7997222222
 
-lats = [lon_FRA, lon_ITA]
-lons = [lat_FRA, lat_ITA]
-names = ["FRA", "FCO"]
+lats = [lon_AIRP1, lon_AIRP2]
+lons = [lat_AIRP1, lat_AIRP2]
+names = ["AIRP1", "FCO"]
 x, y = m(lats, lons)
 m.scatter(x, y, 200, color="r", marker="v", edgecolor="k", zorder=3)
 for i in range(len(names)):
@@ -487,15 +487,14 @@ def radius_for_tissot(dist_km):
     return np.rad2deg(dist_km/6367.)
 
 
-x,y=m(lon_ITA,lat_ITA)
-x2,y2 = m(lon_ITA,lat_ITA+1) 
+x,y=m(lon_AIRP2,lat_AIRP2)
+x2,y2 = m(lon_AIRP2,lat_AIRP2+1) 
 circle1 = plt.Circle((x, y), 150000, color='black',fill=False)
 ax.add_patch(circle1)
 
-print(y2-y)
 
-x,y=m(lon_FRA,lat_FRA)
-x2,y2 = m(lon_FRA,lat_FRA+1) 
+x,y=m(lon_AIRP1,lat_AIRP1)
+x2,y2 = m(lon_AIRP1,lat_AIRP1+1) 
 circle1 = plt.Circle((x, y), 170000, color='black',fill=False)
 ax.add_patch(circle1)
 
