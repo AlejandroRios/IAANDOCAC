@@ -49,8 +49,7 @@ m.drawmeridians(meridians,labels=[True,False,False,True])
 
 print('[0] Load dataset.\n')
     
-# df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('Data4Clustering_3.csv', header=0, delimiter=',')
+df = pd.read_csv('Data4Clustering.csv', header=0, delimiter=',')
 df_head = df.head()
 
 Nflights = df.sort_index().query('count == 0')
@@ -255,7 +254,7 @@ Distances = np.concatenate((xy1,xy2,xy3,xy4),axis=0)
 label_clus = np.concatenate((label_clust1,label_clust2,label_clust3,label_clust4),axis=0)
 
 
-# Creating data AIRP1me including cluster coordinates and labels
+# Creating data frame including cluster coordinates and labels
 data=pd.DataFrame()
 data = pd.DataFrame(data=Distances[:,:]) 
 label_clus = pd.Series(label_clus) 
@@ -300,6 +299,15 @@ print('-------------------------------------------------------------------------
 print('[6] Testing model.\n')
 
 #######################################################################################
+
+########################################################################################
+"""Airport coordinates"""
+# FRA: lat: 50.110924 | lon: 8.682127
+# FCO: lat: 41.7997222222 | lon: 12.2461111111
+# CDG: lat: 49.009722 | lon: 2.547778
+########################################################################################
+
+
 # Definition of trajectories to test OK
 
 # Trajectory test 01
@@ -325,8 +333,12 @@ print('[6] Testing model.\n')
 lon_AIRP1 = 9.68
 lat_AIRP1 = 49.36
 
-lon_AIRP2 = 12.19
-lat_AIRP2 = 42.75
+# lon_AIRP2 = 12.19
+# lat_AIRP2 = 42.75
+
+lon_AIRP2 = 2.547778
+lat_AIRP2 = 49.009722
+
 
 lon0 = 11.08
 lat0 = 48.39
@@ -354,20 +366,20 @@ lat2 = 44.10
 # lat2 = 44.11
 
 # Trajectory test 04
-lon_AIRP1 = 9.32
-lat_AIRP1 = 49.16
+# lon_AIRP1 = 9.32
+# lat_AIRP1 = 49.16
 
-lon_AIRP2 = 12.11
-lat_AIRP2 = 42.75
+# lon_AIRP2 = 12.11
+# lat_AIRP2 = 42.75
 
-lon0 = 10.28
-lat0 = 48.06
+# lon0 = 10.28
+# lat0 = 48.06
 
-lon1 = 11.52
-lat1 = 44.88
+# lon1 = 11.52
+# lat1 = 44.88
 
-lon2 = 11.59
-lat2 = 44.11
+# lon2 = 11.59
+# lat2 = 44.11
 
 
 lat = (lat_AIRP1,
@@ -467,10 +479,7 @@ x3, y3 = m(meanlatc3,meanlonc3 )
 print('--------------------------------------------------------------------------------\n')
 print('[7] Plot definition .\n')
 
-lon_AIRP1 = 8.682127
-lat_AIRP1 = 50.110924
-lon_AIRP2 = 12.2461111111
-lat_AIRP2 = 41.7997222222
+
 
 lats = [lon_AIRP1, lon_AIRP2]
 lons = [lat_AIRP1, lat_AIRP2]

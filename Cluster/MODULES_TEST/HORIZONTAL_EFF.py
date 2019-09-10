@@ -175,3 +175,5 @@ for i in range(0,90):
     # fig = plt.plot(i,distances, '*', markeredgecolor='k', markersize=2)
     # fig = plt.plot(i,GCD_CDGLHR, '*', markeredgecolor='b', markersize=2)
     fig = plt.plot(i,Heff, '*', markeredgecolor='k', markersize=2)
+
+    plt.show()

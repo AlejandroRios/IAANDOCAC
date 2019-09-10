@@ -3,9 +3,9 @@ script -f -c "ssh -p 2230 -l AlejandroRios data.opensky-network.org" log.txt
 
 SELECT track.pos AS hit, icao24, callsign, track.item.time AS time, track.item.latitude AS lat, track.item.longitude AS lon, track.item.heading AS heading,track.item.altitude AS alt, estdepartureairport, estarrivalairport, track.item.onground AS onground
 FROM flights_data4, flights_data4.track
-WHERE estdepartureairport='EDDF' AND estarrivalairport='LIRF' AND day>=1491008400 AND day<=1491354000;
+WHERE estdepartureairport='EDDF' AND estarrivalairport='EGLL' AND day>=1514808000 AND day<=1527854400;
 
-cat log.txt | grep "^|.*" | sed -e 's/\s*|\s*/,/g' -e 's/^,\|,$//g' -e 's/NULL//g' | awk '!seen[$0]++' >> FRAITA_month17.csv
+cat log.txt | grep "^|.*" | sed -e 's/\s*|\s*/,/g' -e 's/^,\|,$//g' -e 's/NULL//g' | awk '!seen[$0]++' >> FRALHR_6months18.csv
 
 
 ssh -p 2230 -l username data.opensky-network.org
@@ -21,4 +21,14 @@ cat log.txt | grep "^|.*" | sed -e 's/\s*|\s*/,/g' -e 's/^,\|,$//g' -e 's/NULL//
 
 
 
+1549022400
 
+
+
+WHERE estdepartureairport='EDDF' AND estarrivalairport='LIRF' AND day>=1491008400 AND day<=1491354000;
+
+
+6 months paper 
+WHERE estdepartureairport='EDDF' AND estarrivalairport='LIRF' AND day>=1514808000 AND day<=1527854400;
+
+WHERE estdepartureairport='EDDF' AND estarrivalairport='EGLL' AND day>=1514808000 AND day<=1527854400;

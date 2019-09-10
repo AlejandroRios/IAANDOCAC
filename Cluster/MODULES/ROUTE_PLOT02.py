@@ -31,7 +31,7 @@ from datetime import datetime
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('Data4Clustering_3.csv', header=0, delimiter=',')
+df = pd.read_csv('Data4Clustering.csv', header=0, delimiter=',')
 df_head = df.head()
 
 Nflights = df.sort_index().query('count == 0')
@@ -43,15 +43,15 @@ print('- Number of flights: \n', Numflights )
 
 #########################################################################################
 
-x1 = 5.
-x2 = 14.
-y1 = 40.
-y2 = 51.
-
-# x1 = 2.
-# x2 = 9.
-# y1 = 49.
+# x1 = 5.
+# x2 = 14.
+# y1 = 40.
 # y2 = 51.
+
+x1 = 2.
+x2 = 9.
+y1 = 49.
+y2 = 51.
 
 lat_ff = []
 lon_ff = []
@@ -64,15 +64,18 @@ lat_AIRP1 = 50.110924
 
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
-lon_AIRP2 = 12.2461111111
-lat_AIRP2 = 41.7997222222
+# lon_AIRP2 = 2.547778
+# lat_AIRP2 = 49.009722 
+
+lon_AIRP2 = -0.461389
+lat_AIRP2 = 51.4775  
 
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 fig, ax = plt.subplots()
-m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=51, llcrnrlon=7, urcrnrlon=14)
+m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=52, llcrnrlon=-1, urcrnrlon=14)
 m.drawmapboundary(fill_color='aqua')
-m.fillcontinents(color='0.8',lake_color='aqua')
+m.fillcontinents(color='1.0',lake_color='aqua')
 m.drawcoastlines()
 m.drawcountries()
 parallels = np.arange(0.,81,5.)
@@ -82,7 +85,7 @@ meridians = np.arange(10.,351.,5.)
 m.drawmeridians(meridians,labels=[True,False,False,True])
 # for i in range(1): 
 # for i in range(1): 
-for i in range(len(Nflights)-1): 
+for i in range(500): 
 
     # Define some parametres
     CHUNK_SIZE = 500 # Size of flight vector
@@ -94,6 +97,9 @@ for i in range(len(Nflights)-1):
     lat = flights['lat']
     xlat = np.arange(lat.size)
     new_xlat = np.linspace(xlat.min(), xlat.max(), CHUNK_SIZE)
+    # print(xlat)
+    # print(lat)
+
     lat_rz = sp.interpolate.interp1d(xlat, lat, kind='slinear')(new_xlat)
 
     lon = flights['lon']
@@ -225,20 +231,22 @@ def radius_for_tissot(dist_km):
 
 
 x,y=m(lon_AIRP2,lat_AIRP2)
-x2,y2 = m(lon_AIRP2,lat_AIRP2+1) 
-circle1 = plt.Circle((x, y), 150000, color='black',fill=False)
+x2,y2 = m(lon_AIRP2,lat_AIRP2) 
+circle1 = plt.Circle((x, y), 170000, color='black',fill=False)
 ax.add_patch(circle1)
 
 print(y2-y)
 
 x,y=m(lon_AIRP1,lat_AIRP1)
-x2,y2 = m(lon_AIRP1,lat_AIRP1+1) 
+x2,y2 = m(lon_AIRP1,lat_AIRP1) 
 circle1 = plt.Circle((x, y), 170000, color='black',fill=False)
 ax.add_patch(circle1)
 
 
 ############################################
 plt.show()
+
+
 
 
 

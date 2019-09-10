@@ -17,7 +17,8 @@ from geopy.distance import distance
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
+df = pd.read_csv('FRALHR_6months18.csv', header=0, delimiter=',')
+
 df_head = df.head()
 
 ########################################################################################
@@ -62,14 +63,23 @@ print('- Sample size without filters: \n', len(df))
 
 print('[2] Meassuring distance between samples and airpots.\n')
 
+########################################################################################
+"""Airport coordinates"""
+# FRA: lat: 50.110924 | lon: 8.682127
+# FCO: lat: 41.7997222222 | lon: 12.2461111111
+# CDG: lat: 49.009722 | lon: 2.547778
+# LHR: lat: 51.4775 | lon: -0.461389
+########################################################################################
+
+
 # AIRP1nkfurt airport coordinates
 lat_AIRP1 = 50.110924
 lon_AIRP1 = 8.682127
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
-lon_AIRP2 = 12.2461111111
-lat_AIRP2 = 41.7997222222
+lon_AIRP2 = -0.461389
+lat_AIRP2 = 51.4775  
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 lat = np.asarray(df['lat'])
@@ -122,12 +132,12 @@ df['Hdist_AIRP2'] = Hdist_AIRP2
 
 print('[3] Second data filter avoiding terminal area (60 mn).\n')
 
-# Drop outliers out of lat scale lat < -180, lat > 180
-df = df.drop(df[df.lat > 51].index)
-df = df.drop(df[df.lat < 42].index)
-# Drop outliers out of lon scale lon < -90, lon > 90
-df = df.drop(df[df.lon > 13].index)
-df = df.drop(df[df.lon < 8].index)
+# # Drop outliers out of lat scale lat < -180, lat > 180
+# df = df.drop(df[df.lat > 52].index)
+# df = df.drop(df[df.lat < 48].index)
+# # Drop outliers out of lon scale lon < -90, lon > 90
+# df = df.drop(df[df.lon > 9].index)
+# df = df.drop(df[df.lon < -1].index)
 
 # Identifing and saving data that is out of the terminal area
 df = df[df.Hdist_AIRP1 > 60.0]
@@ -157,7 +167,7 @@ print('- Number of flights: \n', Numflights )
 
 print('[5] Saving processed data into new .csv.\n')
 
-df.to_csv('Data4Clustering_3.csv') 
+df.to_csv('Data4Clustering2.csv') 
 
 print('[6] All completed.\n')
 

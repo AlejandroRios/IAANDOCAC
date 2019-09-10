@@ -54,8 +54,8 @@ lon_AIRP1 = 8.682127
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
-lat_AIRP2 = 41.7997222222
-lon_AIRP2 = 12.2461111111
+lon_AIRP2 = -0.461389
+lat_AIRP2 = 51.4775  
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 ########################################################################################
@@ -66,12 +66,12 @@ print('[1] Re-sizing flight vectors (same size).\n')
 
 CHUNK_SIZE = 50
 
-lat = df['lat_clus3']
+lat = df['lat_clus1']
 xlat = np.arange(lat.size)
 new_xlat = np.linspace(xlat.min(), xlat.max(), CHUNK_SIZE)
 lat_rz = sp.interpolate.interp1d(xlat, lat, kind='slinear')(new_xlat)
 
-lon = df['lon_clus3']
+lon = df['lon_clus1']
 xlon = np.arange(lon.size)
 new_xlon = np.linspace(xlon.min(), xlon.max(), CHUNK_SIZE)
 lon_rz = sp.interpolate.interp1d(xlon, lon, kind='slinear')(new_xlon)
@@ -125,4 +125,4 @@ Heff = (((distance_real)-GCD_AIRP1AIRP2)/GCD_AIRP1AIRP2)*100
 print('HFE:', Heff)
 
 
-# plt.show()
+plt.show()
