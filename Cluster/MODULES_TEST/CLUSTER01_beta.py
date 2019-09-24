@@ -86,7 +86,7 @@ coor_ITA = (lat_ITA,lon_ITA)
 for i in range(len(Nflights)-1): 
 
     # Define some parametres
-    CHUNK_SIZE = 500 # Size of flight vector
+    CHUNK_SIZE = 50 # Size of flight vector
 
     # Separate vector by flights
     flights = df.iloc[Nflights.index[i]:Nflights.index[i+1]]

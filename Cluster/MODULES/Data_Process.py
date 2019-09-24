@@ -79,7 +79,7 @@ coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
 lon_AIRP2 = -0.461389
-lat_AIRP2 = 51.4775  
+lat_AIRP2 = 51.4775
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 lat = np.asarray(df['lat'])
@@ -132,12 +132,13 @@ df['Hdist_AIRP2'] = Hdist_AIRP2
 
 print('[3] Second data filter avoiding terminal area (60 mn).\n')
 
-# # Drop outliers out of lat scale lat < -180, lat > 180
-# df = df.drop(df[df.lat > 52].index)
-# df = df.drop(df[df.lat < 48].index)
-# # Drop outliers out of lon scale lon < -90, lon > 90
-# df = df.drop(df[df.lon > 9].index)
-# df = df.drop(df[df.lon < -1].index)
+
+# Drop outliers out of lat scale lat < -180, lat > 180
+df = df.drop(df[df.lat > 55].index)
+df = df.drop(df[df.lat < 40].index)
+# Drop outliers out of lon scale lon < -90, lon > 90
+df = df.drop(df[df.lon > 10].index)
+df = df.drop(df[df.lon < -3].index)
 
 # Identifing and saving data that is out of the terminal area
 df = df[df.Hdist_AIRP1 > 60.0]
@@ -167,7 +168,7 @@ print('- Number of flights: \n', Numflights )
 
 print('[5] Saving processed data into new .csv.\n')
 
-df.to_csv('Data4Clustering2.csv') 
+df.to_csv('Data4Clustering02.csv') 
 
 print('[6] All completed.\n')
 

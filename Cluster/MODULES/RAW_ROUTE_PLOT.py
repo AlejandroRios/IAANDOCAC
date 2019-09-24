@@ -22,7 +22,7 @@ from itertools import cycle
 from itertools import islice
 from datetime import datetime
 
-
+from geopy.distance import distance
 
 # Import data
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
@@ -93,9 +93,10 @@ m.drawparallels(parallels,labels=[False,True,True,False])
 meridians = np.arange(-10.,351.,5.)
 m.drawmeridians(meridians,labels=[True,False,False,True])
 
+list = [500]
 
 # for i in range(1): 
-for i in range(1000): 
+for i in list: 
 # for i in range(len(Nflights)-1): 
 
     # Define some parametres
@@ -150,7 +151,25 @@ for i in range(1000):
             # lat_teste_ff.append(lat_teste_f)
             # lon_teste_ff.append(lon_teste_f)
 
-    
+    distances_pp = []
+    distances_pp_f = []
+
+    for j in range(len(lon_rz)-1):
+
+        # Defining cordinates of two points to messure distance      
+        coordinates0 = (lat_rz[j],lon_rz[j])
+        coordinates1 = (lat_rz[j+1],lon_rz[j+1])
+
+        # Calculating haversine distance between two points in nautical miles
+        distance_pp = float(distance(coordinates0,coordinates1).nm)
+
+        # Storing calculated point to point distances into a vector
+        distances_pp.append(distance_pp)
+
+        # Sum of point to point distances to obtain total distance of a flight
+        distance_real = sum(distances_pp)
+
+print(distance_real) 
 
 lat_ff = np.asarray(lat_ff)
 lon_ff = np.asarray(lon_ff)

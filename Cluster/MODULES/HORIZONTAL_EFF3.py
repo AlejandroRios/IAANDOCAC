@@ -44,7 +44,7 @@ from geopy.distance import distance
 ########################################################################################
 print('[0] Load dataset.\n')
 
-df = pd.read_csv('Centroids02.csv', header=0, delimiter=',')
+df = pd.read_csv('Centroids01.csv', header=0, delimiter=',')
 df_head = df.head()
 
 # 1.159759540154151	51.6762861168459
@@ -64,12 +64,12 @@ lon_AIRP1 = 8.682127
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
-lon_AIRP2 = -0.461389
-lat_AIRP2 = 51.4775  
+# lon_AIRP2 = -0.461389
+# lat_AIRP2 = 51.4775  
 
 
-# lon_AIRP2 = 12.2461111111
-# lat_AIRP2 = 41.7997222222
+lon_AIRP2 = 12.2461111111
+lat_AIRP2 = 41.7997222222
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 ########################################################################################
@@ -80,12 +80,12 @@ print('[1] Re-sizing flight vectors (same size).\n')
 
 CHUNK_SIZE = 200
 
-lat = df['lat_clus1']
+lat = df['lat_clus3']
 xlat = np.arange(lat.size)
 new_xlat = np.linspace(xlat.min(), xlat.max(), CHUNK_SIZE)
 lat_rz = sp.interpolate.interp1d(xlat, lat, kind='slinear')(new_xlat)
 
-lon = df['lon_clus1']
+lon = df['lon_clus3']
 xlon = np.arange(lon.size)
 new_xlon = np.linspace(xlon.min(), xlon.max(), CHUNK_SIZE)
 lon_rz = sp.interpolate.interp1d(xlon, lon, kind='slinear')(new_xlon)

@@ -35,14 +35,14 @@ from geopy.distance import distance
 """Base map plot definition"""
 ########################################################################################
 fig, ax = plt.subplots()
-m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=54, llcrnrlon=-5, urcrnrlon=14)
+m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=51, llcrnrlon=5, urcrnrlon=14)
 m.drawmapboundary(fill_color='aqua')
-m.fillcontinents(color='1.0',lake_color='aqua')
+m.fillcontinents(color='0.8',lake_color='aqua')
 m.drawcoastlines()
 m.drawcountries()
 parallels = np.arange(0.,81,5.)
 m.drawparallels(parallels,labels=[False,True,True,False])
-meridians = np.arange(-10.,351.,5.)
+meridians = np.arange(10.,351.,5.)
 m.drawmeridians(meridians,labels=[True,False,False,True])
 
 ########################################################################################
@@ -161,7 +161,7 @@ def plot_cluster(traj_lst, cluster_lst):
             x4, y4 = m(traj[:, 0], traj[:, 1])
             p3 = m.plot(*(x4, y4), c=color_lst[cluster % len(color_lst)],linewidth=0.5,alpha=0.5)
     
-    plt.legend((p0[0],p1[0],p2[0],p3[0]),('Outliers','R1 Clust. 0','R1 Clust. 1','R1 Clust. 2'))
+    plt.legend((p0[0],p1[0],p2[0],p3[0]),('Outliers','Cluster 0','Cluster 1','Cluster 2'))
             
 
 ########################################################################################
@@ -276,9 +276,9 @@ train_x, test_x, train_y, test_y = train_test_split(x, y,
                                                          random_state = SEED, test_size = 0.10,stratify = y)            
 print("Training with %d elements and test with %d elements" % (len(train_x), len(test_x)))
 
-# model = LinearSVC(class_weight='balanced',max_iter=1000000)
+model = LinearSVC(class_weight='balanced',max_iter=1000000)
 # model = SVC(kernel='linear', C=1)
-model = GaussianProcessClassifier(random_state=0)
+# model = GaussianProcessClassifier(random_state=0)
 
 model.fit(train_x, train_y)
 predictions = model.predict(test_x)
@@ -394,9 +394,9 @@ lon = np.asarray(lon)
 #cluster da direita
 # list = [200]
 #cluster do meio
-# list = [700]
+list = [700]
 #cluster da esquerda
-list = [900]
+# list = [900]
 
 for i in list:
     # Separate vector by flights
@@ -488,7 +488,7 @@ data_output['lon_clus3'] =  meanlonc3
 
 
 # Exporting centroids to csv
-data_output.to_csv('Centroids01.csv') 
+data_output.to_csv('Centroids.csv') 
 
 
 
@@ -497,9 +497,9 @@ data['label'] = label_clus
 x1, y1 = m(meanlatc1,meanlonc1)
 x2, y2 = m(meanlatc2,meanlonc2 )
 x3, y3 = m(meanlatc3,meanlonc3 )
-# m.plot(*(x1, y1), c='b',linewidth=2)
-# m.plot(*(x2, y2), c='dimgray',linewidth=2)
-# m.plot(*(x3, y3), c='indigo',linewidth=2)
+# m.plot(*(x1, y1), c='b', linestyle='dashed',linewidth=2)
+# m.plot(*(x2, y2), c='dimgray', linestyle='dashed',linewidth=2)
+# m.plot(*(x3, y3), c='indigo',linestyle='dashed',linewidth=2)
 
 ########################################################################################
 """Plot """

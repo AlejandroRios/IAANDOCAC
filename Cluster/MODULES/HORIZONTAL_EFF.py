@@ -44,7 +44,7 @@ from geopy.distance import distance
 ########################################################################################
 print('[0] Load dataset.\n')
 
-df = pd.read_csv('Centroids.csv', header=0, delimiter=',')
+df = pd.read_csv('Centroids02.csv', header=0, delimiter=',')
 df_head = df.head()
 
 
@@ -117,7 +117,7 @@ print('-------------------------------------------------------------------------
 print('[2] Evaluating horizontal ineff..\n')
 
 distance_real = distance_real
-GCD_AIRP1AIRP2 = (great_circle(coor_AIRP1,coor_AIRP2).nm)-120
+GCD_AIRP1AIRP2 = (great_circle(coor_AIRP1,coor_AIRP2).nm)
 print('Haversine distance : ',GCD_AIRP1AIRP2)
 print('Real distance : ', distance_real)
 

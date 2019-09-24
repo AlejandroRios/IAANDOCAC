@@ -47,18 +47,8 @@ print('[0] Load dataset.\n')
 df = pd.read_csv('Centroids02.csv', header=0, delimiter=',')
 df_head = df.head()
 
-# 1.159759540154151	51.6762861168459
-# 7.077291370268191	50.0817658998624
 
 # Frankfurt airport coordinates
-# lat_AIRP1 = 50.0817658998624
-# lon_AIRP1 = 7.077291370268191
-# coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
-
-# # Rome airport coordinates
-# lon_AIRP2 = 1.159759540154151
-# lat_AIRP2 = 51.6762861168459  
-
 lat_AIRP1 = 50.110924
 lon_AIRP1 = 8.682127
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
@@ -66,11 +56,22 @@ coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 # Rome airport coordinates
 lon_AIRP2 = -0.461389
 lat_AIRP2 = 51.4775  
-
-
-# lon_AIRP2 = 12.2461111111
-# lat_AIRP2 = 41.7997222222
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
+
+
+########################################################################################
+"""Base map plot definition"""
+########################################################################################
+fig, ax = plt.subplots()
+# m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=54, llcrnrlon=-5, urcrnrlon=14)
+# m.drawmapboundary(fill_color='aqua')
+# m.fillcontinents(color='1.0',lake_color='aqua')
+# m.drawcoastlines()
+# m.drawcountries()
+# parallels = np.arange(0.,81,5.)
+# m.drawparallels(parallels,labels=[False,True,True,False])
+# meridians = np.arange(-10.,351.,5.)
+# m.drawmeridians(meridians,labels=[True,False,False,True])
 
 ########################################################################################
 """Re-sizing flight vectors"""
@@ -78,7 +79,7 @@ coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 print('--------------------------------------------------------------------------------\n')
 print('[1] Re-sizing flight vectors (same size).\n')
 
-CHUNK_SIZE = 200
+CHUNK_SIZE = 50
 
 lat = df['lat_clus1']
 xlat = np.arange(lat.size)
@@ -109,8 +110,8 @@ for j in range(len(lon_rz)):
 for j in range(len(lon_rz)-1):
 
     # Defining cordinates of two points to messure distance      
-    coordinates0 = (lon_rz[j],lat_rz[j])
-    coordinates1 = (lon_rz[j+1],lat_rz[j+1])
+    coordinates0 = (lat_rz[j],lon_rz[j])
+    coordinates1 = (lat_rz[j+1],lon_rz[j+1])
 
     # Calculating haversine distance between two points in nautical miles
     distance_pp = float(distance(coordinates0,coordinates1).nm)
@@ -123,9 +124,7 @@ for j in range(len(lon_rz)-1):
 
 
 plt.plot(df.lat_clus1,df.lon_clus1,'b')
-# plt.plot(df.lat_clus2,df.lon_clus2,'r')
-# plt.plot(df.lat_clus3,df.lon_clus3,'y')
-
+# p1 = m.plot(*(df.lat_clus1,df.lon_clus1,), c=color_lst[cluster % len(color_lst)],linewidth=0.5,alpha=0.5)
 ########################################################################################
 """Evaluating horizontal inefficiency"""
 ########################################################################################
@@ -133,9 +132,9 @@ print('-------------------------------------------------------------------------
 print('[2] Evaluating horizontal ineff..\n')
 
 distance_real = distance_real
-GCD_AIRP1AIRP2 = (great_circle(coor_AIRP1,coor_AIRP2).nm)-120
-print('Great Circle: ',GCD_AIRP1AIRP2)
-print('Real distance : ', distance_real)
+GCD_AIRP1AIRP2 = (great_circle(coor_AIRP1,coor_AIRP2).nm)
+print('GCD: ',GCD_AIRP1AIRP2)
+print('Route distace: ', distance_real)
 
 Heff = (((distance_real)-GCD_AIRP1AIRP2)/GCD_AIRP1AIRP2)*100
 print('HFE:', Heff)

@@ -31,7 +31,7 @@ from datetime import datetime
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('Data4Clustering.csv', header=0, delimiter=',')
+df = pd.read_csv('Data4Clustering02.csv', header=0, delimiter=',')
 df_head = df.head()
 
 Nflights = df.sort_index().query('count == 0')
@@ -85,7 +85,7 @@ meridians = np.arange(10.,351.,5.)
 m.drawmeridians(meridians,labels=[True,False,False,True])
 # for i in range(1): 
 # for i in range(1): 
-for i in range(500): 
+for i in range(426,427):
 
     # Define some parametres
     CHUNK_SIZE = 500 # Size of flight vector
