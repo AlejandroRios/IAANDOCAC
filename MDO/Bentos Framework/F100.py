@@ -168,9 +168,7 @@ FUSELAGE_Dz_floor = 3
 if PWing == 2 or PEng == 2:
   PHT =2
 
-######################################################################################
-# Revisao até aqui
-######################################################################################
+
 tcroot       = 0.1
 tcbreak      = 0.1
 tctip        = 0.1
@@ -457,7 +455,8 @@ elif ne == 4:
 
 TOEI             = T0*(ne-1)  # [lb]
 D2_lb            = (CD2/CL2)*mtow*ftakeoff*kg2lb
-GAMA2            = np.arcsin((TOEI-D2_lb)/(mtow*ftakeoff*kg2lb))
+# CORREGIRRRRR arcsin np.arcsin((TOEI-D2_lb)/(mtow*ftakeoff*kg2lb))
+GAMA2            = ((TOEI-D2_lb)/(mtow*ftakeoff*kg2lb))
 DGAMA2           = GAMA2 - g2min
 T1               = (hto + mtow/(rho*wS*CL2))
 T2               = 2.7 + 1/((T_avg/(mtow*kg2lb)) - mi_linha)
@@ -559,6 +558,7 @@ DOCcalc = 15
 #--------------------------------------------------------------------------
 #                     Desenha Vista em planta
 #--------------------------------------------------------------------------
+
 # fuselage.lco=lco
 # fuselage.lcab=lf-(lco+ltail)
 # fuselage.length=lf
