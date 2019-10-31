@@ -26,8 +26,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.pyplot as plt
+from crew_salary import crew_salary
 ########################################################################################
-''' Inputs test '''
+class structtype():
+    pass
+
+salary = structtype()
+var = structtype()
+########################################################################################
+"""Constants declaration"""
+########################################################################################
+
 Time_Block = 1
 Cons_Block = 1
 weight_empty_kg = 1
@@ -38,9 +47,6 @@ weight_engine_kg = 1
 MTOW = 1
 
 
-########################################################################################
-
-
 ## Constants
 kg2lb       = 2.20462262
 ##
@@ -48,23 +54,24 @@ kg2lb       = 2.20462262
 #Time_Block       = 120
 #Cons_Block       = 6500
 var.Range        = Rangenm
-# Sal.Captain      = 85000
-# Sal.FO           = 50000
-[Sal.Captain,Sal.FO,~]=CREWSALARY(MTOW)
+# salary.Captain      = 85000
+# salary.FO           = 50000
+salary.Captain,salary.FO,_=crew_salary(MTOW)
 # weight_empty_kg  = 22000
 #MTOW             = 37500
 #T0               = 14200 
 TBO              = 2500
 Fuel_price       = 2.387
 
-#==============================#
-#        MISSION DATA          #
-#==============================#
+
+########################################################################################
+"""Mission Data"""
+########################################################################################
 
 tbl         = Time_Block/60 # [HRS] BLOCK TIME EQ 5.6
 Block_Range = var.Range # [NM] BLOCK RANGE
 vbl         = Block_Range / tbl # [KTS]BLOCK SPEED EQ 5.5
-Uannbl      = 1e+3 * (3.4546 * tbl + 2.994 - (12.289 * (tbl^2) - 5.6626 * (tbl) + 8.964)^(1/2)) # [HRS] ANNUAL UTILIZATION
+Uannbl      = 1e3 * (3.4546 * tbl + 2.994 - (12.289 * (tbl**2) - 5.6626 * (tbl) + 8.964)**(1/2)) # [HRS] ANNUAL UTILIZATION
 
 #==============================#
 #            DOC PAG 146       #
@@ -79,14 +86,13 @@ nc1     = 1 # NUMBER OF CAPTAIN
 nc2     = 1 # NUMBER OF FIRST OFFICER
 kj      = 0.26 # FACTOR WHICH ACCOUNTS FOR VACATION PAY, COST TRAINING ...
 # THESE DATA ARE ASSUMED TO BE APPLICABLE FOR 1990
-SAL1    = Sal.Captain # SALARY CAPTAIN [USD/YR] 
-SAL2    = Sal.FO # SALARY FIRST OFFICER [USD/YR]
+SAL1    = salary.Captain # SALARY CAPTAIN [USD/YR] 
+SAL2    = salary.FO # SALARY FIRST OFFICER [USD/YR]
 AH1     = 800 # [HRS]
 AH2     = 800 # [HRS]
 TEF1    = 7 # [USD/blhr]
 TEF2    = TEF1 #TRAVEL EXPENSE FACTOR
-Ccrew   = (nc1 *((1 + kj)/vbl) * (SAL1/AH1) + (TEF1/vbl)) + ...
-            (nc2 *((1 + kj)/vbl) * (SAL2/AH2) + (TEF2/vbl)) # [USD/NM] EQ 5.21 PAG 109 
+Ccrew   = (nc1 *((1 + kj)/vbl) * (SAL1/AH1) + (TEF1/vbl)) + (nc2 *((1 + kj)/vbl) * (SAL2/AH2) + (TEF2/vbl)) # [USD/NM] EQ 5.21 PAG 109 
 
 #2) FUEL AND OIL COST -> Cpol (PAG 148)
 pfuel   = Fuel_price # PRICE [USD/GALLON]
@@ -126,21 +132,22 @@ Clab_eng    = fnrev * 1.3 * NEng * MHRmeng_bl * Rleng / vbl # [USD/NM] EQ 5.36 P
 #3) MAINTANENCE MATERIALS COST FOR AIRPLANE -> Cmat_ap (PAG 150)
 # ENGINE PRICE
 CEF         = (3.10/3.02) #FATOR DE CORRECAO DO PRECO
-EP1989      = (10^(2.3044 + 0.8858 * (log10(Tto_Ne)))) # [USD] PAG 65 APPENDIX B4 EQ B10 PAG 351
+EP1989      = (10**(2.3044 + 0.8858 * (np.log10(Tto_Ne)))) # [USD] PAG 65 APPENDIX B4 EQ B10 PAG 351
 EP          = CEF * EP1989 #[1992]
 # AIRPLANE PRICE
-AEP1989     = (10^(3.3191 + 0.8043 * (log10(MTOW * kg2lb)))) # [USD] PAG 89 APPENDIX A9 EQ A12 PAG 331
+AEP1989     = (10**(3.3191 + 0.8043 * (np.log10(MTOW * kg2lb)))) # [USD] PAG 89 APPENDIX A9 EQ A12 PAG 331
 AEP         = CEF * AEP1989 #[1992]
 # AIRFRAME PRICE
 AFP         = AEP - NEng * (EP) # [USD]
 
-if MTOW * kg2lb >= 10000 # FIGURE 5.8 PAG 126
+if MTOW * kg2lb >= 10000: # FIGURE 5.8 PAG 126
     ATF = 1.0
-elseif MTOW * kg2lb < 10000 && MTOW * lb < 5000
+elif MTOW * kg2lb < 10000 and MTOW * kg2lb < 5000:
     ATF = 0.5
-else
+else:
     ATF = 0.25
-end
+
+
 CEFy        = 1.0 # PAG 150
 Cmat_apbhr  = 30 * CEFy * ATF + 0.79*1e-5 * AFP # PAG 150 FIGURE 5.8 PAG 126 
 Cmat_ap     = fnrev * Cmat_apbhr / vbl #[USD/NM] EQ 5.37 PAG 120 
@@ -154,7 +161,7 @@ Cmat_eng        = fnrev * 1.3 * NEng * Cmat_engblhr / vbl # [USD/NM] EQ 5.38 PAG
 #5) APPLIED MAINTENANCE BURDEN COST -> Camb (PAG 151)
 famb_lab    = 1.2  # OVERHEAD DISTRIBUTION FACTOR LABOUR COST PAG 129 -> MIDDLE VALUE
 famb_mat    = 0.55 # OVERHEAD DISTRIBUTION FACTOR MATERIAL COST PAG 129 -> MIDDLE VALUE
-Camb        = fnrev * (famb_lab * (MHRmap_bl * Rlap + NEng * MHRmeng_bl * Rleng) + ...
+Camb        = fnrev * (famb_lab * (MHRmap_bl * Rlap + NEng * MHRmeng_bl * Rleng) +
             famb_mat * (Cmat_apbhr + NEng * Cmat_engblhr)) / vbl # [USD/NM] EQ 5.39 PAG 125
         
 # TOTAL MAINTENANCE COST
@@ -219,7 +226,7 @@ frt         = 0.001 + 1e-8 * MTOW * kg2lb
 #==============================#
 
 DOCcalc = (Ccrew + Cpol + DOCmaint + DOCdepr + Clf + Cnf) / (1 - (0.02 + frt + 0.07)) # [USD/NM] PAG 155
-fprintf('\n DOC = #5.2f US$/nm \n',DOCcalc)
+print('DOC = ',DOCcalc, 'USD$/nm ')
 #==============================#
 #       DOC FINANCING          #
 #==============================#
@@ -234,5 +241,5 @@ fprintf('\n DOC = #5.2f US$/nm \n',DOCcalc)
 #            IOC PAG 155       #
 #==============================#
 
-fioc = - 0.5617 * log (Block_Range) + 4.5765 # FIGURE 5.12 PAG 139
+fioc = - 0.5617 * np.log(Block_Range) + 4.5765 # FIGURE 5.12 PAG 139
 IOC = fioc * DOCcalc # [USD/NM] EQ 5.56 PAG 137
