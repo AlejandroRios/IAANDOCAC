@@ -95,10 +95,11 @@ PWing               = 1;    % Wing vertical location (1= low; ~=1 high)
 PHT                 = 2;  % Horizontal tail location (=1 fuselage, 2= "T" tail)
 % Payload range available combinations ------------------------------------
 wmpayload           = 7980; % Maximum payload [kg]
-% rangenm             = 1766; % Maximum range with payload wmpayloadP3 [nm]
-rangenm             = 246.45; % Maximum range with payload wmpayloadP3 [nm]
+rangenm             = 1766; % Maximum range with payload wmpayloadP3 [nm]
+% rangenm             = 246.45; % Maximum range with payload wmpayloadP3 [nm]
 % AIRFRAME PARAMETERS -----------------------------------------------------
 bW                  = sqrt(wAR*wS); % wingspan [m]
+flap_env_m          = bW*bflap
 %---------------------  Print Airplane Data -------------------------------
 fprintf('\n *********************************************************** \n')
 fprintf('\n  Candidate-airplane characteristics follow                   \n')
@@ -126,7 +127,7 @@ end
 %
 htac_rel           = 0.25;
 % +++++  FUSELAGE PARAMETERS
-% Escolha do tipo de container de acordo com o número de passageiros
+% Escolha do tipo de container de acordo com o nï¿½mero de passageiros
 nt   = 3; % Number of transitions in pax number
 t(1) = 170; % First transition point
 t(2) = 177; % Second transition point
@@ -467,8 +468,8 @@ fprintf('Wing fuel capacity = %6.0f kg   \n',wingfuelcapacity_kg)
 %
 figure(1)
 plot(iterplo,mtowplo/1000,'--rx','LineWidth',2)
-xlabel('Iteração','fontsize',14)
-ylabel('Peso Máximo de Decolagem [t]','fontsize',14)
+xlabel('Iteraï¿½ï¿½o','fontsize',14)
+ylabel('Peso Mï¿½ximo de Decolagem [t]','fontsize',14)
 grid on
 print('-f1','Figures/MTOW_iteration.png','-dpng','-r350')
 close(figure(1))
@@ -500,7 +501,7 @@ flagfuel = 0;
 %------------------ End fuel storage check --------------------------------
 %----------------- Balanced field length ----------------------------------
 atm    = atmosfera(AirportElevation*m2ft,0);
-    rho          = atm(6); % densidade [kg/m³]
+    rho          = atm(6); % densidade [kg/mï¿½]
 sigma            = rho/1.225;
 CL2              = AirplaneCLmaxTakeo/1.44;
 V2               = sqrt((mtow*ftakeoff*g)/(0.50*rho*wS));

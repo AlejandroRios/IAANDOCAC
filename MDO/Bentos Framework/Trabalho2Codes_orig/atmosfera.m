@@ -10,7 +10,7 @@ function atm=atmosfera(hp,ISADEV)
 % atm(3)=delta;
 % atm(4)=sigma;
 % atm(5)=pressure [KPa]
-% atm(6)=air density [Kg/m³]
+% atm(6)=air density [Kg/mï¿½]
 % atm(7)=sound speed [m/s]
 % atm(8)= air viscosity
 %
@@ -29,7 +29,7 @@ else
     delta=0.223358*exp(-0.000048063*(hp-36089)); %delta
 end
 TAE=TAEs+ISADEV; % temperatura isa
-teta=TAE/temp; 
+teta=TAE/temp;
 sigma=delta/teta;
 p=pres*delta/1000; % pressure
 ro=rho*sigma; %densidade
@@ -40,7 +40,7 @@ atm(2)=teta;
 atm(3)=delta;
 atm(4)=sigma;
 atm(5)=p; %[KPa]
-atm(6)=ro; %[Kg/m³]
+atm(6)=ro; %[Kg/mï¿½]
 atm(7)=va; %[m/s]
 % air viscosity
 mi0=18.27E-06;

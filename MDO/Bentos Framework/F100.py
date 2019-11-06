@@ -1,5 +1,7 @@
 import numpy as np 
 import matplotlib as plt
+from cl_max_2D import cl_max_2d
+# from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
 ft2m    = 0.3048
@@ -10,6 +12,16 @@ kg2lb   = 2.2046
 lb2kg   = 1./kg2lb
 g       = 9.8065
 
+########################################################################################
+class structtype():
+    pass
+
+fuselage = structtype()
+wing = structtype()
+engine = structtype()
+wlet = structtype()
+airfoils = structtype()
+########################################################################################
 # ***********************  Airplane VARIABLES *****************************
 # Fuselage 
 widthreiratio       = 1.0 # Fuselage height-to-width ratio
@@ -56,9 +68,9 @@ HTAR                = 4.64
 HTTR                = 0.39
 HTarea              = 21.72
 # Airfoils ----------------------------------------------------------------
-PROOT               = 'PR1.dat'
-PKINK               = 'PQ1.dat'
-PTIP                = 'PT4.dat'
+PROOT               = 'PR1'
+PKINK               = 'PQ1'
+PTIP                = 'PT4'
 # Performance and operation -----------------------------------------------
 AirportElevation    = 0# [m]
 VRVS                = 1.10 # Stall margin to VR (Takeoff)
@@ -161,17 +173,17 @@ AisleWidth_i       = 0.45
 NSeat_i            = NSeat
 CabHeightm_i       = 1.8   
 
-fus_width = 5
-fus_height = 5
-FUSELAGE_Dz_floor = 3
+fus_width = 3.2990
+fus_height = 3.2990
+FUSELAGE_Dz_floor = 0.6858
 
 if PWing == 2 or PEng == 2:
   PHT =2
 
 
-tcroot       = 0.1
-tcbreak      = 0.1
-tctip        = 0.1
+tcroot       = 0.1344
+tcbreak      = 0.1133
+tctip        = 0.0989
 
 # *********************** WETTED AREA CALCULATION *************************
 tcmed        = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average section max. thickness of the wing
@@ -179,25 +191,25 @@ tcmed        = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average sectio
 FusDiam      = np.sqrt(fus_width*fus_height)
 
 
-Swet_tot = 1.
-wingSwet = 1.
-FusSwet_m2 = 1.
-ESwet = 1.
-lf = 1.
-lco = 1.
-ltail = 1.
-EnginLength_m = 1.
-wYMAC  = 1.
-wMAC = 1.
-wSweepLE = 1.
-wSweepC2 = 1.
+Swet_tot = 530.8062
+wingSwet = 158.0966
+FusSwet_m2 = 287.4189
+ESwet =  6.8034
+lf = 33.1553
+lco = 5.5094
+ltail = 7.4228
+EnginLength_m = 2.4270
+wYMAC  = 5.5612
+wMAC = 3.7966
+wSweepLE = 21.1973
+wSweepC2 = 13.5423
 ht = 1.
 vt = 1.
 pylon = 1.
-Ccentro = 1.
-Craiz = 1.
-Cquebra = 1.
-Cponta = 1.
+Ccentro = 5.8019
+Craiz = 5.1622
+Cquebra = 4.1143
+Cponta = 1.2674
 xutip = 1.
 yutip = 1.
 xltip = 1.
@@ -210,10 +222,33 @@ xuroot = 1.
 yuroot = 1.
 xlroot = 1.
 ylroot = 1.
-PHTout = 1.
+PHTout = 2
 
 clmax_airfoil = 2.
-xle = 0.48*lf
+#--------------------------------------------------------------------------
+#                 Output Geometric Information
+#--------------------------------------------------------------------------
+xle                = 0.45*lf
+lcab               = lf - (lco+ltail)
+fuselage.lco=lco
+fuselage.lcab=lcab
+fuselage.length=lf
+fuselage.df=fus_width
+wing.b=bW
+wing.c0=Ccentro
+wing.ct=Cponta
+wing.cq=Cquebra
+wing.crank=Kink_semispan
+wing.xle=xle
+wing.sweepLE=wSweepLE
+engine.length=EnginLength_m
+engine.de=ediam
+engine.PEng=PEng
+wlet.present=wlet_present
+wlet.sweepLE=wlet_sweepLE
+wlet.dihedral=wlet_CantAngle
+wlet.TR=wlet_TR
+wlet.AR=wlet_AR
 
 
 CD0_Wing =  0.03
@@ -222,6 +257,17 @@ CLALFA_rad = 5.
 CLMAX = 2.
 estaestol = 0.2
 
+
+########################################################################################
+Mach_CLmax = 0.15;
+
+airfoil_names= [PROOT,PKINK,PTIP]
+airfoil_chords = [Craiz,Cquebra,Cponta] 
+
+airfoil_info = cl_max_2d(Mach_CLmax,AirportElevation ,airfoil_names,airfoil_chords)
+
+print(airfoil_info)
+########################################################################################
 if PEng == 2: 
     AirplaneCLmaxClean = CLMAX # engines do not disturb wing airflow
 elif PEng == 1:
