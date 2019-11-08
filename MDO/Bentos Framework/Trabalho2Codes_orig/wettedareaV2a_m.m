@@ -56,23 +56,23 @@ if PEng == 2 || PEng == 3
 end
 %
 PEngm   = PEng;
-switch PEng
-    case 2
-        if PWing == 2 && PHT == 1
-            PHT = 2; % asa alta ==> HT em "T"
-            fprintf('\n Warning: HT config reset to %g \n',PHT);
-            PEngm  = 1; % asa alta ==> motores na asa
-            fprintf('\n Warning: Engine location reset to %g \n',PEng);
-        end       
-    case 3
-        PHT   = 2; % Um motor eh central na fuselagem ==> EH em "T"
-        fprintf('\n *** Warning: EH config reset to %g ***\n',PHT);
-    case 4
-        if PWing == 2
-            PHT  = 2;
-            fprintf('\n *** Warning: EH config reset to %g *** \n',var.ht);
-        end
-end
+% switch PEng
+%     case 2
+%         if PWing == 2 && PHT == 1
+%             PHT = 2; % asa alta ==> HT em "T"
+%             fprintf('\n Warning: HT config reset to %g \n',PHT);
+%             PEngm  = 1; % asa alta ==> motores na asa
+%             fprintf('\n Warning: Engine location reset to %g \n',PEng);
+%         end       
+%     case 3
+%         PHT   = 2; % Um motor eh central na fuselagem ==> EH em "T"
+%         fprintf('\n *** Warning: EH config reset to %g ***\n',PHT);
+%     case 4
+%         if PWing == 2
+%             PHT  = 2;
+%             fprintf('\n *** Warning: EH config reset to %g *** \n',var.ht);
+%         end
+% end
 %
 PHTout = PHT;
 PEng = PEngm;
@@ -106,7 +106,7 @@ lcab             = lf - (ltail+lco);
 % --> Fuselagem dianteira
 SWET_FF=Wetted_area_forwfus(fus_h,fus_w,lco);
 % --> Cabina de passageiros
-% calculo da excentricidade da elipse (seção transversal da fuselagem)
+% calculo da excentricidade da elipse (seï¿½ï¿½o transversal da fuselagem)
 a=max(fus_w,fus_h)/2;
 b=min(fus_w,fus_h)/2;
 c=sqrt(a^2-b^2);
@@ -127,31 +127,31 @@ wing.ir     = 2;
 wing.iq     = 0;
 twist       = wTwist;
 wing.it     = wing.ir + twist;
-wingtrap.S  = Swing; % [m²]area da asa 
+wingtrap.S  = Swing; % [mï¿½]area da asa 
 wing.S      = Swing;
 wingtrap.AR = wAR; % Alongamento da asa 
 wing.b      = sqrt(wingtrap.AR*wingtrap.S); %  envergadura
 wingtrap.TR = wTR; % afilamento
 wingtrap.c0 = 2*wingtrap.S/(wing.b*(1+wingtrap.TR));% [m] corda no centro
-wing.sweep  = wSweep14; %[º] enflechamento 1/4c
-wing.et     = twist; % [º] torcao
+wing.sweep  = wSweep14; %[ï¿½] enflechamento 1/4c
+wing.et     = twist; % [ï¿½] torcao
  if PWing == 1 % 
- wing.di=2.5; % [º] diedro para asa baixa
+ wing.di=2.5; % [ï¿½] diedro para asa baixa
      if PEng == 2 
      wing.di=3;
      end
  else
- wing.di=-2.5; % [º] diedro para asa alta
+ wing.di=-2.5; % [ï¿½] diedro para asa alta
  end
 %
 wing.ct=wingtrap.TR*wingtrap.c0; % [m] corda na ponta
 wingtrap.mgc=wingtrap.S/wing.b; % [m] corda media geometrica
 wingtrap.mac=2/3*wingtrap.c0*(1+wingtrap.TR+wingtrap.TR^2)/(1+wingtrap.TR); % [m] corda media geometrica
-wingtrap.ymac=wing.b/6*(1+2*wingtrap.TR)/(1+wingtrap.TR); % [m] posiçao y da mac
-wing.sweepLE=1/rad*(atan(tan(rad*wing.sweep)+1/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))); % [º] enflechamento bordo de ataque
-wing.sweepC2=1/rad*(atan(tan(rad*wing.sweep)-1/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))); % [º] enflechamento C/2
+wingtrap.ymac=wing.b/6*(1+2*wingtrap.TR)/(1+wingtrap.TR); % [m] posiï¿½ao y da mac
+wing.sweepLE=1/rad*(atan(tan(rad*wing.sweep)+1/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))); % [ï¿½] enflechamento bordo de ataque
+wing.sweepC2=1/rad*(atan(tan(rad*wing.sweep)-1/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))); % [ï¿½] enflechamento C/2
 wSweepC2    = wing.sweepC2;
-wing.sweepTE=1/rad*(atan(tan(rad*wing.sweep)-3/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))); % [º] enflechamento bordo de fuga
+wing.sweepTE=1/rad*(atan(tan(rad*wing.sweep)-3/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))); % [ï¿½] enflechamento bordo de fuga
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%REFERENCE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 wing.crank = Kink_semispan; % porcentagem da corda
@@ -173,7 +173,7 @@ wingref.mgc=wingref.c0*(1+wing.TR)/2; % mgc asa de ref
 wingref.mac=2/3*wingref.c0*(1+wing.TR+wing.TR^2)/(1+wing.TR); % mac da asa ref
 wingref.ymac=wing.b/6*(1+2*wing.TR)/(1+wing.TR); % y da mac da asa ref
 wing.AR=wing.b/wingref.mgc; % alongamento asa real
-wingref.S=wing.b*wingref.mgc; % reference area [m²]
+wingref.S=wing.b*wingref.mgc; % reference area [mï¿½]
 wing.bexp=wing.b-fuselage.df/2; % envergadura asa exposta
 wing.ARexp=(wing.bexp^2)/(wing.Sexp/2); % exposed wing aspect ratio
 wing.TRexp=wing.ct/wing.cb; % afilamento asa exposta
@@ -237,7 +237,7 @@ end
 
 % initial guess for VT area
 vt.S=VTarea;
-vt.Sv_Sw=vt.S/wingref.S; % relaçao de areas
+vt.Sv_Sw=vt.S/wingref.S; % relaï¿½ao de areas
 vt.AR=VTAR; % alongamento EV
 vt.TR=VTTR; % Afilamento EV
 vt.sweep=VTSweep; % Enfl c/4 EV
@@ -250,9 +250,9 @@ vt.cr=vt.ct/vt.TR; % corda na raiz
 vt.mgc=vt.S/vt.b; % mgc
 vt.mac=2/3*vt.c0*(1+vt.TR+vt.TR^2)/(1+vt.TR); %mac
 vt.ymac=2*vt.b/6*(1+2*vt.TR)/(1+vt.TR);
-vt.sweepLE=1/rad*(atan(tan(rad*vt.sweep)+1/vt.AR*(1-vt.TR)/(1+vt.TR))); % [º] enflechamento bordo de ataque
-vt.sweepC2=1/rad*(atan(tan(rad*vt.sweep)-1/vt.AR*(1-vt.TR)/(1+vt.TR))); % [º] enflechamento C/2
-vt.sweepTE=1/rad*(atan(tan(rad*vt.sweep)-3/vt.AR*(1-vt.TR)/(1+vt.TR))); % [º] enflechamento bordo de fuga
+vt.sweepLE=1/rad*(atan(tan(rad*vt.sweep)+1/vt.AR*(1-vt.TR)/(1+vt.TR))); % [ï¿½] enflechamento bordo de ataque
+vt.sweepC2=1/rad*(atan(tan(rad*vt.sweep)-1/vt.AR*(1-vt.TR)/(1+vt.TR))); % [ï¿½] enflechamento C/2
+vt.sweepTE=1/rad*(atan(tan(rad*vt.sweep)-3/vt.AR*(1-vt.TR)/(1+vt.TR))); % [ï¿½] enflechamento bordo de fuga
 %lv=(0.060*wingref.S*wing.b)/vt.S; % fisrt estimate
 %lv=lh - 0.25*ht.ct - vt.b * tan(rad*vt.sweepLE) + 0.25*vt.c0 + vt.ymac*tan(rad*vt.sweep); % braco da EV
 %vt.v=vt.S*lv/(wingref.S*wing.b); % volume de cauda   
@@ -408,7 +408,7 @@ end
 %
 %  *************** Definicoes adicionais **********************************
 %slat = logical(var.SLATDEFLEC);
-% cg dos tanques de combustível da asa e posicao do trem d pouso principal
+% cg dos tanques de combustï¿½vel da asa e posicao do trem d pouso principal
 %winglaywei2013
 dorsalfin.Swet=0.1;
 wingSwet=wing.Swet;

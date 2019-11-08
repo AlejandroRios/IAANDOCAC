@@ -149,7 +149,7 @@ nt   = 3 # Number of transitions in pax number
 t = np.array([[170,               # First transition point
                177]]).T           # Second transition point
 classifica = 0
-for i in range (1,nt):
+for i in range(1,nt):
     rastreia = NPax - t[i] 
     if rastreia < 0:
         classifica = i
