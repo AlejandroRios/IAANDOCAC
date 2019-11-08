@@ -19,6 +19,8 @@ FO_Sal
 ########################################################################################
 import numpy as np
 import os
+from pax_cabine_length import pax_cabine_length
+from tailcone_sizing import tailcone_sizing
 ####################
 
 Ceiling = 35000
@@ -131,14 +133,15 @@ airplane['pitch']  = SeatPitch # [m]
 fuselage = {}
 fuselage['df']     = FusDiam
 fuselage['wfus']   = FusDiam
-#
-fuselage['lcab']= paxcab_leng(NPax,NSeat,airplane.pitch,AisleWidth,SEATwid)
-fuselage['tail']= size_tailcone(NPax,PEng,FusDiam,FusDiam)
-#
+
+fuselage['lcab']= pax_cabine_length(NPax,NSeat,airplane['pitch'],AisleWidth,SEATwid)
+
+fuselage['tail']= tailcone_sizing(NPax,PEng,FusDiam,FusDiam)
+
 FUSELAGE_lnose_df = 1.67
-fuselage['lco']      = FUSELAGE_lnose_df*fuselage.df
+fuselage['lco']      = FUSELAGE_lnose_df*fuselage['df']
 #
-fuselage['length'] =fuselage.lcab+fuselage.tail+fuselage.lco # comprimento fuselagem [m]
+fuselage['length'] =fuselage['lcab'] + fuselage['tail'] + fuselage['lco'] # comprimento fuselagem [m]
 #fesbeltez_f      = fuselage.length/fuselage.df
 
 #fuselage.Swet    = pi*FusDiam*fuselage.length*((1-(2/fesbeltez_f))^(2/3))*(1+(1/fesbeltez_f^2)) # [m2]

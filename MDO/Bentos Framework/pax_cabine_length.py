@@ -1,7 +1,7 @@
 """" 
-Title     : Crew Salary Function
+Title     : Pax cabine length estimation
 Written by: Alejandro Rios
-Date      : 30/10/19
+Date      : 08/11/19
 Language  : Python
 Aeronautical Institute of Technology
 
@@ -21,7 +21,7 @@ import numpy as np
 import os
 ########################################################################################
 
-def pax_cabine_lenght(Npax,Nseat,SeatPitch,Aislewidth,SeatWidth):
+def pax_cabine_length(Npax,Nseat,SeatPitch,Aislewidth,SeatWidth):
     # Calcula variacao de CG devido aos passageiros 
     #clear
     #clc
@@ -45,7 +45,7 @@ def pax_cabine_lenght(Npax,Nseat,SeatPitch,Aislewidth,SeatWidth):
         Nrow = N1+1
 
     x0=1.7 # entrance area
-    for j in range(1,Nrow):
+    for j in range(Nrow):
         seattop_fileira(x0,Nseat,SeatWidth,SeatProf,Aislewidth)
         x0=x0+SeatProf+DeltaSeats
     # **** Desenha Toillet
@@ -161,17 +161,3 @@ def seattop_fileira(x0,Nseat,SeatWidth,SeatProf,Aislewidth):
             y.append(y[1]+SeatWidth)
             x.append(x[0])
             y.append(y[2])
-            # fill(x,y,'r')
-            # hold on
-
-
-
-Aislewidth = 0.45
-Npax =100
-Nseat = 5
-SeatPitch = 0.8128
-SeatWidth = 0.4400
-
-teste = pax_cabine_lenght(Npax,Nseat,SeatPitch,Aislewidth,SeatWidth)
-
-print(teste)
