@@ -21,6 +21,7 @@ import numpy as np
 import os
 from pax_cabine_length import pax_cabine_length
 from tailcone_sizing import tailcone_sizing
+from wetted_area_fuselage import wetted_area_forward_fuselage
 ####################
 
 Ceiling = 35000
@@ -144,25 +145,25 @@ fuselage['lco']      = FUSELAGE_lnose_df*fuselage['df']
 fuselage['length'] =fuselage['lcab'] + fuselage['tail'] + fuselage['lco'] # comprimento fuselagem [m]
 #fesbeltez_f      = fuselage.length/fuselage.df
 
-#fuselage.Swet    = pi*FusDiam*fuselage.length*((1-(2/fesbeltez_f))^(2/3))*(1+(1/fesbeltez_f^2)) # [m2]
+#fuselage.Swet    = pi*FusDiam*fuselage.length*((1-(2/fesbeltez_f))**(2/3))*(1+(1/fesbeltez_f**2)) # [m2]
 # #
-lf               = fuselage.length
-lco              = fuselage.lco
-ltail            = fuselage.tail
+lf               = fuselage['length']
+lco              = fuselage['lco']
+ltail            = fuselage['tail']
 lcab             = lf - (ltail+lco)
 # Calculo da area molhada da fuselagem
 # --> Fuselagem dianteira
-SWET_FF=Wetted_area_forwfus(fus_h,fus_w,lco)
+SWET_FF= wetted_area_forward_fuselage(fus_h,fus_w,lco)
 # --> Cabina de passageiros
 # calculo da excentricidade da elipse (se��o transversal da fuselagem)
 a=max(fus_w,fus_h)/2
 b=min(fus_w,fus_h)/2
-c=sqrt(a^2-b^2)
+c=np.sqrt(a**2-b**2)
 e=c/a
-p=pi*a*(2-(e^2/2) + (3*e^4)/16)
+p=np.pi*a*(2-(e**2/2) + (3*e**4)/16)
 SWET_PAXCAB=p*lcab
 # --> Cone de cauda
-SWET_TC=Wetted_area_tailcone(fus_h,fus_w,lf,ltail)
+# SWET_TC=Wetted_area_tailcone(fus_h,fus_w,lf,ltail)
 # Hah ainda que se descontar a area do perfil da raiz da asa
 # Sera feito mais adiante
 fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
@@ -193,7 +194,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 
 # wing.ct=wingtrap.TR*wingtrap.c0 # [m] corda na ponta
 # wingtrap.mgc=wingtrap.S/wing.b # [m] corda media geometrica
-# wingtrap.mac=2/3*wingtrap.c0*(1+wingtrap.TR+wingtrap.TR^2)/(1+wingtrap.TR) # [m] corda media geometrica
+# wingtrap.mac=2/3*wingtrap.c0*(1+wingtrap.TR+wingtrap.TR**2)/(1+wingtrap.TR) # [m] corda media geometrica
 # wingtrap.ymac=wing.b/6*(1+2*wingtrap.TR)/(1+wingtrap.TR) # [m] posi�ao y da mac
 # wing.sweepLE=1/rad*(atan(tan(rad*wing.sweep)+1/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))) # [�] enflechamento bordo de ataque
 # wing.sweepC2=1/rad*(atan(tan(rad*wing.sweep)-1/wingtrap.AR*(1-wingtrap.TR)/(1+wingtrap.TR))) # [�] enflechamento C/2
@@ -217,12 +218,12 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 # #
 # wingref.cponta=wingref.c0*wing.TR
 # wingref.mgc=wingref.c0*(1+wing.TR)/2 # mgc asa de ref
-# wingref.mac=2/3*wingref.c0*(1+wing.TR+wing.TR^2)/(1+wing.TR) # mac da asa ref
+# wingref.mac=2/3*wingref.c0*(1+wing.TR+wing.TR**2)/(1+wing.TR) # mac da asa ref
 # wingref.ymac=wing.b/6*(1+2*wing.TR)/(1+wing.TR) # y da mac da asa ref
 # wing.AR=wing.b/wingref.mgc # alongamento asa real
 # wingref.S=wing.b*wingref.mgc # reference area [m�]
 # wing.bexp=wing.b-fuselage.df/2 # envergadura asa exposta
-# wing.ARexp=(wing.bexp^2)/(wing.Sexp/2) # exposed wing aspect ratio
+# wing.ARexp=(wing.bexp**2)/(wing.Sexp/2) # exposed wing aspect ratio
 # wing.TRexp=wing.ct/wing.cb # afilamento asa exposta
 
 # wMAC     = wingref.mac
@@ -295,7 +296,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 # vt.ct=vt.TR*vt.c0 # corda da ponta 
 # vt.cr=vt.ct/vt.TR # corda na raiz
 # vt.mgc=vt.S/vt.b # mgc
-# vt.mac=2/3*vt.c0*(1+vt.TR+vt.TR^2)/(1+vt.TR) #mac
+# vt.mac=2/3*vt.c0*(1+vt.TR+vt.TR**2)/(1+vt.TR) #mac
 # vt.ymac=2*vt.b/6*(1+2*vt.TR)/(1+vt.TR)
 # vt.sweepLE=1/rad*(atan(tan(rad*vt.sweep)+1/vt.AR*(1-vt.TR)/(1+vt.TR))) # [�] enflechamento bordo de ataque
 # vt.sweepC2=1/rad*(atan(tan(rad*vt.sweep)-1/vt.AR*(1-vt.TR)/(1+vt.TR))) # [�] enflechamento C/2
@@ -328,7 +329,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 # ###################################ENGINE##################################
 # ###########################################################################
 
-# engine.length = 2.22*((T0)^0.4)*(MMO^0.2)*2.54/100 # [m] Raymer pg 19
+# engine.length = 2.22*((T0)**0.4)*(MMO**0.2)*2.54/100 # [m] Raymer pg 19
 
 # switch PEng
 #     case 1
@@ -355,8 +356,8 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 # #########################AREA MOLHADA######################################
 
 # ########################## Engine #########################################
-# # aux1=(1-2/auxdiv)^2/3
-# # engine.Swet=pi*engine.de*engine.length*aux1*(1+1/((engine.length/engine.de)^2)) # [m2]
+# # aux1=(1-2/auxdiv)**2/3
+# # engine.Swet=pi*engine.de*engine.length*aux1*(1+1/((engine.length/engine.de)**2)) # [m2]
 # ln   = 0.50*engine.length # Fan cowling
 # ll   = 0.25*ln
 # lg   = 0.40*engine.length # Gas generator
@@ -369,7 +370,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 # Deg  = 0.90*Dg
 # Dp   = lp/2
 # swet_fan_cowl = ln*Dn*(2+0.35*(ll/ln)+0.80*((ll*Dhl)/(ln*Dn)) + 1.15*(1-ll/ln)*(Def/Dn))
-# swet_gas_gen  = pi*lg*Dg*(1- 0.333*(1-(Deg/Dg)*(1-0.18*((Dg/lg)^(5/3)))))
+# swet_gas_gen  = pi*lg*Dg*(1- 0.333*(1-(Deg/Dg)*(1-0.18*((Dg/lg)**(5/3)))))
 # swet_plug     = 0.7*pi*Dp*lp
 # engine.Swet=swet_fan_cowl+swet_gas_gen+swet_plug
 # ESwet      = engine.Swet
@@ -383,7 +384,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 #         pylon.ct = engine.length
 #         pylon.TR = pylon.ct/pylon.c0
 #         pylon.mgc=pylon.c0*(1+pylon.TR)/2
-#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR^2)/(1+pylon.TR) #mac
+#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR**2)/(1+pylon.TR) #mac
 #         # x/l=-0.6 e z/d = 0.85 figure 4.41 pag 111
 #         pylon.b = 0.85*engine.de - 0.5*engine.de
 #         pylon.x = 0.6*wing.ce
@@ -396,7 +397,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 #         pylon.ct = 0.80*engine.length
 #         pylon.TR = pylon.ct/pylon.c0
 #         pylon.mgc=pylon.c0*(1+pylon.TR)/2
-#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR^2)/(1+pylon.TR) #mac
+#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR**2)/(1+pylon.TR) #mac
 #         # t/d=0.65 figure 4.42 pag 113  ang=15
 #         pylon.b = 0.65*engine.de-engine.de/2
 #         pylon.AR=pylon.b/pylon.mgc
@@ -407,7 +408,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 #         pylon.ct = engine.length
 #         pylon.TR = pylon.ct/pylon.c0
 #         pylon.mgc=pylon.c0*(1+pylon.TR)/2
-#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR^2)/(1+pylon.TR) #mac
+#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR**2)/(1+pylon.TR) #mac
 #         # t/d=0.65 figure 4.42 pag 113  ang=15
 #         pylon.b = 0.65*engine.de-engine.de/2
 #         pylon.AR=pylon.b/pylon.mgc
@@ -418,7 +419,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 #         pylon.ct = engine.length
 #         pylon.TR = pylon.ct/pylon.c0
 #         pylon.mgc=pylon.c0*(1+pylon.TR)/2
-#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR^2)/(1+pylon.TR) #mac
+#         pylon.mac=2/3*pylon.c0*(1+pylon.TR+pylon.TR**2)/(1+pylon.TR) #mac
 #         # x/l=-0.6 e z/d = 0.85 figure 4.41 pag 111
 #         pylon.b = 0.85*engine.de - 0.5*engine.de
 #         pylon.x = 0.6*wing.ce
@@ -431,7 +432,7 @@ fuselage.Swet=SWET_FF+SWET_PAXCAB+SWET_TC
 #         pylon.ctout = engine.length
 #         pylon.TRout = pylon.ctout/pylon.c0out
 #         pylon.mgcout=pylon.c0out*(1+pylon.TRout)/2
-#         pylon.macout=2/3*pylon.c0out*(1+pylon.TRout+pylon.TRout^2)/(1+pylon.TRout) #mac
+#         pylon.macout=2/3*pylon.c0out*(1+pylon.TRout+pylon.TRout**2)/(1+pylon.TRout) #mac
 #         # x/l=-0.6 e z/d = 0.85 figure 4.41 pag 111
 #         pylon.bout = 0.85*engine.de - 0.5*engine.de
 #         pylon.xout = 0.6*wing.ceout

@@ -13,6 +13,7 @@ cd Plotairplane
 [fac, vert] = stlread('forwardfus_short.stl');
 cd ..
 %
+size(vert)
 xmin=min(vert(:,1));
 xmax=max(vert(:,1));
 ymin=min(vert(:,2));
