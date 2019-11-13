@@ -56,7 +56,7 @@ N/A
 ########################################################################################
 
 print('[0] Load airfoil coordinates.\n')
-df = pd.read_csv('PR1.dat',sep=',', delimiter=None,header=None)
+df = pd.read_csv('PR1.dat', delimiter=None,header=None)
 df.columns = ['x','y']
 df_head = df.head()
 n_coordinates = len(df)

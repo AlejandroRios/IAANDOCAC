@@ -86,63 +86,78 @@ def wetted_area_tailcone_fuselage(fus_h,fus_w,lf,ltail):
     z0f=bi-bf
     #
     n_points=20
-    teta=(0:1/n_points:1)*pi
-    #
-    xi(1:n_points)=lf-ltail
+    teta = np.linspace(0,1,n_points+1)*np.pi
+
+    # #
+    xi = np.ones(n_points)*(lf-ltail)
     zi=bi*np.cos(teta)
     yi=ai*np.sin(teta)
     #
-    xf(1:n_points)=lf
+    xf =  np.ones(n_points)*lf
     zf=z0f + bf*np.cos(teta)
     yf= af*np.sin(teta)
     SWET_TC = 0
 
-    for ie in range(n_points-1)
-        xe(0)=xi(ie)
-        ye(0)=yi(ie)
-        ze(0)=zi(ie)
-        xe(1)=xf(ie)
-        ye(1)=yf(ie)
-        ze(1)=zf(ie)
-        xe(2)=xf(ie+1)
-        ye(2)=yf(ie+1)
-        ze(2)=zf(ie+1)
-        xe(3)=xi(ie+1)
-        ye(3)=yi(ie+1)
-        ze(3)=zi(ie+1)
-        xe(4)=xe(0)
-        ye(4)=ye(0)
-        ze(4)=ze(0)
-        # Triangle # 1
-        xt(0)=xe(0)
-        xt(1)=xe(1)
-        xt(2)=xe(3)
-        yt(0)=ye(0)
-        yt(1)=ye(1)
-        yt(2)=ye(3)
-        zt(0)=ze(0)
-        zt(1)=ze(1)
-        zt(2)=ze(3)
-        A1=area_triangle_3d(x,y,z)
-        #  plot3(xt,yt,zt)
-        #  hold on
-        # Triangle # 2
-        xt(0)=xe(1)
-        xt(1)=xe(2)
-        xt(2)=xe(3)
-        yt(0)=ye(1)
-        yt(1)=ye(2)
-        yt(2)=ye(3)
-        zt(0)=ze(1)
-        zt(1)=ze(2)
-        zt(2)=ze(3)
-        A2=area_triangle_3d(x,y,z)
-        #  plot3(xt,yt,zt)
-        #  hold on
-        SWET_TC = SWET_TC + A1 + A2
+    xe = []
+    ye = []
+    ze = []
+    xt1 = []
+    yt1 = []
+    zt1 = []
 
-    #  axis equal
-    #  xlabel('x')
-    #  ylabel('y')
-    #  zlabel('z')
-    SWET_TC = 2*SWET_TC
+    xt2 = []
+    yt2 = []
+    zt2 = []
+
+    areas = []
+    for ie in range(n_points-1):
+        xe.insert(0,xi[ie])
+        xe.insert(1,xf[ie])
+        xe.insert(2,xf[ie+1])
+        xe.insert(3,xi[ie+1])
+        xe.insert(4,xe[0])
+
+        ye.insert(0,yi[ie])
+        ye.insert(1,yf[ie])
+        ye.insert(2,yf[ie+1])
+        ye.insert(3,yi[ie+1])
+        ye.insert(4,ye[0])
+
+        ze.insert(0,zi[ie])
+        ze.insert(1,zf[ie])
+        ze.insert(2,zf[ie+1])
+        ze.insert(3,zi[ie+1])
+        ze.insert(4,ze[0])
+        
+        xt1.insert(0,xe[0])
+        xt1.insert(1,xe[1])
+        xt1.insert(2,xe[3])
+
+        yt1.insert(0,ye[0])
+        yt1.insert(1,ye[1])
+        yt1.insert(2,ye[3])
+
+        zt1.insert(0,ze[0])
+        zt1.insert(1,ze[1])
+        zt1.insert(2,ze[3])
+
+        A1 = area_triangle_3d(xt1,yt1,zt1)
+
+        xt2.insert(0,xe[1])
+        xt2.insert(1,xe[2])
+        xt2.insert(2,xe[3])
+
+        yt2.insert(0,ye[1])
+        yt2.insert(1,ye[2])
+        yt2.insert(2,ye[3])
+
+        zt2.insert(0,ze[1])
+        zt2.insert(1,ze[2])
+        zt2.insert(2,ze[3])
+
+        A2 = area_triangle_3d(xt2,yt2,zt2)
+
+        areas.append(A1+A2)
+
+    total_area = 2*(sum(areas))
+    return(total_area)
