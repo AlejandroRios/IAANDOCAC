@@ -20,6 +20,7 @@ FO_Sal
 import numpy as np
 import os
 from area_triangle_3d import area_triangle_3d
+from airfoil_preprocessing import airfoil_preprocessing
 ########################################################################################
 """Constants declaration"""
 ########################################################################################
@@ -50,17 +51,38 @@ raio = FusDiam/2
 df   = FusDiam
 tanaux=np.tan(rad*sweepLE)
 
+
+airfoil_names= [fileToRead1,fileToRead2,fileToRead3]
+airfoil_chords = [Craiz,Cquebra,Cponta] 
+
+#########################
+airfoils = {1:{},
+                2:{},
+                3:{}}
+
+panel_number = 201
+     
+for i in range(len(airfoils)):
+        j = i+1
+        airfoils[j]['name'] = airfoil_names[i]
+        airfoils[j]['chord'] = airfoil_chords[i]
+
+for i in airfoils:
+        airfoil = i
+        airfoil_name = airfoils[airfoil]['name']
+        airfoil_preprocessing(airfoil_name,panel_number)
+
 ##------------------ WING  ----------------------------------
 # Read root airfoil geometry
 #  cd ..
-file_path = "/home/alejandro/Documents/Github/IAANDOCAC/MDO/Bentos Framework/"
-file_name  = file_path  + fileToRead1 + '.dat'
+# file_path = "/home/alejandro/Documents/Github/IAANDOCAC/MDO/Bentos Framework/"
+# file_name  = file_path  + fileToRead1 + '.dat'
 
-fid = open(file_name)
+# fid = open(file_name)
 
 
-fid.close()
-print(fid)
+# fid.close()
+# print(fid)
 # fid = fopen(arq_input)
 # fgetl(fid)
 # #fprintf(' \n #s \n',linhai)

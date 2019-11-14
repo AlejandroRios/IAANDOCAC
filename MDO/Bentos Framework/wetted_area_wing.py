@@ -34,6 +34,28 @@ def wetted_area_wing(ediam,wingloc,FusDiam,Ccentro,Craiz,Cquebra,
     df   = FusDiam
     tanaux=np.tan(rad*sweepLE)
 
+    # Preprocess airfoil
+
+    
+
+    # Read root airfoil geometry
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     ##------------------ WING  ----------------------------------
     # Read root airfoil geometry
     #  cd ..
