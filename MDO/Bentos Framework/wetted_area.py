@@ -23,6 +23,8 @@ import pandas as pd
 from pax_cabine_length import pax_cabine_length
 from tailcone_sizing import tailcone_sizing
 from wetted_area_fuselage import wetted_area_forward_fuselage,wetted_area_tailcone_fuselage
+from wetted_area_wing import wetted_area_wing
+
 ####################
 
 Ceiling = 35000
@@ -200,10 +202,10 @@ wing['ct']=wingtrap['TR']*wingtrap['c0'] # [m] corda na ponta
 wingtrap['mgc']=wingtrap['S']/wing['b'] # [m] corda media geometrica
 wingtrap['mac']=2/3*wingtrap['c0']*(1+wingtrap['TR']+wingtrap['TR']**2)/(1+wingtrap['TR']) # [m] corda media geometrica
 wingtrap['ymac']=wing['b']/6*(1+2*wingtrap['TR'])/(1+wingtrap['TR']) # [m] posi�ao y da mac
-wing['sweepLE']=1/rad*(np.np.arctan(np.tan(rad*wing['sweep'])+1/wingtrap['AR']*(1-wingtrap['TR'])/(1+wingtrap['TR']))) # [�] enflechamento bordo de ataque
-wing['sweepC2']=1/rad*(np.np.arctan(np.tan(rad*wing['sweep'])-1/wingtrap['AR']*(1-wingtrap['TR'])/(1+wingtrap['TR']))) # [�] enflechamento C/2
+wing['sweepLE']=1/rad*(np.arctan(np.tan(rad*wing['sweep'])+1/wingtrap['AR']*(1-wingtrap['TR'])/(1+wingtrap['TR']))) # [�] enflechamento bordo de ataque
+wing['sweepC2']=1/rad*(np.arctan(np.tan(rad*wing['sweep'])-1/wingtrap['AR']*(1-wingtrap['TR'])/(1+wingtrap['TR']))) # [�] enflechamento C/2
 wSweepC2    = wing['sweepC2']
-wing['sweepTE']=1/rad*(np.np.arctan(np.tan(rad*wing['sweep'])-3/wingtrap['AR']*(1-wingtrap['TR'])/(1+wingtrap['TR']))) # [�] enflechamento bordo de fuga
+wing['sweepTE']=1/rad*(np.arctan(np.tan(rad*wing['sweep'])-3/wingtrap['AR']*(1-wingtrap['TR'])/(1+wingtrap['TR']))) # [�] enflechamento bordo de fuga
 
 ##############################REFERENCE####################################
 wing['crank'] = Kink_semispan # porcentagem da corda
@@ -260,75 +262,78 @@ Cponta    = wing['ct']
 engine['de'] = ediam/0.98 # [m]
 ediam     = engine['de']
 
-[wing.Swet, xutip, yutip, xltip, yltip,...
-    xubreak,yubreak,xlbreak,ylbreak, xuraiz,yuraiz,xlraiz,ylraiz] ...
-    = wingwettedarea(ediam,wingloc,FusDiam,Ccentro,Craiz,Cquebra,...
-    Cponta,semispan,sweepLE,iroot,ikink,itip,0,yposeng,wingdi,wtaper,...
+[Swet, xutip, yutip, xltip, yltip,
+    xubreak,yubreak,xlbreak,ylbreak, xuraiz,yuraiz,xlraiz,ylraiz]  = wetted_area_wing(ediam,wingloc,FusDiam,Ccentro,Craiz,Cquebra,
+    Cponta,semispan,sweepLE,iroot,ikink,itip,xle,yposeng,wingdi,wtaper,
     fileToRead1,fileToRead2,fileToRead3)
-# descontar a area do perfil da raiz da asa da area molhada da fuselagem
-npontos=size(xuraiz,2)-1
-xperroot=[xuraiz(npontos+1:-1:2), xlraiz]
-yperroot=[yuraiz(npontos+1:-1:2), ylraiz]
-ARaiz=polyarea(Craiz*xperroot,Craiz*yperroot)
-fuselage.Swet=fuselage.Swet - 2*ARaiz
-################################# WINGLET #################################
-###########################################################################
 
-wlet.Swet      = 0
-if wlet_present == 1:
-    wlet_CR        = 0.65*Cponta
-    wlet_b         = wlet_AR*wlet_CR*(1+wlet_TR)/2
-    wlet_S         = wlet_CR*(1 + wlet_TR)*wlet_b/2
-    wlet_tau       = 1 # Perfil da ponta = perfil da raiz
-    wlet_TC_root   = 0.09 # Assume-se 9# da espessura relativa do perfil
-    Taux           = 1 + 0.25*(wlet_TC_root*((1 + wlet_tau*wlet_TR)/(1 + wlet_TR)))
-    wlet.Swet      = 2*wlet_S*Taux # [m2]
+wing['Swet'] = Swet
 
-#----------------------------------------------------------------------------------------------------
-##############################VERTICAL TAIL################################
-###########################################################################
-vt = {}
-# initial guess for VT area
-vt['S']=VTarea
-vt['Sv_Sw']=vt['S']/wingref.S # rela�ao de areas
-vt['AR']=VTAR # alongamento EV
-vt['TR']=VTTR # Afilamento EV
-vt['sweep']=VTSweep # Enfl c/4 EV
-vt['et']=0 # torcao EV
-vt['di']=90 # diedro RV
-vt['b']=np.sqrt(vt['AR']*vt['S']) # Envergadura EV (m)
-vt['c0']=2*vt['S']/(vt['b']*(1+vt['TR'])) # corda de centro 
-vt['ct']=vt['TR']*vt['c0'] # corda da ponta 
-vt['cr']=vt['ct']/vt['TR'] # corda na raiz
-vt['mgc']=vt['S']/vt['b'] # mgc
-vt['mac']=2/3*vt['c0']*(1+vt['TR']+vt['TR']**2)/(1+vt['TR']) #mac
-vt['ymac']=2*vt['b']/6*(1+2*vt['TR'])/(1+vt['TR'])
-vt['sweepLE']=1/rad*(np.arctan(np.tan(rad*vt['sweep'])+1/vt['AR']*(1-vt['TR'])/(1+vt['TR']))) # [�] enflechamento bordo de ataque
-vt['sweepC2']=1/rad*(np.arctan(np.tan(rad*vt['sweep'])-1/vt['AR']*(1-vt['TR'])/(1+vt['TR']))) # [�] enflechamento C/2
-vt['sweepTE']=1/rad*(np.arctan(np.tan(rad*vt['sweep'])-3/vt['AR']*(1-vt['TR'])/(1+vt['TR']))) # [�] enflechamento bordo de fuga
-#lv=(0.060*wingref.S*wing['b'])/vt['S'] # fisrt estimate
-#lv=lh - 0.25*ht.ct - vt['b'] * tan(rad*vt['sweepLE']) + 0.25*vt['c0'] + vt['ymac']*tan(rad*vt['sweep']) # braco da EV
-#vt.v=vt['S']*lv/(wingref.S*wing['b']) # volume de cauda   
-############################# VT wetted area ######################################
-vt['tcroot'] = 0.11 # [#]espessura relativa raiz
-vt['tctip']  = 0.11 # [#]espessura relativa ponta
-vt['tcmed']  = (vt['tcroot']+3*vt['tctip'])/4 # [#]espessura media
-vt['tau']    = vt['tctip']/vt['tcroot']
-dorsalfinSwet = 1 # additional area due to the dorsal fin [m2]
-vt['Swet']=2*vt['S']*(1+0.25*vt['tcroot']*((1+vt['tau']*vt['TR'])/(1+vt['TR'])))+dorsalfinSwet # [m2] 
-# Read geometry of VT airfoil
-[coordinates,~]=get_airfoil_coord('pvt.dat')
 
-xvt=coordinates(:,1)'
-yvt=coordinates(:,2)'
-AVT=polyarea(xvt*vt['cr'],yvt*vt['cr'])
-# Desconta area da intersecao VT-fuselagem da area molhada da fuselagem
-fuselage.Swet=fuselage.Swet - AVT
-#----------------------------------------------------------------------------------------------------
-##############################HORIZONTAL TAIL##############################
-###########################################################################
-ht=sizeht(HTarea,HTAR,HTTR,PHT,Swing,wSweep14,lf,vt['sweepLE'],vt['ct'],vt['c0'],vt['b'],...
-    htac_rel,CruiseMach+0.05,Ceiling)
+# # descontar a area do perfil da raiz da asa da area molhada da fuselagem
+# npontos=size(xuraiz,2)-1
+# xperroot=[xuraiz(npontos+1:-1:2), xlraiz]
+# yperroot=[yuraiz(npontos+1:-1:2), ylraiz]
+# ARaiz=polyarea(Craiz*xperroot,Craiz*yperroot)
+# fuselage.Swet=fuselage.Swet - 2*ARaiz
+# ################################# WINGLET #################################
+# ###########################################################################
+
+# wlet.Swet      = 0
+# if wlet_present == 1:
+#     wlet_CR        = 0.65*Cponta
+#     wlet_b         = wlet_AR*wlet_CR*(1+wlet_TR)/2
+#     wlet_S         = wlet_CR*(1 + wlet_TR)*wlet_b/2
+#     wlet_tau       = 1 # Perfil da ponta = perfil da raiz
+#     wlet_TC_root   = 0.09 # Assume-se 9# da espessura relativa do perfil
+#     Taux           = 1 + 0.25*(wlet_TC_root*((1 + wlet_tau*wlet_TR)/(1 + wlet_TR)))
+#     wlet.Swet      = 2*wlet_S*Taux # [m2]
+
+# #----------------------------------------------------------------------------------------------------
+# ##############################VERTICAL TAIL################################
+# ###########################################################################
+# vt = {}
+# # initial guess for VT area
+# vt['S']=VTarea
+# vt['Sv_Sw']=vt['S']/wingref.S # rela�ao de areas
+# vt['AR']=VTAR # alongamento EV
+# vt['TR']=VTTR # Afilamento EV
+# vt['sweep']=VTSweep # Enfl c/4 EV
+# vt['et']=0 # torcao EV
+# vt['di']=90 # diedro RV
+# vt['b']=np.sqrt(vt['AR']*vt['S']) # Envergadura EV (m)
+# vt['c0']=2*vt['S']/(vt['b']*(1+vt['TR'])) # corda de centro 
+# vt['ct']=vt['TR']*vt['c0'] # corda da ponta 
+# vt['cr']=vt['ct']/vt['TR'] # corda na raiz
+# vt['mgc']=vt['S']/vt['b'] # mgc
+# vt['mac']=2/3*vt['c0']*(1+vt['TR']+vt['TR']**2)/(1+vt['TR']) #mac
+# vt['ymac']=2*vt['b']/6*(1+2*vt['TR'])/(1+vt['TR'])
+# vt['sweepLE']=1/rad*(np.arctan(np.tan(rad*vt['sweep'])+1/vt['AR']*(1-vt['TR'])/(1+vt['TR']))) # [�] enflechamento bordo de ataque
+# vt['sweepC2']=1/rad*(np.arctan(np.tan(rad*vt['sweep'])-1/vt['AR']*(1-vt['TR'])/(1+vt['TR']))) # [�] enflechamento C/2
+# vt['sweepTE']=1/rad*(np.arctan(np.tan(rad*vt['sweep'])-3/vt['AR']*(1-vt['TR'])/(1+vt['TR']))) # [�] enflechamento bordo de fuga
+# #lv=(0.060*wingref.S*wing['b'])/vt['S'] # fisrt estimate
+# #lv=lh - 0.25*ht.ct - vt['b'] * tan(rad*vt['sweepLE']) + 0.25*vt['c0'] + vt['ymac']*tan(rad*vt['sweep']) # braco da EV
+# #vt.v=vt['S']*lv/(wingref.S*wing['b']) # volume de cauda   
+# ############################# VT wetted area ######################################
+# vt['tcroot'] = 0.11 # [#]espessura relativa raiz
+# vt['tctip']  = 0.11 # [#]espessura relativa ponta
+# vt['tcmed']  = (vt['tcroot']+3*vt['tctip'])/4 # [#]espessura media
+# vt['tau']    = vt['tctip']/vt['tcroot']
+# dorsalfinSwet = 1 # additional area due to the dorsal fin [m2]
+# vt['Swet']=2*vt['S']*(1+0.25*vt['tcroot']*((1+vt['tau']*vt['TR'])/(1+vt['TR'])))+dorsalfinSwet # [m2] 
+# # Read geometry of VT airfoil
+# [coordinates,~]=get_airfoil_coord('pvt.dat')
+
+# xvt=coordinates(:,1)'
+# yvt=coordinates(:,2)'
+# AVT=polyarea(xvt*vt['cr'],yvt*vt['cr'])
+# # Desconta area da intersecao VT-fuselagem da area molhada da fuselagem
+# fuselage.Swet=fuselage.Swet - AVT
+# #----------------------------------------------------------------------------------------------------
+# ##############################HORIZONTAL TAIL##############################
+# ###########################################################################
+# ht=sizeht(HTarea,HTAR,HTTR,PHT,Swing,wSweep14,lf,vt['sweepLE'],vt['ct'],vt['c0'],vt['b'],...
+#     htac_rel,CruiseMach+0.05,Ceiling)
 ###########################################################################
 ###################################ENGINE##################################
 ###########################################################################

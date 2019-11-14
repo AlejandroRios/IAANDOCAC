@@ -55,10 +55,12 @@ N/A
 ########################################################################################
 """Importing Data"""
 ########################################################################################
-def airfoil_preprocessing(airfoil):
-    panel_number  = '201'
+def airfoil_preprocessing(airfoil,panel_number):
+    # panel_number  = '101'
     delimiter = '1'
     xfoil_run_file  = 'xfoil_preproc.txt'
+
+    panel_number = str(panel_number)
     ########################################################################################
     """Xfoil run file writting"""
     ########################################################################################
@@ -88,9 +90,13 @@ def airfoil_preprocessing(airfoil):
     if os.path.exists(xfoil_run_file):
         os.remove(xfoil_run_file)
 
+    if os.path.exists(':00.bl'):
+        os.remove(':00.bl')
 
-airfoil = 'PQ1_01'
-airfoil_preprocessing(airfoil)
+    if os.path.exists('NUL.dat'):
+        os.remove('NUL.dat')
+
+
 
 
 
