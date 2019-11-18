@@ -1,6 +1,8 @@
 import numpy as np 
 import matplotlib as plt
 from cl_max_2D import cl_max_2d
+from wetted_area import wetted_area
+from input_fpwb import input_fpwb
 # from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
@@ -190,41 +192,18 @@ tcmed        = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average sectio
 #
 FusDiam      = np.sqrt(fus_width*fus_height)
 
-
-Swet_tot = 530.8062
-wingSwet = 158.0966
-FusSwet_m2 = 287.4189
-ESwet =  6.8034
-lf = 33.1553
-lco = 5.5094
-ltail = 7.4228
-EnginLength_m = 2.4270
-wYMAC  = 5.5612
-wMAC = 3.7966
-wSweepLE = 21.1973
-wSweepC2 = 13.5423
-ht = 1.
-vt = 1.
-pylon = 1.
-Ccentro = 5.8019
-Craiz = 5.1622
-Cquebra = 4.1143
-Cponta = 1.2674
-xutip = 1.
-yutip = 1.
-xltip = 1.
-yltip = 1.
-xukink = 1.
-yukink = 1.
-xlkink = 1.
-ylkink = 1.
-xuroot = 1.
-yuroot = 1.
-xlroot = 1.
-ylroot = 1.
-PHTout = 2
-
-clmax_airfoil = 2.
+[Swet, wingSwet, FusSwet_m2,
+        ESwet,lf, lco, ltail,EnginLength_m,
+        wYMAC,wMAC,wSweepLE, wSweepC2,ht,vt,pylon,
+        Ccentro,Craiz,Cquebra, Cponta,
+        xutip, yutip, xltip, yltip,xubreak,yubreak,xlbreak,ylbreak,
+        xuraiz,yuraiz,xlraiz,ylraiz, PHTout] = wetted_area(Ceiling_ft,
+    CruiseMach,MMO,NPax,NSeat,NCorr,
+    SEATwid,AisleWidth_i,SeatPitch,
+    Kink_semispan,wS,wAR,wTR,wSweep14,wTwist,PWing,fus_width,fus_height,
+    ediam,PEng,T0,VTArea,VTAR,VTTR,VTSweep,
+    HTarea,HTAR,HTTR,PHT,htac_rel,wlet_present,wlet_AR,wlet_TR,
+    PROOT,PKINK,PTIP)
 #--------------------------------------------------------------------------
 #                 Output Geometric Information
 #--------------------------------------------------------------------------
@@ -251,14 +230,11 @@ wlet.TR=wlet_TR
 wlet.AR=wlet_AR
 
 
-CD0_Wing =  0.03
-K_IND = 1.
-CLALFA_rad = 5.
-CLMAX = 2.
-estaestol = 0.2
+#--------------------------------------------------------------------------
+#                            CLMax Calculation 
+#--------------------------------------------------------------------------
+# ------------- Section CLmax calculation with XFOIL ----------------------
 
-
-########################################################################################
 Mach_CLmax = 0.15;
 
 airfoil_names= [PROOT,PKINK,PTIP]
@@ -266,8 +242,22 @@ airfoil_chords = [Craiz,Cquebra,Cponta]
 
 airfoil_info = cl_max_2d(Mach_CLmax,AirportElevation ,airfoil_names,airfoil_chords)
 
-print(airfoil_info)
 ########################################################################################
+
+
+input_fpwb(Mach_CLmax,AirportElevation,
+    lf,lco,lcab,xle,
+    wS,wSweepLE,bW,diedro,wMAC,
+    Ccentro,Craiz,Cquebra,Cponta,Kink_semispan,FusDiam,xuraiz,xlraiz,ylraiz,yuraiz,
+    xubreak,xlbreak,ylbreak,yubreak,
+    xutip,xltip,yutip,yltip,inc_root,inc_kink,inc_tip)
+
+CD0_Wing =  0.03
+K_IND = 1.
+CLALFA_rad = 5.
+CLMAX = 2.
+estaestol = 0.2
+
 if PEng == 2: 
     AirplaneCLmaxClean = CLMAX # engines do not disturb wing airflow
 elif PEng == 1:
