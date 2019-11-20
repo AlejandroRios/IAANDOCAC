@@ -1,8 +1,10 @@
 import numpy as np 
 import matplotlib as plt
+import os
 from cl_max_2D import cl_max_2d
 from wetted_area import wetted_area
 from input_fpwb import input_fpwb
+from execute_fpwb import execute_fpwb
 # from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
@@ -244,7 +246,6 @@ airfoil_info = cl_max_2d(Mach_CLmax,AirportElevation ,airfoil_names,airfoil_chor
 
 ########################################################################################
 
-
 input_fpwb(Mach_CLmax,AirportElevation,
     lf,lco,lcab,xle,
     wS,wSweepLE,bW,diedro,wMAC,
@@ -252,11 +253,51 @@ input_fpwb(Mach_CLmax,AirportElevation,
     xubreak,xlbreak,ylbreak,yubreak,
     xutip,xltip,yutip,yltip,inc_root,inc_kink,inc_tip)
 
+#--------------------------------------------------------------------------
+#time2check: MATLAB will perform checks to verify if FPWB has crashed in
+#                        intervals of 'time2check' seconds. Use [] or 0 to
+#                        avoid this monitoring.
+#checks2kill: If FPWB hasn't terminated after 'checks2kill' checks, MATLAB
+#                     will kill it. Use [] or 0 to avoid this monitoring.
+#--------------------------------------------------------------------------
+time2check=22
+checks2kill=2
+
+Status1=1
+
+execute_fpwb(time2check,checks2kill,'fpwbclm1.inp')
+
+if os.path.exists('fpwbclm1.sav') == 'True':
+    Status1=0
+  
+execute_fpwb(time2check,checks2kill,'fpwbclm2.inp')
+
+Status2=1
+if os.path.exists('fpwbclm2.sav') == 'True':
+    Status2=0
+
+
+
+
+
+
+
+
 CD0_Wing =  0.03
 K_IND = 1.
 CLALFA_rad = 5.
 CLMAX = 2.
 estaestol = 0.2
+
+
+
+
+
+
+
+
+
+
 
 if PEng == 2: 
     AirplaneCLmaxClean = CLMAX # engines do not disturb wing airflow

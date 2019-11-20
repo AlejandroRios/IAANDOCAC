@@ -32,12 +32,14 @@ import matplotlib.pyplot as plt
 ########################################################################################
 """Constants declaration"""
 ########################################################################################
-cmd = '/home/alejandro/Documents/Github/IAANDOCAC/MDO/fpwb'
+# cmd = '/home/alejandro/Documents/Github/IAANDOCAC/MDO/fpwb'
 import subprocess
 # subprocess.call("fpwb.exe")
-subprocess.call(["/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF", "fpwbclm1.inp"])
-subprocess.call("/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/fpwb.exe", shell=True)
+# subprocess.call(["/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF", "fpwbclm1.inp"])
+# subprocess.call("/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/fpwb.exe", shell=True)
 
 
 
 # os.system("/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/fpwb.exe")
+
+subprocess.call("wine fpwb.exe fpwbclm1.inp", shell=True)

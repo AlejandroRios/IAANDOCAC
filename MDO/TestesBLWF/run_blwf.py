@@ -34,4 +34,17 @@ import matplotlib.pyplot as plt
 ########################################################################################
 # cmd = '/home/alejandro/Documents/Github/IAANDOCAC/MDO/fpwb'
 import subprocess
-subprocess.call(['fpwb.exe'])
+# subprocess.Popen([r"/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/fpwb.exe"])
+
+# os.system(r'"/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/fpwb.exe"')
+
+# subprocess.call(["/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/fpwb.exe"])
+
+import os
+path = "/home/alejandro/Documents/Github/IAANDOCAC/MDO/TestesBLWF/"
+os.chdir(path)
+# os.system("fpwb.exe")
+
+os.system("fpwb.exe < fpwbclm1.inp > NUL.dat")
+
+# print(os)
