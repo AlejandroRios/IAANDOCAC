@@ -45,12 +45,12 @@ def input_fpwb(M,AirportElevation,
     ft2m    = 0.3048
     m2ft    = 1./ft2m
     ##
-    # nuroot = len(xuroot,2)
-    # nlroot = len(xlroot,2)
-    # nukink = len(xukink,2)
-    # nlkink = len(xlkink,2)
-    # nutip  = len(xutip,2)
-    # nltip  = len(xltip,2)
+    nuroot = len(xuroot)
+    nlroot = len(xlroot)
+    nukink = len(xukink)
+    nlkink = len(xlkink)
+    nutip  = len(xutip)
+    nltip  = len(xltip)
     ## 
     ise   = 1. # ise - Control parameter for the nonisentropic correction. # ISE=1. - the nonisentropic correction is used # ISE=0. - no correction
     order = 2. # order - order of the artificial dissipation in the supersonic zones
@@ -84,6 +84,8 @@ def input_fpwb(M,AirportElevation,
         yc.append(yc1)
         zc1=raio*np.sin(teta)
         zc.append(zc1)
+
+    yc = np.flip(yc)
 
 
     #
@@ -126,7 +128,7 @@ def input_fpwb(M,AirportElevation,
     dteta=np.pi/2/Nupp
 
     for j in range(Nupp):
-        teta    = j*dteta
+        teta    = (j+1)*dteta
         yw1 = raio*np.sin(teta)
         yw.append(yw1)
         zw1 = raio*np.cos(teta)
@@ -268,7 +270,7 @@ def input_fpwb(M,AirportElevation,
         zwf2_aux=+raio*np.sin(ang)
         zwf2.append(zwf2_aux)
 
-    teta3 =pi/2
+    teta3 =np.pi/2
     dteta=teta3/npontos
     for j in frange(1,npontos,1):
         ang=j*dteta
@@ -327,13 +329,13 @@ def input_fpwb(M,AirportElevation,
     stabreak=dist_quebra/wingb2 
     zvisc_internal=np.linspace(stavi,stabreak,nvisc_i)
     zvisc_external=np.linspace(stabreak+0.1,1.,nvisc_e)
-    zvisc=[zvisc_internal, zvisc_external]
+    zvisc = np.concatenate([zvisc_internal,zvisc_external])
     nvisc=nvisc_i+nvisc_e
     #nvisc=double(nvisc)
     
     fid.write('          AVAER FULL POTENTIAL ANALYSIS                                           \n')
     fid.write('    NX   ><   NY   ><   NZ   ><   NT   ><  FCONT >                                \n')
-    fid.write('    48.        12.        10.     5.       #2.0f                                 \n', FCONT)
+    fid.write('    48.        12.        10.     5.       %2.0f                                 \n' % FCONT)
     fid.write('  FPICT1 >< FPICT2 >< FPICT3 >< FPICT4 >< FPICT5 ><        ><        >< tecplot>  \n')
     fid.write('    0.         0.        0.        0.       0.0                           0.      \n')
     fid.write('   XMIN  ><  XMAX  ><  YMIN  ><  YMAX  ><  ZMIN  ><  ZMAX  >                      \n')
@@ -341,13 +343,12 @@ def input_fpwb(M,AirportElevation,
     fid.write('    EX   ><   EY   ><   EZ   >                                                    \n')
     fid.write('   -5.        5.        10.                                                       \n')
     fid.write('    NP   ><  ETAE  ><   T8   ><   PR   ><   PRT  ><   RRR  ><   VGL  ><   VGT  >  \n')
-    fid.write('    21.       4.      #4.0f      .753       .90        1.      1.26      1.26     \n',T8)
+    fid.write('    21.       4.      %4.0f      .753       .90        1.      1.26      1.26     \n' % T8)
     fid.write('    NTR  ><  AL_CL ><   CL   >< DCL/DA >                                          \n')
-    fid.write(' #6.1f        0.       #4.2f     0.40                                             \n',nvisc,CL)
+    fid.write(' %6.1f        0.       %4.2f     0.40                                             \n' % (nvisc, CL))
     fid.write('<   Z    ><  XTRU  ><  XTRL  >                                                    \n')
-    for jvisc in range(1,nvisc):
-        fid.write(' #9.4f      0.05      0.05                                                    \n',zvisc(jvisc))
-
+    for jvisc in range(nvisc):
+        fid.write(' %9.4f      0.05      0.05    \n' % zvisc[jvisc]) 
     fid.write('    NDF  ><   NVB  >< CFXMIN ><  F_LK  >                                          \n')
     fid.write('    5.        1.0       -5.      0.0                                              \n')
     fid.write('  FPRIN0 >< FPRIN1 >< FPRIN2 >< FPRINB >                                          \n')
@@ -419,63 +420,72 @@ def input_fpwb(M,AirportElevation,
     fid.write('    24.       .55                                                               \n')
     fid.write('    30.       .55                                                               \n')
     fid.write('<  MACH  ><  ALFA  ><   RE   ><   CAX  ><  SWING ><   SE   >< ORDER  >          \n')
-    fid.write('#8.3f#10.3f#10.0f.#10.3f#10.4f#10.4f#10.4f\n',M ,Ataque, rey, wMAC, wS/2, ise, order)
+    fid.write('%8.3f%10.3f%10.0f.%10.3f%10.4f%10.4f%10.4f\n'% (M ,Ataque, rey, wMAC, wS/2, ise, order))
     fid.write('<  NSEC  >< PZROOT ><  PZTIP ><   PXLE ><   PXTE ><   PYTE ><   PZA  ><   PZB  >\n')
     fid.write('  4.00000   0.15000   0.25000   0.65000   0.65000   0.80000   0.00000   0.00000 \n')
 
-    # ROOT SIMMETRY ###########################################
+    # ROOT SIMMETRY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fid.write('<    Z   ><   XLE  ><   YLE  ><  CHORD ><  THICK ><  ALPHA ><  FSEC  >          \n')
-    fid.write('#9.4f #10.5f#10.5f#10.5f#10.5f#10.5f#10.5f\n',0,0,YE0+largfus*tan(rad*diedro),c0,1,ir,1)
+    fid.write('%9.4f %10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n' % (0,0,YE0+largfus*np.tan(rad*diedro),c0,1,ir,1))
     fid.write('<  YSYM  ><   NU   ><   NL   >                                                  \n')
-    fid.write('#10.5f#10.5f#10.5f\n',0,nuroot,nlroot)
+    fid.write('%10.5f%10.5f%10.5f\n' % (0,nuroot,nlroot))
     fid.write(' <  XSING ><  YSING ><  TRAIL ><  SLOPT >\n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',0.00921,0,7.16234,-0.05857)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (0.00921,0,7.16234,-0.05857))
     fid.write(' <   XU   ><   YU   >\n')
-    fid.write('#10.5f#10.5f\n',[xuroot yuroot]) 
+    for j in range(len(xuroot)):
+        fid.write('%10.5f%10.5f\n' % (xuroot[j], yuroot[j])) 
     fid.write(' <   XL   ><   YL   >\n')
-    fid.write('#10.5f#10.5f\n',[xlroot ylroot]) 
-
-    # ROOT ###################################################
+    for j in range(len(xlroot)):
+        fid.write('%10.5f%10.5f\n' % (xlroot[j], ylroot[j]))
+    
+    # ROOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fid.write('<    Z   ><   XLE  ><   YLE  ><  CHORD ><  THICK ><  ALPHA ><  FSEC  >          \n')
-    fid.write('#9.4f #10.5f#10.5f#10.5f#10.5f#10.5f#10.5f\n',largfus,largfus*tan(rad*enf),YE0+largfus*tan(rad*diedro),cr,1,ir,1)
+    fid.write('%9.4f %10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n' % (largfus,largfus*np.tan(rad*enf),YE0+largfus*np.tan(rad*diedro),cr,1,ir,1))
     fid.write('<  YSYM  ><   NU   ><   NL   >                                                  \n')
-    fid.write('#10.5f#10.5f#10.5f\n',0,nuroot,nlroot)
+    fid.write('%10.5f%10.5f%10.5f\n' % (0,nuroot,nlroot))
     fid.write(' <  XSING ><  YSING ><  TRAIL ><  SLOPT >\n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',0.00921,0,7.16234,-0.05857)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (0.00921,0,7.16234,-0.05857))
     fid.write('<   XU   ><   YU   >\n')
-    fid.write('#10.5f#10.5f\n',[xuroot yuroot]) 
-    fid.write('<   XL   ><   YL   >\n')
-    fid.write('#10.5f#10.5f\n',[xlroot ylroot]) 
+    for j in range(len(xuroot)):
+        fid.write('%10.5f%10.5f\n' % (xuroot[j], yuroot[j])) 
+    fid.write(' <   XL   ><   YL   >\n')
+    for j in range(len(xlroot)):
+        fid.write('%10.5f%10.5f\n' % (xlroot[j], ylroot[j]))
 
-    # BREAK ####################################################################
+    # % BREAK %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fid.write('<    Z   ><   XLE  ><   YLE  ><  CHORD ><  THICK ><  ALPHA ><  FSEC  >          \n')
-    fid.write('#9.4f #10.5f#10.5f#10.5f#10.5f#10.5f#10.5f\n',dist_quebra,(tan(rad*enf))*dist_quebra,YE0+dist_quebra*tan(rad*diedro),cq,1,iq,1)
+    fid.write('%9.4f %10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n' % (dist_quebra,(np.tan(rad*enf))*dist_quebra,YE0+dist_quebra*np.tan(rad*diedro),cq,1,iq,1))
     fid.write('<  YSYM  ><   NU   ><   NL   >                                                  \n')
-    fid.write('#10.5f#10.5f#10.5f\n',0,nukink,nlkink)
+    fid.write('%10.5f%10.5f%10.5f\n' % (0,nukink,nlkink))
     fid.write(' <  XSING ><  YSING ><  TRAIL ><  SLOPT >\n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n', 0.00800,0.00300,5.14083,-0.09346)
-    fid.write('<   XU   ><   YU   >\n')
-    fid.write('#10.5f#10.5f\n',[xukink yukink]) 
-    fid.write('<   XL   ><   YL   >\n')
-    fid.write('#10.5f#10.5f\n',[xlkink ylkink])
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (0.00800,0.00300,5.14083,-0.09346))
+    fid.write(' <   XU   ><   YU   >\n')
+    for j in range(len(xukink)):
+        fid.write('%10.5f%10.5f\n' % (xukink[j], yukink[j])) 
+    fid.write(' <   XL   ><   YL   >\n')
+    for j in range(len(xlkink)):
+        fid.write('%10.5f%10.5f\n' % (xlkink[j], ylkink[j]))
 
-    # TIP #######################################################################
+    # % TIP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fid.write('<    Z   ><   XLE  ><   YLE  ><  CHORD ><  THICK ><  ALPHA ><  FSEC  >          \n')
-    fid.write('#9.4f #10.5f#10.5f#10.5f#10.5f#10.5f#10.5f\n',wingb2,(tan(rad*enf))*(wingb2),YE0+wingb2*tan(rad*diedro),ct,1,it,1)
+    fid.write('%9.4f %10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n' % (wingb2,(np.tan(rad*enf))*(wingb2),YE0+wingb2*np.tan(rad*diedro),ct,1,it,1))
     fid.write('<  YSYM  ><   NU   ><   NL   >                                                  \n')
-    fid.write('#10.5f#10.5f#10.5f\n',0,nutip,nltip)
+    fid.write('%10.5f%10.5f%10.5f\n' % (0,nutip,nltip))
     fid.write(' <  XSING ><  YSING ><  TRAIL ><  SLOPT >\n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',0.00249,0,4.39914,-0.12401)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (0.00249,0,4.39914,-0.12401))
     fid.write('<   XU   ><   YU   >\n')
-    fid.write('#10.5f#10.5f\n',[xutip yutip]) 
-    fid.write('<   XL   ><   YL   >\n')
-    fid.write('#10.5f#10.5f\n',[xltip yltip])
+    for j in range(len(xutip)):
+        fid.write('%10.5f%10.5f\n' % (xutip[j], yutip[j])) 
+    fid.write(' <   XL   ><   YL   >\n')
+    for j in range(len(xltip)):
+        fid.write('%10.5f%10.5f\n' % (xltip[j], yltip[j]))
 
-    # DADOS DA FUSELAGEM #######################################################
+
+    # % DADOS DA FUSELAGEM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fid.write('<  xlew  ><  ylew  >                                                            \n')
-    fid.write('  #5.3f     #5.3f \n',xle,ylew)
+    fid.write('  %5.3f     %5.3f \n' % (xle,ylew))
     fid.write('<  XLEF  ><  YLEF  ><  XTEF  ><  YTEF  ><  XTEF0 ><  ANSF  >                    \n')
-    fid.write('  0.00000  -0.91662    #5.4f   #5.4f    #5.4f    26.0\n',lf,FusDiam/2-0.5,lf-0.25)
+    fid.write('  0.00000  -0.91662    %5.4f   %5.4f    %5.4f    26.0\n' % (lf,FusDiam/2-0.5,lf-0.25))
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  1 -                       \n')
     fid.write(' 0.40000   -0.83153   0.43867   1.00000\n')
     fid.write('<   NT   >                                                                      \n')
@@ -668,48 +678,55 @@ def input_fpwb(M,AirportElevation,
     fid.write('  0.88307 0.08982\n')
     fid.write('  0.88707 0.00000\n')
 
+
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  5 -                       \n')
-    fid.write('#8.7f #8.7f #8.7f 1.00000\n',lco,0.,raio)
+    fid.write('%8.7f %8.7f %8.7f 1.00000\n' % (lco,0.,raio))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n' % len(yc))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc])   
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))  
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  6 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',lco+0.10,0.,raio,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (lco+0.10,0.,raio,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n' % (len(yc)))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc])
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))  
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  7 -                       \n')
-    fid.write('#8.7f 0.000000  #8.7f 1.00000\n',lco+0.25,raio)
+    fid.write('%8.7f 0.000000  %8.7f 1.00000\n' % (lco+0.25,raio))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n'  % len(yc))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc])
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))  
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  8 -                       \n')
-    fid.write('#9.8f 0.000000  #8.7f 1.00000\n',lco+1.,raio)
+    fid.write('%9.8f 0.000000  %8.7f 1.00000\n' % (lco+1.,raio))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n' % (len(yc)))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc]) 
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))  
     xpos1=max(lco+1.2,xle-1.80)
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  9 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xpos1,0.,raio,1.0)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xpos1,0.,raio,1.0))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n'   % (len(yc))) 
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc]) 
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))  
 
     xpos2=max(xpos1+0.2,xle-1.20)
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  10 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xpos2,0.,raio,1.0)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xpos2,0.,raio,1.0))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n' % (len(yc)))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc]) 
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))  
 
     ywf2med = 0.50*(max(ywf2)+ min(ywf2))
     radius2 = max(ywf2)-ywf2med
@@ -719,161 +736,174 @@ def input_fpwb(M,AirportElevation,
 
     xpos3=max(xpos2+0.20,xle-1.0)
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  11 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xpos3,ywfmed,radiusf,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xpos3,ywfmed,radiusf,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(ywf,2))
+    fid.write('%8.7f\n' % len(ywf))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywfzwf]) 
+    for j in range(len(ywf)):
+        fid.write('%8.7f %8.7f\n' % (ywf[j], zwf[j])) 
 
     ywf1med   = 0.50*(max(ywf1)+min(ywf1))
     radiusf1  = max(ywf1) - ywf1med
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  12 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle-0.50,ywf1med,radiusf1,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle-0.50,ywf1med,radiusf1,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(ywf1,2))
+    fid.write('%8.7f\n' % len(ywf1))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywf1zwf1]) 
+    for j in range(len(ywf1)):
+        fid.write('%8.7f %8.7f\n' % (ywf1[j], zwf1[j]))  
 
-    #fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  11 -                       \n')
-    #fid.write('#8.7f 0.000000  #8.7f 1.00000\n',xle-0.12,raio)
-    #fid.write('<   NT   >                                                                      \n')
-    #fid.write('#8.7f\n',len(yw,2))
-    #fid.write('<    Y   ><    Z   >                                                            \n') 
-    #fid.write('#8.7f #8.7f\n',[ywzw]) 
+    # %fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  11 -                       \n')
+    # %fid.write('%8.7f 0.000000  %8.7f 1.00000\n',xle-0.12,raio)
+    # %fid.write('<   NT   >                                                                      \n')
+    # %fid.write('%8.7f\n',size(yw,2))
+    # %fid.write('<    Y   ><    Z   >                                                            \n') 
+    # %fid.write('%8.7f %8.7f\n',[ywzw]) 
 
     ywmed   = 0.50*(max(yw)+min(yw))
     radiusw = max(yw)-ywmed
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  13 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle-0.1,ywmed,radiusw,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle-0.1,ywmed,radiusw,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yw,2))
+    fid.write('%8.7f\n' % len(yw))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywzw]) 
+    for j in range(len(yw)):
+        fid.write('%8.7f %8.7f\n' % (yw[j], zw[j])) 
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  14 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle,ywmed,radiusw,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle,ywmed,radiusw,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yw,2))
+    fid.write('%8.7f\n' % len(yw))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywzw]) 
+    for j in range(len(yw)):
+        fid.write('%8.7f %8.7f\n' % (yw[j], zw[j])) 
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  15 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+c0/4.,ywmed,radiusw,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+c0/4.,ywmed,radiusw,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yw,2))
+    fid.write('%8.7f\n' % len(yw))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywzw]) 
+    for j in range(len(yw)):
+        fid.write('%8.7f %8.7f\n' % (yw[j], zw[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  16 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+c0/2.,ywmed,radiusw,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+c0/2.,ywmed,radiusw,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yw,2))
+    fid.write('%8.7f\n' % len(yw))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywzw]) 
+    for j in range(len(yw)):
+        fid.write('%8.7f %8.7f\n' % (yw[j], zw[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  17 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+3*c0/4,ywmed,radiusw,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+3*c0/4,ywmed,radiusw,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yw,2))
+    fid.write('%8.7f\n' % len(yw))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywzw]) 
+    for j in range(len(yw)):
+        fid.write('%8.7f %8.7f\n' % (yw[j], zw[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  18 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+c0+0.20,ywmed,radiusw,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+c0+0.20,ywmed,radiusw,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yw,2))
+    fid.write('%8.7f\n' % len(yw))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywzw])
+    for j in range(len(yw)):
+        fid.write('%8.7f %8.7f\n' % (yw[j], zw[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  19 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+c0+0.80,ywf1med,radiusf1,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+c0+0.80,ywf1med,radiusf1,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(ywf1,2))
+    fid.write('%8.7f\n' % len(ywf1))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywf1zwf1]) 
+    for j in range(len(ywf1)):
+        fid.write('%8.7f %8.7f\n' % (ywf1[j], zwf1[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  20 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+c0+1.50,ywfmed,radiusf,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+c0+1.50,ywfmed,radiusf,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(ywf,2))
+    fid.write('%8.7f\n'% len(ywf))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywfzwf]) 
+    for j in range(len(ywf)):
+        fid.write('%8.7f %8.7f\n' % (ywf[j], zwf[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  21 -                       \n')
-    fid.write('#10.5f#10.5f#10.5f#10.5f\n',xle+c0+1.80,ywf2med,radius2,1.)
+    fid.write('%10.5f%10.5f%10.5f%10.5f\n' % (xle+c0+1.80,ywf2med,radius2,1.))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(ywf2,2))
+    fid.write('%8.7f\n' % len(ywf2))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[ywf2zwf2]) 
+    for j in range(len(ywf2)):
+        fid.write('%8.7f %8.7f\n' % (ywf2[j], zwf2[j]))
 
     xpos10=0.50*((xle+c0+1.80)+(lco+lcab))
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  22 -                       \n')
-    fid.write('#8.7f 0.000000  #8.7f 1.00000\n',xpos10,raio)
+    fid.write('%8.7f 0.000000  %8.7f 1.00000\n' % (xpos10,raio))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n' % len(yc))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc]) 
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  23 -                       \n')
-    fid.write('#8.7f 0.000000  #8.7f 1.00000\n',lco+lcab,raio)
+    fid.write('%8.7f 0.000000  %8.7f 1.00000\n' % (lco+lcab,raio))
     fid.write('<   NT   >                                                                      \n')
-    fid.write('#8.7f\n',len(yc,2))
+    fid.write('%8.7f\n' % len(yc))
     fid.write('<    Y   ><    Z   >                                                            \n') 
-    fid.write('#8.7f #8.7f\n',[yczc]) 
+    for j in range(len(yc)):
+        fid.write('%8.7f %8.7f\n' % (yc[j], zc[j]))
     
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  24 -                       \n')
-    fid.write('#8.7f #8.7f #8.7f 1.00000\n',lf-0.90,FusDiam/2-0.25,0.25)
+    fid.write('%8.7f %8.7f %8.7f 1.00000\n' % (lf-0.90,FusDiam/2-0.25,0.25))
     fid.write('<   NT   >                                                                      \n')
-    fid.write(' #8.7f\n',11.0)
+    fid.write(' %8.7f\n' % 11.0)
     fid.write('<    Y   ><    Z   >                                                            \n')  
-    fid.write('#8.7f 0.00000\n',raio-0.50)
-    fid.write('#8.7f 0.05000\n',raio-0.50)
-    fid.write('#8.7f 0.12000\n',raio-0.50)
-    fid.write('#8.7f 0.12500\n',raio-0.45)
-    fid.write('#8.7f 0.12500\n',raio-0.40)
-    fid.write('#8.7f 0.12500\n',raio-0.30)
-    fid.write('#8.7f 0.12500\n',raio-0.25)
-    fid.write('#8.7f 0.12500\n',raio-0.05)
-    fid.write('#8.7f 0.12000\n',raio)
-    fid.write('#8.7f 0.05000\n',raio)
-    fid.write('#8.7f 0.00000\n',raio)
+    fid.write('%8.7f 0.00000\n' % (raio-0.50))
+    fid.write('%8.7f 0.05000\n' % (raio-0.50))
+    fid.write('%8.7f 0.12000\n' % (raio-0.50))
+    fid.write('%8.7f 0.12500\n' % (raio-0.45))
+    fid.write('%8.7f 0.12500\n' % (raio-0.40))
+    fid.write('%8.7f 0.12500\n' % (raio-0.30))
+    fid.write('%8.7f 0.12500\n' % (raio-0.25))
+    fid.write('%8.7f 0.12500\n' % (raio-0.05))
+    fid.write('%8.7f 0.12000\n' % raio)
+    fid.write('%8.7f 0.05000\n' % raio)
+    fid.write('%8.7f 0.00000\n' % raio)
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  25 -                       \n')
-    fid.write('#8.7f #8.7f #8.7f 1.00000\n',lf-0.75,raio-0.25,0.25)
+    fid.write('%8.7f %8.7f %8.7f 1.00000\n' % (lf-0.75,raio-0.25,0.25))
     fid.write('<   NT   >                                                                      \n')
-    fid.write(' #8.7f\n',11.0)
+    fid.write(' %8.7f\n' % 11.0)
     fid.write('<    Y   ><    Z   >                                                            \n')  
-    fid.write('#8.7f 0.00000\n',raio-0.50)
-    fid.write('#8.7f 0.05000\n',raio-0.50)
-    fid.write('#8.7f 0.12000\n',raio-0.50)
-    fid.write('#8.7f 0.12500\n',raio-0.45)
-    fid.write('#8.7f 0.12500\n',raio-0.40)
-    fid.write('#8.7f 0.12500\n',raio-0.30)
-    fid.write('#8.7f 0.12500\n',raio-0.25)
-    fid.write('#8.7f 0.12500\n',raio-0.05)
-    fid.write('#8.7f 0.12000\n',raio)
-    fid.write('#8.7f 0.05000\n',raio)
-    fid.write('#8.7f 0.00000\n',raio)
+    fid.write('%8.7f 0.00000\n' % (raio-0.50))
+    fid.write('%8.7f 0.05000\n' % (raio-0.50))
+    fid.write('%8.7f 0.12000\n' % (raio-0.50))
+    fid.write('%8.7f 0.12500\n' % (raio-0.45))
+    fid.write('%8.7f 0.12500\n' % (raio-0.40))
+    fid.write('%8.7f 0.12500\n' % (raio-0.30))
+    fid.write('%8.7f 0.12500\n' % (raio-0.25))
+    fid.write('%8.7f 0.12500\n' % (raio-0.05))
+    fid.write('%8.7f 0.12000\n' % raio)
+    fid.write('%8.7f 0.05000\n' % raio)
+    fid.write('%8.7f 0.00000\n' % raio)
 
     fid.write('<   XF   ><   YF   ><   RF   >< FCONT  >   - section  26 -                       \n')
-    fid.write('#8.7f #8.7f #8.7f 1.00000\n',lf-0.5,raio-0.25,0.25)
+    fid.write('%8.7f %8.7f %8.7f 1.00000\n' % (lf-0.5,raio-0.25,0.25))
     fid.write('<   NT   >                                                                      \n')
-    fid.write(' #8.7f\n',11.0)
+    fid.write(' %8.7f\n' % 11.0)
     fid.write('<    Y   ><    Z   >                                                            \n')  
-    fid.write('#8.7f 0.00000\n',raio-0.50)
-    fid.write('#8.7f 0.05000\n',raio-0.50)
-    fid.write('#8.7f 0.12000\n',raio-0.50)
-    fid.write('#8.7f 0.12500\n',raio-0.45)
-    fid.write('#8.7f 0.12500\n',raio-0.40)
-    fid.write('#8.7f 0.12500\n',raio-0.30)
-    fid.write('#8.7f 0.12500\n',raio-0.25)
-    fid.write('#8.7f 0.12500\n',raio-0.05)
-    fid.write('#8.7f 0.12000\n',raio)
-    fid.write('#8.7f 0.05000\n',raio)
-    fid.write('#8.7f 0.00000\n',raio)
-    fclose(fid)
+    fid.write('%8.7f 0.00000\n' % (raio-0.50))
+    fid.write('%8.7f 0.05000\n' % (raio-0.50))
+    fid.write('%8.7f 0.12000\n' % (raio-0.50))
+    fid.write('%8.7f 0.12500\n' % (raio-0.45))
+    fid.write('%8.7f 0.12500\n' % (raio-0.40))
+    fid.write('%8.7f 0.12500\n' % (raio-0.30))
+    fid.write('%8.7f 0.12500\n' % (raio-0.25))
+    fid.write('%8.7f 0.12500\n' % (raio-0.05))
+    fid.write('%8.7f 0.12000\n' % raio)
+    fid.write('%8.7f 0.05000\n' % raio)
+    fid.write('%8.7f 0.00000\n' % raio)
+    fid.close()
 
     return()
 
