@@ -5,6 +5,7 @@ from cl_max_2D import cl_max_2d
 from wetted_area import wetted_area
 from input_fpwb import input_fpwb
 from execute_fpwb import execute_fpwb
+from read_fpwb_output import read_fpwb_output
 # from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
@@ -264,17 +265,39 @@ time2check=22
 checks2kill=2
 
 Status1=1
-
 execute_fpwb(time2check,checks2kill,'fpwbclm1.inp')
 
-if os.path.exists('fpwbclm1.sav') == 'True':
+if os.path.exists('fpwbclm1.sav'):
+    print('existe')
     Status1=0
   
 execute_fpwb(time2check,checks2kill,'fpwbclm2.inp')
 
 Status2=1
-if os.path.exists('fpwbclm2.sav') == 'True':
+if os.path.exists('fpwbclm2.sav'):
+    print('existe')
     Status2=0
+    
+
+
+
+if Status1 == 0 and Status2 ==0:
+    [CD0_Wing, K_IND, CLALFA_rad, CLMAX, estaestol,error1,error2]=read_fpwb_output(Kink_semispan,
+        FusDiam,bW/2,airfoil_info)
+    # read generated fpwb files with flow calculations
+    if error1 > 0 or error2 > 0:
+        DOCcalc=50
+        Flag_constraints=(1,1,1,1,1,1,1)
+        Flag_constraints=Flag_constraints
+    else:
+        if PEng == 2:
+            AirplaneCLmaxClean = CLMAX # engines do not disturb wing airflow
+        else:
+            AirplaneCLmaxClean  = 0.90*CLMAX # penalization due to engines
+else:
+    DOCcalc=50
+    Flag_constraints=(1,1,1,1,1,1,1)
+    Flag_constraints=Flag_constraints
 
 
 
@@ -282,12 +305,11 @@ if os.path.exists('fpwbclm2.sav') == 'True':
 
 
 
-
-CD0_Wing =  0.03
-K_IND = 1.
-CLALFA_rad = 5.
-CLMAX = 2.
-estaestol = 0.2
+# CD0_Wing =  0.03
+# K_IND = 1.
+# CLALFA_rad = 5.
+# CLMAX = 2.
+# estaestol = 0.2
 
 
 

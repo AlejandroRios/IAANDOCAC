@@ -320,7 +320,7 @@ def input_fpwb(M,AirportElevation,
             mi=mi0*((TAE+Ceh)/(Tzero+Ceh))*((TAE/Tzero)**1.5)
             vel=va*M
             rey=ro*vel*wMAC/mi
-            fid = open('fpwb_run_file',"w")
+            fid = open('fpwbclm2.inp',"w")
 
     # Stations for viscous calculation
     nvisc_i=4

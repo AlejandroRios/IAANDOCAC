@@ -24,383 +24,112 @@ from scipy import interpolate
 from area_triangle_3d import area_triangle_3d
 from airfoil_preprocessing import airfoil_preprocessing
 import matplotlib.pyplot as plt
-
+import mmap
+import sys
 ########################################################################################
 """Constants declaration"""
 ########################################################################################
-
-ediam = 1.1633
-wingloc = 1
-FusDiam = 3.2990
-Ccentro = 5.8019
-Craiz = 5.1622
-Cquebra = 4.1143
-Cponta = 1.2674
-semispan = 14.0375
-sweepLE = 21.1973
-iroot =  2
-ikink = 0
-itip = -2.5000
-xle = 0
-yposeng = 0.3100
-wingdi = 3
-wtaper = 0.2323
-fileToRead1 = 'PR1'
-fileToRead2 = 'PQ1'
-fileToRead3 = 'PT5'
-
-
-def wetted_area_wing(ediam,wingloc,FusDiam,Ccentro,Craiz,Cquebra,
-    Cponta,semispan,sweepLE,iroot,ikink,itip,xle,yposeng,wingdi,wtaper,
-    fileToRead1,fileToRead2,fileToRead3):
-    # Calcula area exposta ada asa
-    rad  = np.pi/180
-    #
-    raio = FusDiam/2
-
-    tanaux=np.tan(rad*sweepLE)
-
-
-    airfoil_names= [fileToRead1,fileToRead2,fileToRead3]
-    airfoil_chords = [Craiz,Cquebra,Cponta] 
-
-    ########################################################################################
-    """Pre-processing airfoils"""
-    ########################################################################################
-    airfoils = {1:{},
-                    2:{},
-                    3:{}}
-
-    panel_number = 201
+# def find(substr, infile):
+#   with open(infile) as a:
+#    for line in a:
+#     if substr in line:
+#         print(line)
+def find(substr, infile):
+    with open(infile) as a:
         
-    for i in range(len(airfoils)):
-            j = i+1
-            airfoils[j]['name'] = airfoil_names[i]
-            airfoils[j]['chord'] = airfoil_chords[i]
-
-    for i in airfoils:
-            airfoil = i
-            airfoil_name = airfoils[airfoil]['name']
-            airfoil_preprocessing(airfoil_name,panel_number)
+        for num, line in enumerate(a, 1):
+            if substr in line:
+                num = num
+            # if substr in line:
+            #     print(line,num)
+    return(num)
 
 
-    ########################################################################################
-    """Importing Data"""
-    ########################################################################################
-    # Load airfoil coordinates
-    df = pd.read_table(""+ airfoil_names[0] +'.dat' ,header=None,skiprows=[0],sep=',')
-    df.columns = ['x','y']
-    df_head = df.head()
-    n_coordinates = len(df)
+def daaa(error):
+    #   Leitura do CD, Momento Fletor e Calculo do CLMAX
+    #clc
+    CLMAX      = 0
+    CLALFA_rad = 0
+    nstat      = 21
+    K_IND      = 1000
+    CD0        = 1E06
+    estaestol = 1 # estacao da envergadura onde ocorre o inicio do estol (fracao da enverghadura)
+    #
+    #ybreaksta = dist_quebra/(meia_env)
+    # estacao da ponta
+    #yetaponta=(env/2)/(env/2+envergadurarake) # with raked wingtip
+    yetaponta=1 # with no raked wingtip
+    #
+    #  calcula clmax da asa-fuselagem
+    # Inicialmente faz leitura da saida do BLWF para a primeira condicao
+    #
+    error1 = 1
+    error2 = 1
+    #
+    arq_output = 'fpwbclm1.out'
 
-    # Compute distance between consecutive points
-    dx = []
-    dy = []
-    ds = []
-    ds_vector = []
-    ds=np.zeros((n_coordinates,1))
-    ds[0] = 0 
+    # with open(arq_output, 'rb', 0) as file:
+    #     mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ) as file:
+    end_file = find('The end', arq_output) 
 
-    for i in range(1,n_coordinates):
-        dx = df.x[i] - df.x[i-1]
-        dy = df.y[i] - df.y[i-1]
-        ds[i] = ds[i-1]  + np.sqrt(dx*dx+dy*dy)
+    print(end_file)
+    if end_file >= 0:
+        error1 = 0
+    # file.close()
 
-    xa = df.x[0]
-    xb = df.x[1]
-    ind = 0
-
-    # Find leading edge index
-    while xb < xa:
-        ind = ind + 1
-        xa = df.x[ind]
-        xb = df.x[ind+1]
-
-    n_panels_x = 51
-    xp = np.linspace(0,1,n_panels_x)
-    xp = np.flip((np.cos(xp*np.pi)/2+0.5))
-
-
-    # Interpolate upper skin
-    dsaux = ds[0:ind+1]
-    xaux = df.x[0:ind+1]
-
-    dsaux = np.reshape(dsaux,-1)
-    ds = np.reshape(ds,-1)
-
-    dsinterp = interpolate.interp1d(xaux,dsaux, kind='slinear',fill_value='extrapolate')(xp)
-    yupp = interpolate.interp1d(ds,df.y, kind='slinear')(dsinterp)
-
-    # Interpolate lower skin
-    dsaux = []
-    dsaux = ds[ind:n_coordinates]
-    dsinterp = []
-    xaux = df.x[ind:n_coordinates]
-
-    dsinterp = interpolate.interp1d(xaux,dsaux, kind='slinear',fill_value='extrapolate')(xp)
-    ylow= interpolate.interp1d(ds,df.y, kind='slinear')(dsinterp)
-
-    xproot = np.array([np.flip(xp),xp])
-    xproot = xproot.ravel()
-    yproot = np.array([np.flip(yupp),ylow])
-    yproot = yproot.ravel()
-    esspraiz=max(yupp)-min(ylow);
-    # plt.figure()
-    # plt.plot(xproot,yproot,'bo')
-
-    ########################################################################################
-    # Load airfoil coordinates
-    df = pd.read_table(""+ airfoil_names[1] +'.dat' ,header=None,skiprows=[0],sep=',')
-    df.columns = ['x','y']
-    df_head = df.head()
-    n_coordinates = len(df)
-
-    # Compute distance between consecutive points
-    dx = []
-    dy = []
-    ds = []
-    ds_vector = []
-    ds=np.zeros((n_coordinates,1))
-    ds[0] = 0 
-
-    for i in range(1,n_coordinates):
-        dx = df.x[i] - df.x[i-1]
-        dy = df.y[i] - df.y[i-1]
-        ds[i] = ds[i-1]  + np.sqrt(dx*dx+dy*dy)
-
-    xa = df.x[0]
-    xb = df.x[1]
-    ind = 0
-
-    # Find leading edge index
-    while xb < xa:
-        ind = ind + 1
-        xa = df.x[ind]
-        xb = df.x[ind+1]
-
-    n_panels_x = 51
-    xp = np.linspace(0,1,n_panels_x)
-    xp = np.flip((np.cos(xp*np.pi)/2+0.5))
-
-
-    # Interpolate upper skin
-    dsaux = ds[0:ind+1]
-    xaux = df.x[0:ind+1]
-
-    dsaux = np.reshape(dsaux,-1)
-    ds = np.reshape(ds,-1)
-
-    dsinterp = interpolate.interp1d(xaux,dsaux, kind='slinear',fill_value='extrapolate')(xp)
-    yupp = interpolate.interp1d(ds,df.y, kind='slinear')(dsinterp)
-
-    # Interpolate lower skin
-    dsaux = []
-    dsaux = ds[ind:n_coordinates]
-    dsinterp = []
-    xaux = df.x[ind:n_coordinates]
-
-    dsinterp = interpolate.interp1d(xaux,dsaux, kind='slinear',fill_value='extrapolate')(xp)
-    ylow= interpolate.interp1d(ds,df.y, kind='slinear')(dsinterp)
-
-    xpkink = np.array([np.flip(xp),xp])
-    xpkink = xpkink.ravel()
-    ypkink = np.array([np.flip(yupp),ylow])
-    ypkink = ypkink.ravel()
-
-    # plt.plot(xpkink,ypkink,'ro')
-
-    ########################################################################################
-    # Load airfoil coordinates
-    df = pd.read_table(""+ airfoil_names[2] +'.dat' ,header=None,skiprows=[0],sep=',')
-    df.columns = ['x','y']
-    df_head = df.head()
-    n_coordinates = len(df)
-
-    # Compute distance between consecutive points
-    dx = []
-    dy = []
-    ds = []
-    ds_vector = []
-    ds=np.zeros((n_coordinates,1))
-    ds[0] = 0 
-
-    for i in range(1,n_coordinates):
-        dx = df.x[i] - df.x[i-1]
-        dy = df.y[i] - df.y[i-1]
-        ds[i] = ds[i-1]  + np.sqrt(dx*dx+dy*dy)
-
-    xa = df.x[0]
-    xb = df.x[1]
-    ind = 0
-
-    # Find leading edge index
-    while xb < xa:
-        ind = ind + 1
-        xa = df.x[ind]
-        xb = df.x[ind+1]
-
-    n_panels_x = 51
-    xp = np.linspace(0,1,n_panels_x)
-    xp = np.flip((np.cos(xp*np.pi)/2+0.5))
-
-
-    # Interpolate upper skin
-    dsaux = ds[0:ind+1]
-    xaux = df.x[0:ind+1]
-
-    dsaux = np.reshape(dsaux,-1)
-    ds = np.reshape(ds,-1)
-
-    dsinterp = interpolate.interp1d(xaux,dsaux, kind='slinear',fill_value='extrapolate')(xp)
-    yupp = interpolate.interp1d(ds,df.y, kind='slinear')(dsinterp)
-
-    # Interpolate lower skin
-    dsaux = []
-    dsaux = ds[ind:n_coordinates]
-    dsinterp = []
-    xaux = df.x[ind:n_coordinates]
-
-    dsinterp = interpolate.interp1d(xaux,dsaux, kind='slinear',fill_value='extrapolate')(xp)
-    ylow= interpolate.interp1d(ds,df.y, kind='slinear')(dsinterp)
-
-    xptip = np.array([np.flip(xp),xp])
-    xptip = xptip.ravel()
-    yptip = np.array([np.flip(yupp),ylow])
-    yptip = yptip.ravel()
-
-    ########################################################################################
-    ########################################################################################
-    #=====> Wing
-    if wingloc ==1:
-        wingpos=-0.48*raio
-        engzpos=-0.485*raio
+    if error1 == 1:
+        return
     else:
-        wingpos=raio-Ccentro*1.15*0.12/2
-        engzpos=wingpos-0.10*ediam/2
+        line_number = find('     MACH ', arq_output) 
 
-    # Rotate root section according to given incidence
-    teta=-iroot # - points sky + points ground
-    tetar=teta*rad
-    xproot=xproot*np.cos(tetar)-yproot*np.sin(tetar)
-    yproot=xproot*np.sin(tetar)+yproot*np.cos(tetar)
-
-    # Rotates kink station airfoil
-    teta  =-ikink
-    tetar =teta*rad
-    xpkink=xpkink*np.cos(tetar)-ypkink*np.sin(tetar)
-    ypkink=xpkink*np.sin(tetar)+ypkink*np.cos(tetar)
-
-    # Rotates tip airfoil
-    teta  =-itip
-    tetar =teta*rad
-    xptip=xptip*np.cos(tetar)-yptip*np.sin(tetar)
-    yptip=xptip*np.sin(tetar)+yptip*np.cos(tetar)
-    deltax=semispan*tanaux
-
-    maxcota=-0.48*(FusDiam/2)+1.15*Ccentro*esspraiz
-    yraiz=np.sqrt((FusDiam/2)**2 - maxcota**2)
+        print(line_number)
 
 
-    xleraiz=xle+yraiz*tanaux
-    xlequebra=xle+semispan*yposeng*tanaux
 
-
-    xistosxper = np.block([[xle+Ccentro*xproot], [xleraiz+Craiz*xproot], [xlequebra+Cquebra*xpkink], [xle+deltax+Cponta*xptip]])
-
-    xistoszper = np.block([[(wingpos+Ccentro*yproot)], [wingpos+Craiz*yproot], [(wingpos+(yposeng*semispan*np.tan(rad*wingdi))+ Cquebra*ypkink)], [(semispan*np.tan(rad*wingdi)+wingpos+Ccentro*wtaper*yptip)]])
-
-    sizex=len(xproot)
-
-    yper1 = np.zeros(sizex)
-    yper2 = np.ones(sizex)*yraiz
-    yper3 = np.ones(sizex)*(semispan*yposeng)
-    #yper3(1:sizex(2))=semispan-df/2
-    yper4 = np.ones(sizex)*semispan
-    xistosyper=np.block([[yper1], [yper2], [yper3], [yper4]])
-
-    # C
-    #surface(xistosxper,xistosyper,xistoszper,'FaceLighting','gouraud','EdgeColor','none','FaceColor','blue')
-    #surface(xistosxper,-xistosyper,xistoszper,'FaceLighting','gouraud','EdgeColor','none','FaceColor','blue')
-    #
-    ##=== End wing
-    #axis equal
-
-    areawingwet= calcareawet(xistosxper,xistosyper,xistoszper)
-    return(areawingwet)
-def calcareawet(xistosXper,xistosYper,xistosZper):
-    # Calcula área exposta da asa (m2)
-    [m, n]=(xistosXper.shape)
-
-    areas1 = []
-    areas2 = []
-    areawet1 = []
-    areawet2 = []
-    # for j=2:(m-1):
-    for j in range(1,m-1):
-        # for i=1:(n-1):
-        for i in range(0,n-1):
-            x1=xistosXper[j,i]
-            y1=xistosYper[j,i]
-            z1=xistosZper[j,i]
-            
-            x2=xistosXper[j,i+1]
-            y2=xistosYper[j,i+1]
-            z2=xistosZper[j,i+1]
-            
-            x3=xistosXper[j+1,i+1]
-            y3=xistosYper[j+1,i+1]
-            z3=xistosZper[j+1,i+1]
-            
-            Stri1=tri3darea(x1,y1,z1,x2,y2,z2,x3,y3,z3)
-        
-            areawet1 = abs(Stri1)
-            
-            x1=xistosXper[j,i+1]
-            y1=xistosYper[j,i+1]
-            z1=xistosZper[j,i+1]
-            
-            x2=xistosXper[j+1,i]
-            y2=xistosYper[j+1,i]
-            z2=xistosZper[j+1,i]
-            
-            x3=xistosXper[j+1,i+1]
-            y3=xistosYper[j+1,i+1]
-            z3=xistosZper[j+1,i+1] 
-            
-            Stri2=tri3darea(x1,y1,z1,x2,y2,z2,x3,y3,z3)
-        
-            areawet2 = abs(Stri2)
-            areas1.append(areawet1)
-            areas2.append(areawet2)
-
-    total_area = sum(areas1+areas2)
-    total_area = total_area*2
-    return(total_area)
-
-def tri3darea(x1,y1,z1,x2,y2,z2,x3,y3,z3):
-    # Calcula area de um triangulo a partir das coordendas dos vertices
-
-    a1=x1-x2
-    a2=y1-y2
-    a3=z1-z2
-
-    b1=x3-x2
-    b2=y3-y2
-    b3=z3-z2
-
-    axb1=(a2*b3-a3*b2)
-    axb2=(a3*b1-a1*b3)
-    axb3=(a1*b2-a2*b1)
-
-    Stri=0.50*np.sqrt(axb1**2 +axb2**2 + axb3**2)
-    return(Stri)
+    
 
 
 
 
-area = wetted_area_wing(ediam,wingloc,FusDiam,Ccentro,Craiz,Cquebra,
-    Cponta,semispan,sweepLE,iroot,ikink,itip,xle,yposeng,wingdi,wtaper,
-    fileToRead1,fileToRead2,fileToRead3)
-print(area)
 
 
+        # while (isempty(findstr('MACH',linha)))
+        #         linha = fgetl(fid)
+        # end
+        # linhamach = fgetl(fid)
+        # READ = strread(linhamach)
+        # ALFA1=READ(2)
+        # while (isempty(findstr('CHORD',linha)))
+        #         linha = fgetl(fid)
+        # end
+
+        # for k=1:nstat
+        #     linha = fgetl(fid)
+        #     READ = strread(linha)
+        #     Zestacao1(k) = READ(2)
+        #     CLestacao1(k) = READ(3)
+        #     Chordestacao1(k) =READ(12)
+        # end
+        # #
+        # while (isempty(findstr('CDIND',linha)))
+        #         linha = fgetl(fid)
+        # end
+        # #
+        # linha = fgetl(fid)
+        # READ = strread(linha)
+        # CL1  = READ(1)
+        # CD1 = READ(2) + READ(3) + READ(6)
+        # end
+    
+
+
+# with open(arq_output) as fp:
+#     line = fp.readline()
+#     cnt = 1
+#     while line:
+#     #    print("Line {}: {}".format(cnt, line.strip()))
+#        line = fp.readline()
+#        cnt += 1
+    # print(line[0].find("The end"))
+error = 1
+daaa(error)
