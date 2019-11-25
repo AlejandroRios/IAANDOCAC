@@ -129,9 +129,10 @@ clear fid
     CD0   = CD1-K_IND*(CL1^2);
     % descobre o menor alfa no qual uma estacao atinge o cl maximo 2D
     alfamin=10000;
-    clr=clmax_airfoil(1);
-    clq=clmax_airfoil(2);
-    clp=clmax_airfoil(3);
+    clr=1.5;
+    clq=1.5;
+    clp=1.5;
+    ybreaksta = 0.32
     %alfacomp=zeros(1,nstat);
     for k=1:nstat
     if Zestacao2(k) > yetaponta
