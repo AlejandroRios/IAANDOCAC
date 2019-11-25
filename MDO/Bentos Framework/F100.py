@@ -6,6 +6,7 @@ from wetted_area import wetted_area
 from input_fpwb import input_fpwb
 from execute_fpwb import execute_fpwb
 from read_fpwb_output import read_fpwb_output
+from cd0_Torenbeek import cd0_Torenbeek
 # from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
@@ -195,7 +196,7 @@ tcmed        = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average sectio
 #
 FusDiam      = np.sqrt(fus_width*fus_height)
 
-[Swet, wingSwet, FusSwet_m2,
+[Swet_tot, wingSwet, FusSwet_m2,
         ESwet,lf, lco, ltail,EnginLength_m,
         wYMAC,wMAC,wSweepLE, wSweepC2,ht,vt,pylon,
         Ccentro,Craiz,Cquebra, Cponta,
@@ -481,7 +482,9 @@ mtowplo = mtow
 #         mtowplo        = [ mtowplo,mtow]
 
 #--------------------------------------------------------------------------
-CD0=0.02
+CD0              = cd0_Torenbeek(MMO,wS,bW,wMAC,tcmed,FusDiam,Ceiling_ft,Swet_tot)
+
+
 #--------------------------------------------------------------------------
 # print('--------------------------------------------------------------\n')
 # print('\n ----- Estimated MTOW = #6.0f kg ----- \n',mtow)
