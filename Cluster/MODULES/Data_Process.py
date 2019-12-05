@@ -17,7 +17,7 @@ from geopy.distance import distance
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRALHR_6months18.csv', header=0, delimiter=',')
+df = pd.read_csv('GRUGIG_6months19.csv', header=0, delimiter=',')
 
 df_head = df.head()
 
@@ -73,13 +73,13 @@ print('[2] Meassuring distance between samples and airpots.\n')
 
 
 # AIRP1nkfurt airport coordinates
-lat_AIRP1 = 50.110924
-lon_AIRP1 = 8.682127
+lat_AIRP1 = -23.4258
+lon_AIRP1 = -46.4683
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # Rome airport coordinates
-lon_AIRP2 = -0.461389
-lat_AIRP2 = 51.4775
+lon_AIRP2 = -22.8053
+lat_AIRP2 = -43.2395
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 lat = np.asarray(df['lat'])
@@ -134,11 +134,11 @@ print('[3] Second data filter avoiding terminal area (60 mn).\n')
 
 
 # Drop outliers out of lat scale lat < -180, lat > 180
-df = df.drop(df[df.lat > 55].index)
-df = df.drop(df[df.lat < 40].index)
-# Drop outliers out of lon scale lon < -90, lon > 90
-df = df.drop(df[df.lon > 10].index)
-df = df.drop(df[df.lon < -3].index)
+# df = df.drop(df[df.lat > 55].index)
+# df = df.drop(df[df.lat < 40].index)
+# # Drop outliers out of lon scale lon < -90, lon > 90
+# df = df.drop(df[df.lon > 10].index)
+# df = df.drop(df[df.lon < -3].index)
 
 # Identifing and saving data that is out of the terminal area
 df = df[df.Hdist_AIRP1 > 60.0]
@@ -168,7 +168,7 @@ print('- Number of flights: \n', Numflights )
 
 print('[5] Saving processed data into new .csv.\n')
 
-df.to_csv('Data4Clustering02.csv') 
+df.to_csv('Data4Clustering01.csv') 
 
 print('[6] All completed.\n')
 

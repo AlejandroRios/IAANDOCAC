@@ -32,3 +32,16 @@ WHERE estdepartureairport='EDDF' AND estarrivalairport='LIRF' AND day>=149100840
 WHERE estdepartureairport='EDDF' AND estarrivalairport='LIRF' AND day>=1514808000 AND day<=1527854400;
 
 WHERE estdepartureairport='EDDF' AND estarrivalairport='EGLL' AND day>=1514808000 AND day<=1527854400;
+
+
+WHERE estdepartureairport='SBGR' AND estarrivalairport='SBGL' AND day>=1559425556 AND day<=1562017556;
+
+SELECT track.pos AS hit, icao24, callsign, track.item.time AS time, track.item.latitude AS lat, track.item.longitude AS lon, track.item.heading AS heading,track.item.altitude AS alt, estdepartureairport, estarrivalairport, track.item.onground AS onground
+FROM flights_data4, flights_data4.track
+WHERE estdepartureairport='SBGR' AND estarrivalairport='SBGL' AND day>=1546379156 AND day<=1575236756;
+
+cat log.txt | grep "^|.*" | sed -e 's/\s*|\s*/,/g' -e 's/^,\|,$//g' -e 's/NULL//g' | awk '!seen[$0]++' >> GRUGIG_12months19.csv
+
+
+
+

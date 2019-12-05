@@ -18,15 +18,8 @@ FO_Sal
 """Importing Modules"""
 ########################################################################################
 import numpy as np
-import pandas as pd
-import os
-from scipy import interpolate
-from area_triangle_3d import area_triangle_3d
-from airfoil_preprocessing import airfoil_preprocessing
 import matplotlib.pyplot as plt
-import mmap
-import sys
-from itertools import islice
+
 ########################################################################################
 """Constants declaration"""
 ########################################################################################
@@ -35,26 +28,30 @@ from itertools import islice
 #    for line in a:
 #     if substr in line:
 #         print(line)
-def find(substr, infile):
-    with open(infile) as a:
-        num_line = []       
-        for num, line in enumerate(a, 1):
-            if substr in line:               
-                num_line = num
-    return(num_line)
 
-def read(line_num, infile):
-    with open(arq_output) as lines:
-        for line in islice(lines, line_num, line_num+1):
-            line_saida = line
-    return(line_saida)
+tc = 0.12
+F_2slot=np.array([[0. , 0.989204601706829],
+        [0.9969704770013683, 0.9959368750371262],
+        [2.8252975070787887, 0.9987169079064608],
+        [3.2815080292259857, 1.0093222184820703],
+        [4.265528780468488, 1.160861730986275],
+        [5.494129061639901, 1.0407579747737756],
+        [6.6872463021998705, 1.069049363404154],
+        [7.7742312337880914, 1.1045957665881232],
+        [8.615369383996988, 1.1366493079619029],
+        [9.595271568025659, 1.190261964635764],
+        [10.679088370987863, 1.2618458309407359],
+        [11.796487337385898, 1.351432588163079],
+        [12.668989960992413, 1.4267152446389322],
+        [13.680573431281307, 1.519953270102766],
+        [14.586975031186263, 1.6096350711838898],
+        [15.494643882541627, 1.6849018870166126],
+        [16.33356434271231, 1.421816525750944],
+        [17.41959883571273, 1.7885392946953644],
+        [18.33170306714452, 1.8133536621586834],
+        [18.89467952398867, 1.8094964655565013]])
 
+VBase_2slot = interpolate.interp1d(F_2slot[:,0], F_2slot[:,1],kind='cubic')(tc*100)
 
-arq_output = 'fpwbclm1.out'
-
-to_find = 'MACH'
-
-
-line_num = find(to_find, arq_output)
-line_saida = read(line_num, arq_output)
-
+plt.plot(F_2slot[:,0], F_2slot[:,1])
+# plt.show()

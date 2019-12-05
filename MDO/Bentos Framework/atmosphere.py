@@ -16,7 +16,7 @@ atm(2)=teta
 atm(3)=delta
 atm(4)=sigma
 atm(5)=pressure [KPa]
-atm(6)=air density [Kg/m�]
+atm(6)=air density [Kg/m2]
 atm(7)=sound speed [m/s]
 atm(8)= air viscosity
 

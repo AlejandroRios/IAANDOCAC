@@ -9,7 +9,6 @@ import haversine
 from mpl_toolkits.basemap import Basemap
 from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
-from mpl_toolkits.basemap import Basemap
 from sklearn.preprocessing import StandardScaler
 from haversine import haversine, Unit
 
@@ -31,7 +30,7 @@ from datetime import datetime
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('Data4Clustering02.csv', header=0, delimiter=',')
+df = pd.read_csv('Data4Clustering01.csv', header=0, delimiter=',')
 df_head = df.head()
 
 Nflights = df.sort_index().query('count == 0')
@@ -48,10 +47,11 @@ print('- Number of flights: \n', Numflights )
 # y1 = 40.
 # y2 = 51.
 
-x1 = 2.
-x2 = 9.
-y1 = 49.
-y2 = 51.
+
+x1 = -21.
+x2 = -24.
+y1 = -42.
+y2 = -47.
 
 lat_ff = []
 lon_ff = []
@@ -59,16 +59,16 @@ alt_ff = []
 lat_teste_ff = []
 lon_teste_ff = []
 
-lon_AIRP1 = 8.682127
-lat_AIRP1 = 50.110924
+lat_AIRP1 = -23.4258
+lon_AIRP1 = -46.4683
 
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
 # lon_AIRP2 = 2.547778
 # lat_AIRP2 = 49.009722 
 
-lon_AIRP2 = -0.461389
-lat_AIRP2 = 51.4775  
+lon_AIRP2 = -22.8053
+lat_AIRP2 = -43.2395  
 
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 

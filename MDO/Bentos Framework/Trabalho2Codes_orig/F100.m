@@ -233,12 +233,12 @@ Mach_CLmax = 0.15;
 %     ------------ Critical Section Method -----------------
 %--------------------------------------------------------------------------
 cd FPWB
-fpwb_gerainputfpwbclmaxlow_V2h(Mach_CLmax,AirportElevation,...
-    lf,lco,lcab,xle,... 
-    wS,wSweepLE,bW,diedro,wMAC,...
-    Ccentro,Craiz,Cquebra,Cponta,Kink_semispan,FusDiam,xuroot,xlroot,ylroot,yuroot,...
-    xukink,xlkink,ylkink,yukink,...
-    xutip,xltip,yutip,yltip,inc_root,inc_kink,inc_tip)
+% fpwb_gerainputfpwbclmaxlow_V2h(Mach_CLmax,AirportElevation,...
+%     lf,lco,lcab,xle,... 
+%     wS,wSweepLE,bW,diedro,wMAC,...
+%     Ccentro,Craiz,Cquebra,Cponta,Kink_semispan,FusDiam,xuroot,xlroot,ylroot,yuroot,...
+%     xukink,xlkink,ylkink,yukink,...
+%     xutip,xltip,yutip,yltip,inc_root,inc_kink,inc_tip)
 %--------------------------------------------------------------------------
 %time2check: MATLAB will perform checks to verify if FPWB has crashed in
 %                        intervals of 'time2check' seconds. Use [] or 0 to
@@ -249,11 +249,11 @@ fpwb_gerainputfpwbclmaxlow_V2h(Mach_CLmax,AirportElevation,...
 time2check=22;
 checks2kill=2;
 Status1=1;
-executing_fpwb(time2check,checks2kill,'fpwbclm1.inp')
+% executing_fpwb(time2check,checks2kill,'fpwbclm1.inp')
      if exist ('fpwbclm1.sav','file') > 0 % #ok<EXISTs>
      Status1=0;
      end
- executing_fpwb(time2check,checks2kill,'fpwbclm2.inp')
+%  executing_fpwb(time2check,checks2kill,'fpwbclm2.inp')
 %
   Status2=1;
      if exist ('fpwbclm2.sav','file') > 0 % #ok<EXISTs>
@@ -439,7 +439,7 @@ mfuel =mcombIniCruz + mcombc + mcombDes + mcombAlt + mcombLand + wfuelmanobra;
 mfuel = mfuel*1.0015; % 0.2% of trapped fuel
 wfuelfrac=mfuel/mtow; 
 % *** Recalculo do MTOW ***
-mtownew        = (wcrew+wmpayload)/(1-(wefrac+wfuelfrac));
+mtownew        = (wcrew+wmpayload)/(1-(wefrac+wfuelfrac))
 deltamtow      = abs(mtownew-mtow);
 mtow           = 0.50*(mtow+mtownew);
 ncont          = ncont +1;

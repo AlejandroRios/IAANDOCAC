@@ -7,6 +7,20 @@ from input_fpwb import input_fpwb
 from execute_fpwb import execute_fpwb
 from read_fpwb_output import read_fpwb_output
 from cd0_Torenbeek import cd0_Torenbeek
+from delta_CLmax_flap import delta_CLmax_flap
+from wing_structural_layout_fuel_storage import winglaywei2018a
+from WEW2Bento import WEW2Bento
+from cruizeiro_longrange import cruzeiro_longrange
+from loiter import loiter
+from check_2ndseg import check_2ndseg
+from atmosphere import atmosphere
+from Drag_flap import Drag_flap
+from CDWINDMILLTOREN import CDWINDMILLTOREN
+from DCD_LDG import DCD_LDG
+from oswaldf import oswaldf
+from CDW_SHEVELL import CDW_SHEVELL
+from Thrust import Thrust
+from DOC import DOC
 # from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
@@ -56,6 +70,7 @@ if Engine_choice == 1:
     H_engref            = 31000 # Altitude for which TSFC is referenced [ft]
     Mach_engref         = 0.73 # Mach number for which TSFC is referenced
     Engine_Weight       = 1445 # [kg]
+    TBO                 = 2500 # Time between Overhaul [h]
 elif Engine_choice == 2:
     ebypass             = 5.10  # Engine by-pass ratio 
     ediam               = 1.42  # Engine diameter [m]
@@ -64,6 +79,9 @@ elif Engine_choice == 2:
     H_engref            = 35000 # Altitude for which TSFC is referenced [ft]
     Mach_engref         = 0.75 # Mach number for which TSFC is referenced
     Engine_Weight       = 1678 # [kg]
+    TBO                 = 3000 # Time between Overhaul [h]
+
+
 
 # HT and VT ---------------------------------------------------------------
 VTAR                = 0.89 # Vertical tail aspect ratio
@@ -329,6 +347,7 @@ elif PEng == 1:
 else:
     AirplaneCLmaxClean  = 0.10 # in the event of first run does not bring anything
 
+AirplaneCLmaxClean = max(AirplaneCLmaxClean)
 Oswald = 1/(wAR*np.pi*K_IND)
 
 
@@ -348,18 +367,24 @@ slop =(Cponta - Cquebra)/(1 - Kink_semispan)
 Cflap_e    = Cquebra + slop*(bflap - Kink_semispan)
 Areaflap_e = (Cflap_e + Cponta)*(1-bflap)*0.50*bW/2
 fSwS   = (wS-2*Areaflap_e)/wS
-DCLMAX_i= 0.5
-DCLMAX_e= 0.5
+DCLMAX_i = delta_CLmax_flap(1,tc_i,1-longtras,dflecflaptakeoff,wSweep14,fSwS)
+DCLMAX_e = delta_CLmax_flap(2,tc_e,1-longtras,dflecflaptakeoff,wSweep14,fSwS)
 #
 AirplaneCLmaxTakeo  = AirplaneCLmaxClean + (DCLMAX_i*fe_i + DCLMAX_e*fe_e)/bflap
 # ******* CLmax de pouso
-DCLMAX_i=0.5
-DCLMAX_e=0.5
+DCLMAX_i = delta_CLmax_flap(1,tc_i,1-longtras,dflecflapland,wSweep14,fSwS)
+DCLMAX_e = delta_CLmax_flap(2,tc_e,1-longtras,dflecflapland,wSweep14,fSwS)
 AirplaneCLmaxLandi  = AirplaneCLmaxClean + (DCLMAX_i*fe_i + DCLMAX_e*fe_e)/bflap
 
 
 
 PHT = PHTout
+
+
+[_, _, wingfuelcapacity_kg,_ ]= winglaywei2018a(fus_width,Kink_semispan,wSweepLE,bW, longtras, slat,
+   Ccentro,Cquebra, Cponta, PEng, xutip,yutip,yltip,
+   xubreak,xlbreak, yubreak,ylbreak, xuraiz,xlraiz, yuraiz, ylraiz)
+
 wingfuelcapacity_kg = 1
 
 wcrew        = ncrew*91 # Crew mass (kg)
@@ -399,87 +424,96 @@ mtowplo = mtow
 # ---------------- MTOW calculation iteration procedure -------------------
 #**************************************************************************
 
-# while deltamtow > 1:
+while deltamtow > 1:
 
-#     print(deltamtow)
-#     mtowlb=mtow*kg2lb # [lb]
-#     # fracao peso vazio/MTOW
-#     TW=T0_tot_lb/mtowlb
-#     WS=mtow/wS
-#     #
-#     wefrac=1
-#     #
-#     print('\n Iteration: #g  ==> MTOW: #4.3f kg \n',ncont, mtowlb/kg2lb)
-#     #
-#     masscruzi = mtow*ftakeoff*fclimb
-#     mcombIniCruz=mtow-masscruzi
+    print(deltamtow)
+    mtowlb=mtow*kg2lb # [lb]
+    # fracao peso vazio/MTOW
+    TW=T0_tot_lb/mtowlb
+    WS=mtow/wS
+    #
+    wefrac=WEW2Bento(wAR,mtow,MMO,TW,WS,lf,FusDiam)
+    #
+    print('\n Iteration: #g  ==> MTOW: #4.3f kg \n',ncont, mtowlb/kg2lb)
+    #
+    masscruzi = mtow*ftakeoff*fclimb
+    mcombIniCruz=mtow-masscruzi
 
-#     #   **** Fuel burned to perform the cruise flight phase ****
-#     #    Calculo do combustivel no primeiro quarto do cruzeiro
+    #   **** Fuel burned to perform the cruise flight phase ****
+    #    Calculo do combustivel no primeiro quarto do cruzeiro
 
-#     BlockTime_cruise = 0
+    BlockTime_cruise = 0
 
-#     if cruiseprof == 1:
-#         mcombc1 = 1
-#         BlockTime1 = 1
-#         masscruziseg14 = masscruzi - mcombc1
-#         nseg=6
-#         masscruz34 = masscruziseg14
-#         rangemseg= (3*rangem/4)/nseg
-#         BlockTime_cruise = BlockTime_cruise + BlockTime1
-#         for i in range(0,nseg):
-#         # Calculo do combustivel no restante do cruzeiro
-#             mcombc2 = 1
-#             BlockTime2 = 1
-#             masscruz34=masscruz34-mcombc2
-#             BlockTime_cruise = BlockTime_cruise + BlockTime2
+    if cruiseprof == 1:
+        [mcombc1,_,BlockTime1]=cruzeiro_longrange(HCruzi,masscruzi,wAR,wS,wMAC,rangem/4,MMO,
+        wTR,nedebasa,wSweep14,FusDiam,ctref,H_engref,Mach_engref,ebypass,
+        tcroot,tcbreak,tctip,Swet_tot)
+        masscruziseg14 = masscruzi - mcombc1
+        nseg=6
+        masscruz34 = masscruziseg14
+        rangemseg= (3*rangem/4)/nseg
+        BlockTime_cruise = BlockTime_cruise + BlockTime1
+        for i in range(0,nseg):
+        # Calculo do combustivel no restante do cruzeiro
+            [mcombc2,_,BlockTime2]=cruzeiro_longrange(HCruzi,masscruz34,wAR,wS,wMAC,rangemseg,MMO,
+            wTR,nedebasa,wSweep14,FusDiam,ctref,H_engref,Mach_engref,ebypass,
+            tcroot,tcbreak,tctip,Swet_tot)
+            masscruz34=masscruz34-mcombc2
+            BlockTime_cruise = BlockTime_cruise + BlockTime2
         
-#         massfinalcruz=masscruz34
-#         mcombc=masscruzi-massfinalcruz
-#     else:
-#         mcombc1 = 2
-#         masscruziseg14 = masscruzi - mcombc1
-#         nseg           = 5
-#         masscruz34     = masscruziseg14
-#         rangemseg      = (3*rangem/4)/nseg
-#         for i in range(0,nseg):
-#             mcombc2=1
-#             masscruz34=masscruz34-mcombc2
+        massfinalcruz=masscruz34
+        mcombc=masscruzi-massfinalcruz
+    else:
+        mcombc1 = 2
+        masscruziseg14 = masscruzi - mcombc1
+        nseg           = 5
+        masscruz34     = masscruziseg14
+        rangemseg      = (3*rangem/4)/nseg
+        for i in range(0,nseg):
+            mcombc2=1
+            masscruz34=masscruz34-mcombc2
 
 
-#         massfinalcruz=masscruz34
-#         mcombc=masscruzi-massfinalcruz
+        massfinalcruz=masscruz34
+        mcombc=masscruzi-massfinalcruz
 
-#         # **** descida ****
-#         massafinaldescida=massfinalcruz*fdesc
-#         mcombDes=(1-fdesc)*massfinalcruz
-#         # **** Fuel burn during loiter ****
-#         mfuelloiter=1
-#         massafinalesp = massafinaldescida-mfuelloiter
+        # **** descida ****
+    massafinaldescida=massfinalcruz*fdesc
+    mcombDes=(1-fdesc)*massfinalcruz
+    # **** Fuel burn during loiter ****
+    mfuelloiter=loiter(altEsp,Machesp,massafinaldescida,tempespera,ctloiter,wS,
+                wAR,wSweep14,wTR,wMAC,tcmed,nedebasa,FusDiam,Swet_tot)
 
-#         # Subida para destino alternativo, cruzeiro alternativo e descida ****
-#         mcombSubAlt=massafinalesp - massafinalesp*fclimb
-#         massInicialCruzAlt=massafinalesp*fclimb
-#         #
-#         mcombCruzAlt= 1 
-#         massafinalCruzAlt=massInicialCruzAlt-mcombCruzAlt
-#         #
-#         mcombDesAlt=(1-fdesc)*massafinalCruzAlt
-#         mcombAlt=mcombSubAlt+mcombCruzAlt+mcombDesAlt
-#         # *** Landing ***
-#         mcombLand=massafinalCruzAlt*(1-fland)
-#         #massafinalpouso=massafinalCruzAlt-mcombDesAlt
-#         # ------ Fracao de combustivel consumido na missao
-#         mfuel =mcombIniCruz + mcombc + mcombDes + mcombAlt + mcombLand + wfuelmanobra
-#         mfuel = mfuel*1.0015 # 0.2# of trapped fuel
-#         wfuelfrac=mfuel/mtow 
-#         # *** Recalculo do MTOW ***
-#         mtownew        = (wcrew+wmpayload)/(1-(wefrac+wfuelfrac))
-#         deltamtow      = abs(mtownew-mtow)
-#         mtow           = 0.50*(mtow+mtownew)
-#         ncont          = ncont +1
-#         iterplo        = [iterplo,ncont]
-#         mtowplo        = [ mtowplo,mtow]
+    massafinalesp = massafinaldescida-mfuelloiter
+
+    # Subida para destino alternativo, cruzeiro alternativo e descida ****
+    mcombSubAlt=massafinalesp - massafinalesp*fclimb
+    massInicialCruzAlt=massafinalesp*fclimb
+    #
+    [mcombCruzAlt,_,_]=cruzeiro_longrange(altAlt,massInicialCruzAlt,
+                                    wAR,wS,wMAC,rangealtm,MMO,
+                                    wTR,nedebasa,wSweep14,FusDiam,ctref,H_engref,Mach_engref,ebypass,
+                                    tcroot,tcbreak,tctip,Swet_tot)
+
+    massafinalCruzAlt=massInicialCruzAlt-mcombCruzAlt
+    #
+    mcombDesAlt=(1-fdesc)*massafinalCruzAlt
+    mcombAlt=mcombSubAlt+mcombCruzAlt+mcombDesAlt
+    # *** Landing ***
+    mcombLand=massafinalCruzAlt*(1-fland)
+    #massafinalpouso=massafinalCruzAlt-mcombDesAlt
+    # ------ Fracao de combustivel consumido na missao
+    mfuel =mcombIniCruz + mcombc + mcombDes + mcombAlt + mcombLand + wfuelmanobra
+    mfuel = mfuel*1.0015 # 0.2# of trapped fuel
+    wfuelfrac=mfuel/mtow 
+    # *** Recalculo do MTOW ***
+  
+    mtownew        = (wcrew+wmpayload)/(1-(wefrac+wfuelfrac))
+    deltamtow      = abs(mtownew-mtow)
+    mtow           = 0.50*(mtow+mtownew)
+    ncont          = ncont +1
+    iterplo        = [iterplo,ncont]
+    mtowplo        = [ mtowplo,mtow]
 
 #--------------------------------------------------------------------------
 CD0              = cd0_Torenbeek(MMO,wS,bW,wMAC,tcmed,FusDiam,Ceiling_ft,Swet_tot)
@@ -504,10 +538,7 @@ CD0              = cd0_Torenbeek(MMO,wS,bW,wMAC,tcmed,FusDiam,Ceiling_ft,Swet_to
 # print('Wing fuel capacity = #6.0f kg   \n',wingfuelcapacity_kg)
 
 # plt.plot(interplo,mtowplo/1000)
-mfuel = 10
-masscruziseg14 = 10
-mcombAlt = 1
-BlockTime_cruise = 1
+
 # ******************* Check requirements **********************************
 # Second segment climb ----------------------------------------------------
 T0_2seg_lb  = T0 # [lb]
@@ -518,10 +549,13 @@ tcmed = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average section max. 
 eincf = Oswald*0.925 # deflected flap degration on Oswald's factor
 k_ind_inc = 1/(np.pi*wAR*eincf)
 #
-TW_2seg_req = 1
+TW_2seg_req = check_2ndseg(AirportElevation*m2ft,wS,bW,wMAC,tcmed,
+        ne,bflap,FusDiam,AirplaneCLmaxTakeo,
+        mtow*ftakeoff ,vt['S'],vt['sweep'],ediam,ebypass,dflecflaptakeoff,
+        k_ind_inc,Swet_tot)
 #
 flag2seg = 0
-if TW_2seg_req > ToW_2seg:
+if max(TW_2seg_req) > ToW_2seg:
     flag2seg = 1 # if TW_2seg
 #------------------ End 2nd segment climb ---------------------------------
 #------------------ Fuel storage check ------------------------------------
@@ -531,17 +565,17 @@ if mfuel > wingfuelcapacity_kg:
     flagfuel = 1  # if TW_2seg
 #------------------ End fuel storage check --------------------------------
 #----------------- Balanced field length ----------------------------------
-atm              = 1
-rho              = 1 # densidade [kg/m�]
+atm    = atmosphere(AirportElevation*m2ft,0)
+rho              = atm.ro # densidade [kg/m�]
 sigma            = rho/1.225
 CL2              = AirplaneCLmaxTakeo/1.44
 V2               = np.sqrt((mtow*ftakeoff*g)/(0.50*rho*wS))
 q                = (1/2)*rho*V2*V2    # Dynamic pressure
 CDi              = k_ind_inc*(CL2**2)
-CD0              = 0.01
-dcdflapetakeoff  = 0.01
+CD0              = cd0_Torenbeek(0.20,wS,bW,wMAC,tcmed,FusDiam,AirportElevation*m2ft,Swet_tot)
+dcdflapetakeoff  = Drag_flap(dflecflaptakeoff,bflap)
 dcdrudder        = 0.0020*np.cos(rad*VTSweep)*(VTArea/wS) 
-dcdwindmilli     = 0.01
+dcdwindmilli     = CDWINDMILLTOREN(0.20,ediam,ebypass)/wS
 #dcdLDG           = DCD_LDG(mtow,wS,dflecflaptakeoff,dflecflapland)
 CD2              = CD0 + CDi + dcdflapetakeoff + dcdrudder + dcdwindmilli
 hto              = 35*ft2m
@@ -557,12 +591,12 @@ elif ne == 4:
 
 TOEI             = T0*(ne-1)  # [lb]
 D2_lb            = (CD2/CL2)*mtow*ftakeoff*kg2lb
-# CORREGIRRRRR arcsin np.arcsin((TOEI-D2_lb)/(mtow*ftakeoff*kg2lb))
-GAMA2            = ((TOEI-D2_lb)/(mtow*ftakeoff*kg2lb))
+GAMA2            = np.arcsin((TOEI-D2_lb)/(mtow*ftakeoff*kg2lb))
 DGAMA2           = GAMA2 - g2min
 T1               = (hto + mtow/(rho*wS*CL2))
 T2               = 2.7 + 1/((T_avg/(mtow*kg2lb)) - mi_linha)
 BFL              = (0.863/(1+2.3*DGAMA2))*T1*T2 + DSTO/np.sqrt(sigma)
+BFL = max(BFL)
 flagtakeoff      = 0
 if BFL > Takeofffl:
     flagtakeoff  = 1
@@ -572,14 +606,14 @@ if BFL > Takeofffl:
 grad_req         = 0.021
 gama             = np.arctan(grad_req)
 CL               = 0.86*AirplaneCLmaxLandi/2.25
-dcdflapeapproac  = 0.1
-mlw              = 0.1
-dcdLDG           = 0.1
+dcdflapeapproac  = Drag_flap(0.86*dflecflapland,bflap)
+mlw              = wefrac*mtow + NPax*91 + wcrew + mfuelloiter + wfuelmanobra + mcombAlt
+dcdLDG           = DCD_LDG(mlw,wS,0.86*dflecflapland,dflecflapland)
 eincfa           = Oswald*0.91
 CDi              = CL**2/(np.pi*wAR*eincfa)
 CD               = CD0 + CDi + dcdflapeapproac + dcdLDG + dcdwindmilli
 LD               = CL/CD
-TW_req           = ((ne)/(ne-1))*(1/LD + np.sin(gama))
+TW_req           = max(((ne)/(ne-1))*(1/LD + np.sin(gama)))
 TW_avail         = (ne*T0)/(mlw*kg2lb)
 flag_121         = 0
 if TW_avail < TW_req:
@@ -604,27 +638,32 @@ if estaestol > (bflap + (0.90*FusDiam/2)):
 #------------------- End stall check --------------------------------------
 #-------------------- Begin check for cruise speed   ----------------------
 massa   = masscruziseg14
-atm     = 1
-Veloc   = MMO*1
-q       = (1/2)*1*(Veloc**2)
+atm     = atmosphere(Ceiling_ft,0)
+Veloc   = MMO*atm.va
+q       = (1/2)*atm.ro*(Veloc**2)
 CL      = massa*g/(q*wS)
-CD0     = 0.1
-ecruise = 0.9
+CD0     = cd0_Torenbeek(MMO,wS,bW,wMAC,tcmed,FusDiam,Ceiling_ft,Swet_tot)
+ecruise = oswaldf(MMO,wAR,wSweep14, wTR, tcmed, nedebasa)
 CDI     = CL**2/(ecruise*wAR*np.pi)
-CDW     = 0.02
+CDW     = CDW_SHEVELL(wSweep14,MMO,MMO)
 CD      = CD0 + CDI + CDW
 Drag_N  = CD*q*wS
-T_Cruz  =1000
+T_Cruz  = ne*Thrust(T0,ebypass,Ceiling_ft,MMO)
 T_Cruz  = T_Cruz*4.44822 # [N]
 flag_cruz = 0
 if T_Cruz < Drag_N:
     flag_cruz = 1
 #--------------------- End cruise check -----------------------------------
-Flags=0
-Issue = 0
-edges=[-1, 0.01, 1]
-Status='ok'
-T = 1
+Flag_constraints=[]
+Flag_constraints=['Flag_constraints', 'flag2seg', 'flagfuel', 'flagtakeoff', 'flag_121',
+    'flag_land', 'flag_stall', 'flag_cruz']
+# Issue = {'2nd Segment Climb'; 'Fuel Storage'; 'Takeoff Field Length';...
+#     'Takeoff Climb FAR25.121'; 'Landing Field Length';...
+#     'Stall station'; 'Required thrust @ 2nd segment of cruise'};
+edges=[-1, 0.01, 1];
+# Status=discretize(Flag_constraints,edges,'categorical',{'ok', 'Fail'});
+# table(Issue,Status)
+# Flag_constraints=Flag_constraints';
 #**************************************************************************
 #---------------------  DOC Calculation -----------------------------------
 Cons_Block = mfuel - mcombAlt
@@ -632,16 +671,16 @@ BlockTime_takeoff = 5/60
 # ==> Time to climb to cruise altitude
 fclimb2 = 1- (1-fclimb)/2
 massa   = mtow*ftakeoff*fclimb2
-atm     = 1
-T_climb = 2000
+atm     = atmosphere(Ceiling_ft/2,0)
+T_climb = ne*Thrust(T0,ebypass,Ceiling_ft/2,MMO)
 T_climb = T_climb*4.44822 # [N]
 V_climb  = 250 # [KAS]
 V_climb  = V_climb*kts2ms
-q        = (1/2)*1*V_climb*V_climb
+q        = (1/2)*atm.ro*V_climb*V_climb
 CL       = (massa*g)/(q*wS)
-M_climb  = V_climb/1
-CD0      = 0.01
-e_climb  = 1
+M_climb  = V_climb/atm.va
+CD0      = cd0_Torenbeek(M_climb,wS,bW,wMAC,tcmed,FusDiam,Ceiling_ft/2,Swet_tot)
+e_climb  = oswaldf(M_climb,wAR,wSweep14, wTR, tcmed, nedebasa)
 CDI     = CL**2/(e_climb*wAR*np.pi)
 CD      = CD0 + CDI
 D       = CD*q*wS
@@ -653,7 +692,9 @@ BlockTime_climb   =  (Deltah_ft/ROC)/60 # [h]
 # <== Climb
 BlockTime_descent = 30/60
 Time_Block = 60*(BlockTime_takeoff + BlockTime_climb + BlockTime_cruise + BlockTime_descent)
-DOCcalc = 15
+DOCcalc = DOC(TBO,Time_Block, Cons_Block, wefrac*mtow,rangenm,T0,ne,Engine_Weight,mtow)
+
+print(DOCcalc)
 #-------------------- End DOC Calculation ---------------------------------
 # tempoP=toc
 # print('\n Tempo de processamento: #5.2f s \n',tempoP)
