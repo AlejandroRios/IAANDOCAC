@@ -1,3 +1,11 @@
+"""" 
+Function  : Data cleaning/preprocessing
+Title     : Data_Process
+Written by: Alejandro Rios
+Date      : April/2019
+Language  : Python
+Aeronautical Institute of Technology
+"""
 ########################################################################################
 """Importing Modules"""
 ########################################################################################
@@ -17,7 +25,7 @@ from geopy.distance import distance
 print('[0] Load dataset.\n')
     
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRALHR_6months18.csv', header=0, delimiter=',')
+df = pd.read_csv('FRAITA_6months18.csv', header=0, delimiter=',')
 
 df_head = df.head()
 
@@ -65,21 +73,21 @@ print('[2] Meassuring distance between samples and airpots.\n')
 
 ########################################################################################
 """Airport coordinates"""
+########################################################################################
 # FRA: lat: 50.110924 | lon: 8.682127
 # FCO: lat: 41.7997222222 | lon: 12.2461111111
 # CDG: lat: 49.009722 | lon: 2.547778
 # LHR: lat: 51.4775 | lon: -0.461389
 ########################################################################################
 
-
-# AIRP1nkfurt airport coordinates
+# AIRP1 airport coordinates
 lat_AIRP1 = 50.110924
 lon_AIRP1 = 8.682127
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
-# Rome airport coordinates
-lon_AIRP2 = -0.461389
-lat_AIRP2 = 51.4775
+# AIRP2 airport coordinates
+lat_AIRP2 = 41.7997222222
+lon_AIRP2 = 12.2461111111
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 lat = np.asarray(df['lat'])
@@ -137,8 +145,8 @@ print('[3] Second data filter avoiding terminal area (60 mn).\n')
 df = df.drop(df[df.lat > 55].index)
 df = df.drop(df[df.lat < 40].index)
 # Drop outliers out of lon scale lon < -90, lon > 90
-df = df.drop(df[df.lon > 10].index)
-df = df.drop(df[df.lon < -3].index)
+df = df.drop(df[df.lon > 18].index)
+df = df.drop(df[df.lon < 0].index)
 
 # Identifing and saving data that is out of the terminal area
 df = df[df.Hdist_AIRP1 > 60.0]

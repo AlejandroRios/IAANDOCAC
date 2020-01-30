@@ -9,10 +9,7 @@ import scipy as sp
 import sklearn
 import haversine
 import matplotlib as mpl
-import seaborn as sns
-import plotly.graph_objs as go
-import plotly.plotly as py
-from sklearn.svm import SVC
+
 
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.basemap import Basemap
@@ -22,6 +19,7 @@ from mpl_toolkits.basemap import Basemap
 from sklearn.preprocessing import StandardScaler
 from haversine import haversine, Unit
 from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import permutation_test_score
@@ -47,15 +45,29 @@ print('[0] Load dataset.\n')
 df = pd.read_csv('Centroids02.csv', header=0, delimiter=',')
 df_head = df.head()
 
+#########################################################################################
+"""Airport coordinates"""
+########################################################################################
+# FRA: lat: 50.110924 | lon: 8.682127
+# FCO: lat: 41.7997222222 | lon: 12.2461111111
+# CDG: lat: 49.009722 | lon: 2.547778
+# LHR: lat: 51.4775 | lon: -0.461389
+########################################################################################
 
-# Frankfurt airport coordinates
+lat_ff = []
+lon_ff = []
+alt_ff = []
+lat_teste_ff = []
+lon_teste_ff = []
+
+# AIRP1 airport coordinates
 lat_AIRP1 = 50.110924
 lon_AIRP1 = 8.682127
 coor_AIRP1 = (lat_AIRP1,lon_AIRP1)
 
-# Rome airport coordinates
-lon_AIRP2 = -0.461389
-lat_AIRP2 = 51.4775  
+# AIRP2 airport coordinates
+lat_AIRP2 = 41.7997222222
+lon_AIRP2 = 12.2461111111
 coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 
 
@@ -63,7 +75,7 @@ coor_AIRP2 = (lat_AIRP2,lon_AIRP2)
 """Base map plot definition"""
 ########################################################################################
 fig, ax = plt.subplots()
-# m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=54, llcrnrlon=-5, urcrnrlon=14)
+m = Basemap(resolution='i', projection='merc', llcrnrlat=40, urcrnrlat=54, llcrnrlon=-5, urcrnrlon=14)
 # m.drawmapboundary(fill_color='aqua')
 # m.fillcontinents(color='1.0',lake_color='aqua')
 # m.drawcoastlines()
@@ -79,6 +91,7 @@ fig, ax = plt.subplots()
 print('--------------------------------------------------------------------------------\n')
 print('[1] Re-sizing flight vectors (same size).\n')
 
+
 CHUNK_SIZE = 50
 
 lat = df['lat_clus1']
@@ -90,6 +103,12 @@ lon = df['lon_clus1']
 xlon = np.arange(lon.size)
 new_xlon = np.linspace(xlon.min(), xlon.max(), CHUNK_SIZE)
 lon_rz = sp.interpolate.interp1d(xlon, lon, kind='slinear')(new_xlon)
+
+print(lon_rz)
+x,y = m(lon_rz,lat_rz)
+m.plot(*(x, y), color = 'b', linewidth=1)
+plt.show()
+
 
 lat_ff = []
 lon_ff = []
@@ -123,7 +142,7 @@ for j in range(len(lon_rz)-1):
     distance_real = sum(distances_pp)
 
 
-plt.plot(df.lat_clus1,df.lon_clus1,'b')
+# plt.plot(df.lat_clus1,df.lon_clus1,'b')
 # p1 = m.plot(*(df.lat_clus1,df.lon_clus1,), c=color_lst[cluster % len(color_lst)],linewidth=0.5,alpha=0.5)
 ########################################################################################
 """Evaluating horizontal inefficiency"""
@@ -140,4 +159,3 @@ Heff = (((distance_real)-GCD_AIRP1AIRP2)/GCD_AIRP1AIRP2)*100
 print('HFE:', Heff)
 
 
-plt.show()

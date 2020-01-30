@@ -1,3 +1,11 @@
+"""" 
+Function  : Cluster and classification function
+Title     : Cluster_Classification
+Written by: Alejandro Rios
+Date      : April/2019
+Language  : Python
+Aeronautical Institute of Technology
+"""
 ########################################################################################
 """Importing Modules"""
 ########################################################################################
@@ -161,7 +169,7 @@ def plot_cluster(traj_lst, cluster_lst):
             x4, y4 = m(traj[:, 0], traj[:, 1])
             p3 = m.plot(*(x4, y4), c=color_lst[cluster % len(color_lst)],linewidth=0.5,alpha=0.5)
     
-    plt.legend((p0[0],p1[0]),('Outliers','R2 Clust. 0'))
+    plt.legend((p0[0],p1[0],p2[0],p3[0]),('Outliers','R1 Clust. 0','R1 Clust. 1','R1 Clust. 2'))
             
 
 ########################################################################################
@@ -234,18 +242,33 @@ print('- Silhouette Score: %0.3f' % metrics.silhouette_score(D,labels))
 print('--------------------------------------------------------------------------------\n')
 print('[5] Start classifing.\n')
 
+########################################################################################
+"""Classifing"""
+########################################################################################
+print('--------------------------------------------------------------------------------\n')
+print('[5] Start classifing.\n')
+
 # Separating cluster results coordinates and labels
 for k in zip(unique_labels):
     class_member_mask1 = (labels == 0)
     xy1 = D[class_member_mask1 & core_samples]
     label_clust1 = labels[class_member_mask1]
+   
+    class_member_mask2 = (labels == 1)
+    xy2 = D[class_member_mask2 & core_samples]
+    label_clust2 = labels[class_member_mask2]
+
+    class_member_mask3 = (labels == 2)
+    xy3 = D[class_member_mask3 & core_samples]
+    label_clust3 = labels[class_member_mask3]
 
     class_member_mask4 = (labels == -1)
     xy4 = D[class_member_mask4 & ~core_samples]
     label_clust4 = labels[class_member_mask4]
 
-Distances = np.concatenate((xy1,xy4),axis=0)
-label_clus = np.concatenate((label_clust1,label_clust4),axis=0)
+Distances = np.concatenate((xy1,xy2,xy3,xy4),axis=0)
+label_clus = np.concatenate((label_clust1,label_clust2,label_clust3,label_clust4),axis=0)
+
 
 
 # Creating data frame including cluster coordinates and labels
@@ -301,61 +324,70 @@ print('[6] Testing model.\n')
 #######################################################################################
 # Definition of trajectories to test OK
 
+
 # Trajectory test 01
+# lon2 = 10.91
+# lat2 = 42.94
 
-lon_FRA = 8.49
-lat_FRA = 49.12
+# lon_AIRP1 = 8.49
+# lat_AIRP1 = 49.12
 
-lon_ITA = 11.31
-lat_ITA = 42.51
+# lon_AIRP2 = 11.31
+# lat_AIRP2 = 42.51
 
-lon0 = 8.5
-lat0 = 46.11
+# lon0 = 8.66
+# lat0 = 46.11
 
-lon1 = 9.8
-lat1 = 45.0
+# lon1 = 10.52
+# lat1 = 43.75
 
-lon2 = 10.5
-lat2 = 42.76
+# lon2 = 11.07
+# lat2 = 42.76
 
 # Trajectory test 02
-# lon_FRA = 9.68
-# lat_FRA = 49.36
+lon_AIRP1 = 8.682127
+lat_AIRP1 = 50.110924
 
-# lon_ITA = 12.19
-# lat_ITA = 42.75
 
-# lon0 = 11.08
-# lat0 = 48.39
+# lon_AIRP2 = 12.19
+# lat_AIRP2 = 42.75
 
-# lon1 = 11.73
-# lat1 = 47.08
+lon_AIRP2 = -3.560833
+lat_AIRP2 = 40.472222
 
-# lon2 = 11.80
-# lat2 = 44.10
+
+
+lon0 = 11.08
+lat0 = 48.39
+
+lon1 = 11.73
+lat1 = 47.08
+
+lon2 = 11.80
+lat2 = 44.10
 
 # Trajectory test 03
-# lon_FRA = 8.63
-# lat_FRA = 49.11
+# lon_AIRP1 = 8.63
+# lat_AIRP1 = 49.11
 
-# lon_ITA = 12.09
-# lat_ITA = 42.75
+# lon_AIRP2 = 12.09
+# lat_AIRP2 = 42.75
 
-# lon0 = 9.5
+# lon0 = 9.39
 # lat0 = 47.33
 
-# lon1 = 10.4
+# lon1 = 10.21
 # lat1 = 46.26
 
-# lon2 = 11.8
+# lon2 = 11.59
 # lat2 = 44.11
 
 # Trajectory test 04
-# lon_FRA = 9.32
-# lat_FRA = 49.16
+# lon_AIRP1 = 9.32
+# lat_AIRP1 = 49.16
 
-# lon_ITA = 12.11
-# lat_ITA = 42.75
+# lon_AIRP2 = 12.11
+# lat_AIRP2 = 42.75
 
 # lon0 = 10.28
 # lat0 = 48.06
@@ -367,67 +399,31 @@ lat2 = 42.76
 # lat2 = 44.11
 
 
-lat = (lat_FRA,
+lat = (lat_AIRP1,
 lat0,
 lat1,
 lat2,
-lat_ITA)
+lat_AIRP2)
 
-lon = (lon_FRA,
+lon = (lon_AIRP1,
 lon0,
 lon1,
 lon2,
-lon_ITA)
-
+lon_AIRP2)
 
 lat = np.asarray(lat)
 lon = np.asarray(lon)
 
+xlat = np.arange(lat.size)
+new_xlat = np.linspace(xlat.min(), xlat.max(), CHUNK_SIZE)
+lat_test= sp.interpolate.interp1d(xlat, lat, kind='slinear')(new_xlat)
 
-#cluster da direita
-# list = [200]
-#cluster do meio
-list = [426]
-#cluster da esquerda
-# list = [900]
-
-for i in list:
-    # Separate vector by flights
-    flights = df.iloc[Nflights.index[i]:Nflights.index[i+1]]
-
-    # Resizing vector of flights lat and lon
-    lat = flights['lat']
-    xlat = np.arange(lat.size)
-    new_xlat = np.linspace(xlat.min(), xlat.max(), CHUNK_SIZE)
-    lat_rz = sp.interpolate.interp1d(xlat, lat, kind='slinear')(new_xlat)
-
-    lon = flights['lon']
-    xlon = np.arange(lon.size)
-    new_xlon = np.linspace(xlon.min(), xlon.max(), CHUNK_SIZE)
-    lon_rz = sp.interpolate.interp1d(xlon, lon, kind='slinear')(new_xlon)
-
-    alt = flights['alt']
-    xalt = np.arange(alt.size)
-    new_xalt = np.linspace(xalt.min(), xalt.max(), CHUNK_SIZE)
-    alt_rz = sp.interpolate.interp1d(xalt, alt, kind='slinear')(new_xalt)
-
-    coordinates = np.concatenate((lon_rz[:,None],lat_rz[:,None]),axis=1)
-    # coordinates = tuple(map(tuple, coordinates))
-
-lon_test = coordinates[:,0]
-lat_test = coordinates[:,1]
-
-
-# xlat = np.arange(lat.size)
-# new_xlat = np.linspace(xlat.min(), xlat.max(), CHUNK_SIZE)
-# lat_test= sp.interpolate.interp1d(xlat, lat, kind='slinear')(new_xlat)
-
-# xlon = np.arange(lon.size)
-# new_xlon = np.linspace(xlon.min(), xlon.max(), CHUNK_SIZE)
-# lon_test = sp.interpolate.interp1d(xlon, lon, kind='slinear')(new_xlon)
+xlon = np.arange(lon.size)
+new_xlon = np.linspace(xlon.min(), xlon.max(), CHUNK_SIZE)
+lon_test = sp.interpolate.interp1d(xlon, lon, kind='slinear')(new_xlon)
 
 xx1, yy1 = m(lon_test,lat_test)
-m.plot(*(xx1, yy1), c='r', linestyle='-.',linewidth=20)
+m.plot(*(xx1, yy1), c='r', linestyle='-.',linewidth=1)
 # m.plot(lon_test,lat_test,c='r',linestyle = '-.',linewidth=1)
 
 coordinates_test = np.concatenate((lon_test[:,None],lat_test[:,None]),axis=1)

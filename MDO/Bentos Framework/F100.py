@@ -257,7 +257,7 @@ wlet.AR=wlet_AR
 #--------------------------------------------------------------------------
 # ------------- Section CLmax calculation with XFOIL ----------------------
 
-Mach_CLmax = 0.15;
+Mach_CLmax = 0.15
 
 airfoil_names= [PROOT,PKINK,PTIP]
 airfoil_chords = [Craiz,Cquebra,Cponta] 
