@@ -58,7 +58,7 @@ HTarea              = 21.72;
 % Airfoils ----------------------------------------------------------------
     PROOT               = 'PR1.dat';
     PKINK               = 'PQ1.dat';
-    PTIP                = 'PT5.dat';
+    PTIP                = 'PT4.dat';
 % Performance and operation -----------------------------------------------
 AirportElevation    = 0;% [m]
 Takeofffl           = 1900; % [m]
@@ -158,6 +158,10 @@ SEATwid            = 0.44;
 AisleWidth_i       = 0.45;
 CabHeightm_i       = 1.8;    % [m]
 %
+%#########################################################################################
+% Até aqui ok
+%#########################################################################################
+
 [fus_width, fus_height,~,~,~,FUSELAGE_Dz_floor, ~,~,~]=...
 fuscrosssect03b(container_type,NCorr,NSeat,CabHeightm_i,...
     SEATwid,AisleWidth_i,widthreiratio,0);

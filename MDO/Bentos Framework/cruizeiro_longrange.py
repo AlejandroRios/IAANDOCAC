@@ -35,7 +35,6 @@ def cruzeiro_longrange(Hft,masscruzi,
     arw,sw,wMAC,rangem,MMO,
     afilam, nedebasa,phi14,df,ctref,Href,Mref,BPR,tcroot,tcbreak,tctip,
     Swet_tot):
-
     # This routine calculates the fuel mass burned during cruise
     tcmed = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average section max. thickness of the wing
     #
@@ -45,7 +44,7 @@ def cruzeiro_longrange(Hft,masscruzi,
     mld   = -10000
     
  
-    for NMach in np.arange(0.65,MMO,0.01):
+    for NMach in np.arange(0.65,MMO+0.01,0.01):
         ecruise = oswaldf(NMach, arw, phi14, afilam, tcmed, nedebasa)
         # Long-range lift coefficient
         vcruzi  = NMach*vsomi

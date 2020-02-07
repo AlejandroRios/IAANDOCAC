@@ -21,6 +21,8 @@ from oswaldf import oswaldf
 from CDW_SHEVELL import CDW_SHEVELL
 from Thrust import Thrust
 from DOC import DOC
+from fuselage_cross_section import fuselage_cross_section
+from TSFC import TSFC
 # from airfoil import rxfoil
 # Constants and conversion factors
 nm2km   = 1.852 # Fator de conversao de milha nautica para km
@@ -54,7 +56,7 @@ wS                  = 93.5  # Wing reference area [m2]
 wAR                 = 8.43  # Wing aspect ratio
 wTR                 = 0.235 # Wing taper ratio
 wSweep14            = 17.45 # Quarter-chord wing sweepback angle
-wTwist              = -3.5
+wTwist              = -4.5
 Kink_semispan       = 0.32
 longtras            = 0.75 # Fraction of chord where the rear spar is located
 # Engine data  ------------------------------------------------------------
@@ -196,10 +198,11 @@ SEATwid            = 0.44
 AisleWidth_i       = 0.45
 NSeat_i            = NSeat
 CabHeightm_i       = 1.8   
+igraph = 0
 
-fus_width = 3.2990
-fus_height = 3.2990
-FUSELAGE_Dz_floor = 0.6858
+[fus_width, fus_height,eixox,eixoy,fuselage_thickness,FUSELAGE_Dz_floor, a_mini, NSeat,h1] = fuselage_cross_section(container_type,
+NCorr,NSeat_i,CabHeightm_i,SEATwid,AisleWidth_i,widthreiratio,igraph)
+
 
 if PWing == 2 or PEng == 2:
   PHT =2
@@ -207,7 +210,7 @@ if PWing == 2 or PEng == 2:
 
 tcroot       = 0.1344
 tcbreak      = 0.1133
-tctip        = 0.0989
+tctip        = 0.1034
 
 # *********************** WETTED AREA CALCULATION *************************
 tcmed        = (0.50*(tcroot+tcbreak) + 0.50*(tcbreak+tctip))/2 # average section max. thickness of the wing
@@ -385,10 +388,12 @@ PHT = PHTout
    Ccentro,Cquebra, Cponta, PEng, xutip,yutip,yltip,
    xubreak,xlbreak, yubreak,ylbreak, xuraiz,xlraiz, yuraiz, ylraiz)
 
-wingfuelcapacity_kg = 1
+
 
 wcrew        = ncrew*91 # Crew mass (kg)
-ctloiter     = 1 # Specific fuel comsumption at loiter
+ctloiter     = TSFC(ctref,H_engref,Mach_engref,ebypass,altEsp,Machesp) # Specific fuel comsumption at loiter
+
+
 T0_tot_lb    = ne*T0 # Total takeoff thrust [lb]
 
 RangeCruise_nm=0.975*rangenm

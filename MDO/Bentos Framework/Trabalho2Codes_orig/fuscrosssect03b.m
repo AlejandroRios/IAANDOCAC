@@ -2,6 +2,7 @@ function [eixoxe, eixoye,eixox,eixoy,fuselage_thickness,...
     FUSELAGE_Dz_floor, a_mini, NSeat,h1]=...
     fuscrosssect03b(container_type,NCorr,NSeat_i,CabHeightm,...
     SEATwid,AisleWidth,widthreiratio,igraph)
+
 %--------------------------------------------------------------------------
 % This routine works this way : several important points describing seat arrangment, 
 % the passenger sillouette,and clearances required inside the cabin. 
@@ -530,7 +531,7 @@ end   % if
 
 FUSELAGE_nrails_esq = 2;
 FUSELAGE_nrails_dir = 2;
-FUSELAGE_dseat_seat_rail_esq = 0.20; % distancia da extremidade do assento à primeira fileira de trilhos
+FUSELAGE_dseat_seat_rail_esq = 0.20; % distancia da extremidade do assento ï¿½ primeira fileira de trilhos
 FUSELAGE_dseat_seat_rail_dir = 0.20;
 
 if FUSELAGE_esq == 1

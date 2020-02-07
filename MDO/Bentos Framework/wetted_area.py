@@ -141,6 +141,14 @@ def wetted_area(Ceiling,CruiseMach,MMO,NPax,NSeat,NCorr,
     # Hah ainda que se descontar a area do perfil da raiz da asa
     # Sera feito mais adiante
     fuselage['Swet']=SWET_FF+SWET_PAXCAB+SWET_TC
+
+
+
+# "ATEEEEEE AQUIIIIIIIIIIII OKKKKKKKKKKKK"
+
+
+
+
     ###########################################################################
     ###########################################################################
     ################################WING#######################################

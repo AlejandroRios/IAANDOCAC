@@ -63,7 +63,9 @@ def wetted_area_forward_fuselage(fus_h,fus_w,lco):
     # verts = np.column_stack((vertx,vertz,verty))
     nfac = len(mesh.vectors)
     areas = []
-    for i in range(nfac):
+
+    # check this point
+    for i in range(nfac-1):
         x = vertx[i]
         y = vertz[i]
 
