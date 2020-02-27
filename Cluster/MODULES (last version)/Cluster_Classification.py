@@ -17,7 +17,7 @@ import math
 import sklearn
 import haversine
 import seaborn as sns
-
+import time
 
 from sklearn.cluster import DBSCAN
 from sklearn.svm import LinearSVC
@@ -34,7 +34,6 @@ from sklearn import metrics
 from sklearn import preprocessing
 
 from scipy import interpolate
-from scipy.spatial.distance import directed_hausdorff
 
 from geopy.distance import great_circle
 from geopy.distance import distance
@@ -134,31 +133,77 @@ for i in range(1000):
     new_xalt = np.linspace(xalt.min(), xalt.max(), CHUNK_SIZE)
     alt_rz = sp.interpolate.interp1d(xalt, alt, kind='slinear')(new_xalt)
 
+    # coordinates = np.concatenate((lon_rz[:,None],lat_rz[:,None],alt_rz[:,None]),axis=1)
     coordinates = np.concatenate((lon_rz[:,None],lat_rz[:,None]),axis=1)
     coordinates = tuple(map(tuple, coordinates))
     coordinates_vec.append(np.vstack(coordinates))
 
 
 ########################################################################################
-""" Meassuring Hausdorff distance between trajectories"""
+""" Meassuring Hausdorff distance between trajectories 1"""
 ########################################################################################
-print('--------------------------------------------------------------------------------\n')
-print('[3] Meassuring Hausdorff distance between trajectories.\n')
+# from scipy.spatial.distance import directed_hausdorff
 
-def hausdorff(u, v):
-    d = max(directed_hausdorff(u, v)[0], directed_hausdorff(v, u)[0])
-    return d
 
-traj_count = len(coordinates_vec)
-D = np.zeros((traj_count, traj_count))
+# print('--------------------------------------------------------------------------------\n')
+# print('[3] Meassuring Hausdorff distance between trajectories.\n')
+# start = time.clock() 
+# def hausdorff(u, v):
+#     d = max(directed_hausdorff(u, v)[0], directed_hausdorff(v, u)[0])
+#     return d
 
-# This may take a while
-for i in range(traj_count):
-    for j in range(i + 1, traj_count):
-        distance = hausdorff(coordinates_vec[i], coordinates_vec[j])
-        D[i, j] = distance
-        D[j, i] = distance
+# traj_count = len(coordinates_vec)
+# D = np.zeros((traj_count, traj_count))
 
+# # This may take a while
+# for i in range(traj_count):
+#     for j in range(i + 1, traj_count):
+#         distance = hausdorff(coordinates_vec[i], coordinates_vec[j])
+#         D[i, j] = distance
+#         D[j, i] = distance
+
+# print(D)
+    
+
+# end = time.clock()  
+# print("Processor time (in seconds):", end) 
+# print("Time elapsed during the calculation:", end - start) 
+
+########################################################################################
+""" Meassuring Hausdorff distance between trajectories  2"""
+########################################################################################
+# from Hausdurff_Distance import cmax
+# print('--------------------------------------------------------------------------------\n')
+# print('[3] Meassuring Hausdorff distance between trajectories.\n')
+# start = time.clock() 
+
+# def hausdorff(A,B):
+#     H_distance = max(cmax(coordinates_vec[i], coordinates_vec[j]),cmax(coordinates_vec[i], coordinates_vec[j]))
+#     return(H_distance)
+
+
+# traj_count = len(coordinates_vec)
+# D = np.zeros((traj_count, traj_count))
+
+# # This may take a while
+# for i in range(traj_count):
+#     for j in range(i + 1, traj_count):
+#         # distance = hausdorff(coordinates_vec[i], coordinates_vec[j])
+#         distance = hausdorff(coordinates_vec[i], coordinates_vec[j])
+#         D[i, j] = distance
+#         D[j, i] = distance
+
+
+
+# end = time.clock()  
+# print("Processor time (in seconds):", end) 
+
+# print("Time elapsed during the calculation:", end - start) 
+
+
+# np.save('distances_n_norm.npy', D)
+
+D = np.load('distances_n_norm.npy')
 ########################################################################################
 """Cluster Plot Function"""
 ########################################################################################
@@ -251,85 +296,85 @@ print('- Unique labels: \n', unique_labels)
 print('- Silhouette Score: %0.3f' % metrics.silhouette_score(D,labels))
 
 
-########################################################################################
-"""Classifing"""
-########################################################################################
-print('--------------------------------------------------------------------------------\n')
-print('[5] Start classifing.\n')
+# ########################################################################################
+# """Classifing"""
+# ########################################################################################
+# print('--------------------------------------------------------------------------------\n')
+# print('[5] Start classifing.\n')
 
-########################################################################################
-"""Classifing"""
-########################################################################################
-print('--------------------------------------------------------------------------------\n')
-print('[5] Start classifing.\n')
+# ########################################################################################
+# """Classifing"""
+# ########################################################################################
+# print('--------------------------------------------------------------------------------\n')
+# print('[5] Start classifing.\n')
 
-# Separating cluster results coordinates and labels
-for k in zip(unique_labels):
-    class_member_mask1 = (labels == 0)
-    xy1 = D[class_member_mask1 & core_samples]
-    label_clust1 = labels[class_member_mask1]
+# # Separating cluster results coordinates and labels
+# for k in zip(unique_labels):
+#     class_member_mask1 = (labels == 0)
+#     xy1 = D[class_member_mask1 & core_samples]
+#     label_clust1 = labels[class_member_mask1]
    
-    class_member_mask2 = (labels == 1)
-    xy2 = D[class_member_mask2 & core_samples]
-    label_clust2 = labels[class_member_mask2]
+#     class_member_mask2 = (labels == 1)
+#     xy2 = D[class_member_mask2 & core_samples]
+#     label_clust2 = labels[class_member_mask2]
 
-    class_member_mask3 = (labels == 2)
-    xy3 = D[class_member_mask3 & core_samples]
-    label_clust3 = labels[class_member_mask3]
+#     class_member_mask3 = (labels == 2)
+#     xy3 = D[class_member_mask3 & core_samples]
+#     label_clust3 = labels[class_member_mask3]
 
-    class_member_mask4 = (labels == -1)
-    xy4 = D[class_member_mask4 & ~core_samples]
-    label_clust4 = labels[class_member_mask4]
+#     class_member_mask4 = (labels == -1)
+#     xy4 = D[class_member_mask4 & ~core_samples]
+#     label_clust4 = labels[class_member_mask4]
 
-Distances = np.concatenate((xy1,xy2,xy3,xy4),axis=0)
-label_clus = np.concatenate((label_clust1,label_clust2,label_clust3,label_clust4),axis=0)
+# Distances = np.concatenate((xy1,xy2,xy3,xy4),axis=0)
+# label_clus = np.concatenate((label_clust1,label_clust2,label_clust3,label_clust4),axis=0)
 
 
 
-# Creating data frame including cluster coordinates and labels
-data=pd.DataFrame()
-data = pd.DataFrame(data=Distances[:,:]) 
-label_clus = pd.Series(label_clus) 
-data['label'] = label_clus
+# # Creating data frame including cluster coordinates and labels
+# data=pd.DataFrame()
+# data = pd.DataFrame(data=Distances[:,:]) 
+# label_clus = pd.Series(label_clus) 
+# data['label'] = label_clus
 
-# Features
-x = data.iloc[:, 0:-1]
-# Labels
-y = data['label']
+# # Features
+# x = data.iloc[:, 0:-1]
+# # Labels
+# y = data['label']
 
-# Spliting data for train and test. In this case 
-SEED = 0
-np.random.seed(SEED)
+# # Spliting data for train and test. In this case 
+# SEED = 0
+# np.random.seed(SEED)
+# # train_x, test_x, train_y, test_y = train_test_split(x, y,
+#                                                         #  random_state = SEED, test_size = 0.25,stratify = y)
 # train_x, test_x, train_y, test_y = train_test_split(x, y,
-                                                        #  random_state = SEED, test_size = 0.25,stratify = y)
-train_x, test_x, train_y, test_y = train_test_split(x, y,
-                                                         random_state = SEED, test_size = 0.10,stratify = y)            
-print("Training with %d elements and test with %d elements" % (len(train_x), len(test_x)))
+#                                                          random_state = SEED, test_size = 0.10,stratify = y)            
+# print("Training with %d elements and test with %d elements" % (len(train_x), len(test_x)))
 
-# Model to use
-# model = LinearSVC(class_weight='balanced',max_iter=1000000)
-# model = SVC(kernel='linear', C=1)
-# model = SVC(random_state=0, gamma='scale')
-model = GaussianProcessClassifier(random_state=0)
+# # Model to use
+# # model = LinearSVC(class_weight='balanced',max_iter=1000000)
+# # model = SVC(kernel='linear', C=1)
+# # model = SVC(random_state=0, gamma='scale')
+# model = GaussianProcessClassifier(random_state=0)
 
-model.fit(train_x, train_y)
-predictions = model.predict(test_x)
-accuracy = accuracy_score(test_y, predictions) * 100
-print("Accuracy: %.2f%%" % accuracy)
+# model.fit(train_x, train_y)
+# predictions = model.predict(test_x)
+# accuracy = accuracy_score(test_y, predictions) * 100
+# print("Accuracy: %.2f%%" % accuracy)
 
-from sklearn.dummy import DummyClassifier
+# from sklearn.dummy import DummyClassifier
 
-dummy_stratified = DummyClassifier(strategy="stratified")
-dummy_stratified.fit(train_x, train_y)
-accuracy = dummy_stratified.score(test_x, test_y) * 100
+# dummy_stratified = DummyClassifier(strategy="stratified")
+# dummy_stratified.fit(train_x, train_y)
+# accuracy = dummy_stratified.score(test_x, test_y) * 100
 
-print("Accuracy of dummy stratified: %.2f%%" % accuracy)
+# print("Accuracy of dummy stratified: %.2f%%" % accuracy)
 
-dummy_mostfrequent = DummyClassifier(strategy="most_frequent")
-dummy_mostfrequent.fit(train_x, train_y)
-accuracy = dummy_mostfrequent.score(test_x, test_y) * 100
+# dummy_mostfrequent = DummyClassifier(strategy="most_frequent")
+# dummy_mostfrequent.fit(train_x, train_y)
+# accuracy = dummy_mostfrequent.score(test_x, test_y) * 100
 
-print("Accuracy of mostfrequent: %.2f%%" % accuracy)
+# print("Accuracy of mostfrequent: %.2f%%" % accuracy)
 
 ########################################################################################
 """Calculating cluster centroids"""
@@ -365,7 +410,7 @@ data_output.to_csv('Centroids02.csv')
 
 
 
-data['label'] = label_clus
+# data['label'] = label_clus
 
 x1, y1 = m(meanlatc1,meanlonc1)
 x2, y2 = m(meanlatc2,meanlonc2 )
