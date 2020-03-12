@@ -26,8 +26,8 @@ from datetime import datetime
 
 
 # Import data
-df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
-# df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
+# df = pd.read_csv('FRAITA_5day.csv', header=0, delimiter=',')
+df = pd.read_csv('FRAITA_month17.csv', header=0, delimiter=',')
 df_head = df.head()
 
 mapa = {"hit" : "hit",
@@ -143,10 +143,11 @@ coor_ITA = (lat_ITA,lon_ITA)
 # lat_ff = np.asarray(lat_ff)
 # lon_ff = np.asarray(lon_ff)
 
+fig = plt.figure()
+ax = fig.gca(projection='3d')
 
-
-for i in range(3): 
-
+for i in range(100): 
+# for i in range(len(Nflights)-1): 
     # Define some parametres
     CHUNK_SIZE = 50 # Size of flight vector
 
@@ -175,9 +176,8 @@ for i in range(3):
 
     # x,y = map(lon_teste,lat_teste)
     # plt.plot(lon_rz, lat_rz, color = 'r', linewidth=2)
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.plot(lon_rz, lat_rz, alt_rz, label='Real trajectory')
+
+    ax.plot(lon_rz, lat_rz, alt_rz)
     ax.legend()
     ax.set_xlabel('Lat [deg]')
     ax.set_ylabel('Lon [deg]')

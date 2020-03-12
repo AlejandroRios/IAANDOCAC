@@ -9,7 +9,8 @@ import haversine
 from mpl_toolkits.basemap import Basemap
 from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
-from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.mplot3d import Axes3D
+
 from sklearn.preprocessing import StandardScaler
 from haversine import haversine, Unit
 
@@ -26,7 +27,7 @@ from geopy.distance import distance
 
 # Import data
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRALHR_6months18.csv', header=0, delimiter=',')
+df = pd.read_csv('FRAFCO_6months18.csv', header=0, delimiter=',')
 df_head = df.head()
 
 mapa = {"hit" : "hit",

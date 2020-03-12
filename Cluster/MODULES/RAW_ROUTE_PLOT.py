@@ -26,7 +26,7 @@ from geopy.distance import distance
 
 # Import data
 # df = pd.read_csv('AIRP1AIRP2_5day.csv', header=0, delimiter=',')
-df = pd.read_csv('FRALHR_6months18.csv', header=0, delimiter=',')
+df = pd.read_csv('GRUGIG_6months19.csv', header=0, delimiter=',')
 df_head = df.head()
 
 mapa = {"hit" : "hit",
@@ -93,11 +93,11 @@ m.drawparallels(parallels,labels=[False,True,True,False])
 meridians = np.arange(-10.,351.,5.)
 m.drawmeridians(meridians,labels=[True,False,False,True])
 
-list = [500]
+# list = [500]
 
 # for i in range(1): 
-for i in list: 
-# for i in range(len(Nflights)-1): 
+# for i in list: 
+for i in range(len(Nflights)-1): 
 
     # Define some parametres
     CHUNK_SIZE = 500 # Size of flight vector
