@@ -1,4 +1,4 @@
-function cdflap=Drag_flap(deflec,bflap)
+function cdflap=Drag_flap(deflec,longtras)
 %
 % Ref: Drag Force and Drag Coefficient
 % Sadraey M., Aircraft Performance Analysis, VDM Verlag Dr. Mueller, 2009
@@ -11,17 +11,16 @@ function cdflap=Drag_flap(deflec,bflap)
 % Internal flap: double sllotted
 % External flap: single slotted
 %**************************************************************************
-% A_int = 0.0011;
-% B_int = 1;
-% A_ext = 0.00018;
-% B_ext = 2;
-% cflap=1 -(longtras +0.02);
-% % 
-% cdflap_int = cflap*A_int*(deflec^B_int);
-% cdflap_ext = cflap*A_ext*(deflec^B_ext);
-% cdflap     = cdflap_int + cdflap_ext;
+A_int = 0.0011;
+B_int = 1;
+A_ext = 0.00018;
+B_ext = 2;
+cflap=1 -(longtras +0.02);
 % 
-% clear A_int B_int A_ext B_ext 
-cdflap = 0.0023*bflap*deflec;
+cdflap_int = cflap*A_int*(deflec^B_int);
+cdflap_ext = cflap*A_ext*(deflec^B_ext);
+cdflap     = cdflap_int + cdflap_ext;
+
+clear A_int B_int A_ext B_ext 
 
 end % function

@@ -1,0 +1,21 @@
+optimal_airplane =
+
+  Columns 1 through 4
+
+    2.9967    0.4887   21.0524   61.1766
+
+  Columns 5 through 8
+
+   -4.9980    0.0021    0.0020    0.9992
+
+  Columns 9 through 12
+
+    0.0034    0.0071    0.1949    0.0071
+
+  Columns 13 through 16
+
+    0.0051    0.0044    0.0006    0.0060
+
+  Columns 17 through 19
+
+    0.0053    0.0032    0.0037

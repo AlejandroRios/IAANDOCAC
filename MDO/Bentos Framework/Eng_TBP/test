@@ -1,0 +1,19 @@
+eta_ad_c = 0.8;     % Turbine expansion efficiency
+eta_ad_e = 0.9;     % Turbine expansion efficiency
+eta_n = 0.9;        % Nozzle expansion efficiency
+eta_b = 0.9;        % 
+eta_p = 0.8;        % Propulsive efficiency
+
+pt2_pt0 = 0.9;      % Inlet pressure recovery 
+pt3_pt2 = 6.5;      % Compressor pressure ratio
+pt4pt3_pt3 = -0.05; % Burner pressure loss
+
+Qf = 44;            % Fuel heating value (MJ/kg)
+Tt4 = 1145;         % Turbine inlet temperature (K)
+
+M0 = 0.7;           % Flight Mach number
+
+
+
+
+
