@@ -1,0 +1,84 @@
+clear all
+clc
+%% TURBOPROP ENGINE
+
+%% Inputs
+
+%--------------Performance Choices----------------
+
+% Flight parameters:
+M0 = 0.1;
+T0 = 288.2;             % [K]
+P0 = 101.3;             % [KPa]
+% Throttle setting:
+Tt4 = 1670;             % [K] 
+
+%--------------Design Constants----------------
+
+% Compressor pressure ratio pi's:
+pi_d_max = 0.98;
+pi_b = 0.94;
+pi_n = 0.98;
+
+% Efficiencies eta's:
+eta_c = 0.845;
+eta_tH
+eta_tL = 0.9224;
+eta_b = 0.995;
+eta_mL = 0.99;
+eta_mH
+eta_mPL
+eta_mPH
+eta_p_max = 0.812;
+
+% A's:
+
+A4
+A4_5
+A8
+
+% Others:
+Beta
+epsilon1
+epsilon2
+h_PR = 42.800;          % [kJ/Kg]
+P_TOL
+P_TOH
+
+%--------------Reference Condition----------------
+
+% Flight parameters:
+M0_R 
+T0_R
+P0_R
+
+% Component behavior:
+pi_c_R
+pi_tH_R
+pi_tL_R
+tau_c_R
+tau_t_HR
+tau_t_LR
+
+% Others:
+Tt4_R
+tau_m1_R
+tau_m2_R
+f_R
+M0_R
+M8_R
+C_TOL_R
+C_TOH_R
+F_R
+m0_dot_R
+S_R
+
+%--------------Engine Control Limits----------------
+pi_c_max
+Tt3_max
+Pt3_max
+N_L_percent
+N_H_percent
+
+
+
