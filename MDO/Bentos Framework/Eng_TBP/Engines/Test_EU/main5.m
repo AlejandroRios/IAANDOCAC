@@ -19,9 +19,11 @@ height = 25000; %ft
 % Flight parameters:
 M0 = 0.8;
 % T0 = 288.2;             % [K]
-T0 = T*K2R;
+% T0 = T*K2R;
+T0 = 429.62;
 % P0 = 101.3;             % [KPa]
-P0 = P*p2psia;             % [psia]
+% P0 = P*p2psia;             % [psia]
+P0 = 5.461;
 % Throttle setting:
 % Tt4 = 1777;             % [K] 
 Tt4 = 3200;             % [R]
@@ -43,12 +45,12 @@ eta_mPL = 1;
 eta_mPH = 1;
 eta_prop_max = 0.82;
 eta_g = 0.99;
-eta_cH = 1;
+eta_cH = eta_c;
 % A's:
 
-A4 = 3.587;
-A4_5 = 3.455;
-A8 = 6.98;
+A4 = 1;
+A4_5 = 1;
+A8 = 0;
 
 % Others:
 beta = 0;
@@ -69,7 +71,7 @@ T0_R = T0;
 P0_R = P0;
 
 % Component behavior:
-pi_c_R = 30;
+pi_c_R = 35;
 pi_r_R = 1.524;
 pi_d_R = 0.97;
 pi_tH_R = 0.6945;
@@ -78,7 +80,7 @@ tau_c_R = 1.6668;
 tau_r_R = 1.128;
 tau_tH_R = 0.9115;
 tau_tL_R = 0.7715;
-tau_cH = 1;
+tau_cH = tau_c_R;
 % Others:
 Tt4_R = Tt4;
 tau_m1_R = 0.9597;
@@ -117,9 +119,11 @@ MFP4_R = M0_R*sqrt((gamma0*g_c)/R0)*(1 + ((gamma0-1)/2)*M0^2)^((gamma0+1)/(2*(1-
 
 V0 = M0*a0;             % [ft/s]
 
-ht0 = h0 + (V0^2)/(2*g_c);          % [Btu/lbm]
+ht0 = (h0*782) + ((V0^2)/(2*g_c));         % [ft*lbf/lbm]
+ht0 = ht0/782;                             % [BTU/lbm]
+
 %case 2 - h is known
-[Tt0, ht0, Prt0, ~, ~, ~, ~, ~] = FAIR(2,0,[],ht0);
+[Tt0, ~, Prt0, ~, ~, ~, ~, ~] = FAIR(2,0,[],ht0);
 
 tau_r = ht0/h0;
 pi_r = Prt0/Pr0;

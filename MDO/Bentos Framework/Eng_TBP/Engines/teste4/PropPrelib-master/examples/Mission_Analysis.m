@@ -3,14 +3,14 @@ clc
 clear
 close all
 
-addpath("..")% Not needed if +PropPrelib folder is in your current path.
-
+% addpath(" ")% Not needed if +PropPrelib folder is in your current path.
+addpath('')
 import PropPrelib.*;
 
-units BE;
-atmodel Standard;
-dragmodel FutureFighter;
-enginemodel LBTF;
+% units BE;
+% atmodel Standard;
+% dragmodel FutureFighter;
+% enginemodel LBTF;
 
 %mcfg is a struct with variables that will be the same throughout the mission.
 mcfg.TR = 1.07; %Throttle Ratio
