@@ -7,7 +7,7 @@ kg2lb    = 1/lb2kg;
 kW2hp    = 1.341;
 %--------------------------------------------------------------------------
 Alt      = 0;  % [m]
-M_flight = 0.0;
+M_flight = 0;
 % Engine data -------------------------------------------------------------
 T0_4     = 1295;  % Turbine Inlet total temperature [K]
 M_inlet  = 0.20;
@@ -162,7 +162,7 @@ end
  text(7,P0free/1000,'Entering the Nozzle','Rotation',90)
  xlabel('Station')
  ylabel('Total Pressure [kPa]')
-%--------------------------------------------------------------------------
+% %--------------------------------------------------------------------------
 fprintf('\n Shaft power %i  %i [hp/kW]',round(1.341*Power_shaft),round(Power_shaft))
 fprintf('\n Jet power %i  %i [hp/kW]',round(Pow_jet_hp),round(Pow_jet))
 fprintf('\n Total power %i [hp] ',round(1.341*Power_shaft)+round(Pow_jet_hp))

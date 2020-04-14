@@ -114,10 +114,11 @@ print('- Number of flights: \n', Numflights )
 
 coordinates_vec = resize(df,Nflights,chunk_size,cluster_type)
 
-for i in range(1,2): 
+for i in range(1,50): 
     plt.plot(coordinates_vec[i])
     # plt.plot(coordinates_vec[i],'bs')
     
+
 
 
 # fig = plt.figure()

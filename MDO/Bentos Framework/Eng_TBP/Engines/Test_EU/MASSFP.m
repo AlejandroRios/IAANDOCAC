@@ -48,5 +48,9 @@ end
 TtdT = Tt/T;
 PtdP = Prt/Pr;
 MFP = M/PtdP*sqrt((gamman*g_c)/R*TtdT);
+% MFP2 = ((sqrt((gamman*g_c)/R))*M*(1 + ((gamman-1)/2)*M*M)^((gamman+1)/(2*(gamman-1))))*(sqrt(R/g_c))
+
+% % MFP = M*sqrt((gamman*32.174)/(R*778.16))*(1+((gamman-1)/2)*M^2)^((gamman+1)/(2*(1-gamman)));
+
 end
 

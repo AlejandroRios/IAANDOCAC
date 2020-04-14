@@ -1,5 +1,5 @@
 function [Pi_tH, Tau_tH, T_t4p5] = TURBC(Tt4, f, A4dA4_5, M4, M4_5, eta_tH, Tt4_5_R, Tt3, beta, epsilon1, epsilon2)
-% import PropPrelib.Mattingly.*
+
 [~, ht4, ~, ~, ~, ~, ~, ~] = FAIR(1, f, Tt4);
 [~, ~, MFP4] = MASSFP(Tt4, f, M4);
 [~, ht3, ~, ~, ~, ~, ~, ~] = FAIR(1, f, Tt3);

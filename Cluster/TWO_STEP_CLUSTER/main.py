@@ -125,7 +125,7 @@ print('-------------------------------------------------------------------------
 print('[4] Start clustering.\n')
 
 # Not norm
-dbscan = DBSCAN(eps=2000, min_samples=50)
+dbscan = DBSCAN(eps=2000, min_samples=30)
 # dbscan = DBSCAN(eps=3, min_samples=50)
 
 # Norm
