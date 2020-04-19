@@ -1,6 +1,6 @@
 import numpy as np
 
-def breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p):
+def breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p,t):
 
     if V == "False":
         V = 'NaN'
@@ -8,7 +8,7 @@ def breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p):
     varargout = [0]*2
 
     if type == 'jet' and task == 'loiter':
-        varargout = np.exp(-E_R_or_frac*SFC/LD)
+        varargout = 1/np.exp(t/((1/SFC)*LD))
     elif type == 'jet' and task == 'cruise':
         varargout = np.exp(-E_R_or_frac*SFC/(V*LD))
     elif type == 'prop' and task == 'loiter':
@@ -27,7 +27,7 @@ def breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p):
     return(varargout)
 
 
-## Test
+# Test
 # type = 'jet'
 # task = 'range'
 # R =  0.7
@@ -37,5 +37,21 @@ def breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p):
 # eta_p = 'false'
 
 # print(breguet(type, task, R, LD, SFC, V, eta_p))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

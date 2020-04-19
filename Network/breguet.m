@@ -65,7 +65,7 @@ function varargout = breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p)
 %   at M = 0.87 @ 37000 ft (500 knots true). Result is in nmi and hr
 %   because of inputs in units of 1/hr and kts.
 %       [R, t]    = BREGUET('Jet', 'Range', 0.7, 0.866*18, 0.5, 500)
-%    breguet(type, task, E_R_or_frac, LD, SFC, V, eta_p)
+% 
 %   Example 2: Use DimVar class to find 600 nmi cruise segment weight
 %   fraction for piston-prop general aviation aircraft with max L/D of 10,
 %   PSFC of 0.4 lb/hr/hp, and propeller efficiency of 80%.

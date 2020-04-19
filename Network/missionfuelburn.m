@@ -24,7 +24,6 @@ function [FF, fracs]=missionfuelburn(varargin)
 %   www.mathworks.com/matlabcentral/fileexchange/authors/101715
 
 n=length(varargin);
-
 fracs = cell(n+1,1);
 fracs{1} = 1;
 for ii = 1:n

@@ -17,22 +17,22 @@ from scipy.optimize import fsolve
 #     print('nooo')
 
 
-def fuelfractionsizing(EWfunc,fixedW,FF,tol,maxW):
+def fuelfractionsizing(sf,fixedW,FF,tol,maxW):
 
-    if isfunction(EWfunc) != True:
-        if len(EWfunc) == 1:
-            W0 = fixedW/(1-FF-EWfunc[0])
+    if isfunction(sf) != True:
+        if len(sf) == 1:
+            W0 = fixedW/(1-FF-sf[0])
             return
-        elif len(EWfunc) == 2:
-            EWfunc = lambda w0: EWfunc[0]*w0**(EWfunc[1])
-        elif len(EWfunc) == 3:
-            EWfunc = lambda w0: EWfunc[2]*EWfunc[0]*w0**(EWfunc[1])
+        elif len(sf) == 2:
+            sf = lambda w0: sf[0]*w0**(sf[1])
+        elif len(sf) == 3:
+            sf = lambda w0: sf[2]*sf[0]*w0**(sf[1])
         else:
-            print('invalid empty weight function EWfunc')
+            print('invalid empty weight function sf')
         
     
 
-    if isinstance(EWfunc, (np.ndarray)) == True:
+    if isinstance(sf, (np.ndarray)) == True:
          FF = missionfuelburn(FF)
     
     minW = fixedW/(1-FF)
@@ -45,7 +45,7 @@ def fuelfractionsizing(EWfunc,fixedW,FF,tol,maxW):
     # if (nargin < 4) || isempty(tol)
     #     tol = 1e-5*minW
 
-    f = lambda W: 1 - EWfunc(W) - FF -fixedW/W
+    f = lambda W: 1 - sf(W) - FF -fixedW/W
 
     bounds = np.array([minW,maxW])
     bounds = minW

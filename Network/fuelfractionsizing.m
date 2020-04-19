@@ -43,15 +43,15 @@ function W0 = fuelfractionsizing(EWfunc,fixedW,FF,tol,maxW)
 %       L_over_D = 10;
 %       PSFC = 0.4*1.657e-06; %convert lbm/hr/bhp to 1/m
 %       eta_prop = 0.8;
-% 
+%
 %       segments = {.98  %startup, runup, taxi, takeoff
 %                   .99          %climb
 %              breguet('Prop','Cruise', R, L_over_D, PSFC, false, eta_prop)
 %                   .99};        %decent, landing, taxi, shutdown
-% 
+%
 %       fuel_safety_margin = 0.06;
 %       FF = (1+fuel_safety_margin)*missionfuelburn(segments{:});
-% 
+%
 %       EWfunc = @(W0) 3.03*W0.^-.235;
 %       W0 = fuelfractionsizing(EWfunc, fixedW, FF)
 %
@@ -144,13 +144,13 @@ end
 end
 
 % Simplified BISECTION:
-
+%{
 function x = bisection(f,LBin,UBin,~,tol)
 % The BISECTION subfunction is necessary for stand-alone usage. For
 % modularity use the full version from
 % http://www.mathworks.com/matlabcentral/fileexchange/28150.
 
-% ----- Check and size inputs -----
+%----- Check and size inputs -----
 LB = LBin; UB = UBin;
 
 if isscalar(LB) && isscalar(UB)
@@ -166,7 +166,7 @@ elseif ~isscalar(LB) && isscalar(UB) %make UB array?
     UB = UB*ones(size(LB));
 end
 
-% ----- Iterate -----
+%----- Iterate -----
 while any( (UB(:) - LB(:)) > tol(:) )
     bigger = (f((UB+LB)/2)).*f(UB) > 0;
     UB(bigger)=(UB(bigger)+LB(bigger))/2;
@@ -174,12 +174,12 @@ while any( (UB(:) - LB(:)) > tol(:) )
 end
 x=(LB+UB)/2;
 
-% ----- Final check -----
+%----- Final check -----
 ul = f(min(x+tol,UBin)); %check f(x +/- tol) bounds target
 ll = f(max(x-tol,LBin));
 x(((ll > 0) & (ul > 0)) | ((ll < 0) & (ul < 0)))=NaN;
 end
-
+%}
 
 % REVISION HISTORY
 %{
