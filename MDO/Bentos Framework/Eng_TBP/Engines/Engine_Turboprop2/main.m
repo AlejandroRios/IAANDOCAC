@@ -11,8 +11,8 @@ kW2hp = 1.341;
 N2lb = 0.2248;
 %%
 %% Input data
-M0 = 0.0;
-altitude = 0; % [m]
+M0 = 0.5;
+altitude = 6000; % [m]
 Tmax =1295;
 b = 0.06; % bleed
 % Mode 0 design point | Mode 1 off design

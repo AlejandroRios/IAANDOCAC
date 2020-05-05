@@ -78,7 +78,7 @@ T0_R = T0;                                          % [R]
 P0_R = P0;                                          % [psia]
 
 % Component behavior:
-pi_c_R = 30;
+pi_c_R = 25;
 pi_tH_R = 0.3041;
 pi_tL_R = 0.1856;
 
@@ -88,7 +88,7 @@ pi_d_R = 0.97;
 
 tau_c_R = 2.9439;
 tau_tH_R = 0.7388;
-tau_tL_R = 0.6454;
+tau_tL_R = 0.65;
 
 tau_r_R = 1.128;
 tau_cH = tau_c_R;
@@ -315,10 +315,10 @@ C_TOTAL = C_prop+C_c;
 P_m0_dot = C_TOTAL*h0/0.7068;
 % P = m0_dot*C_TOTAL*h0;
 P = P_m0_dot*m0_dot;                                                % [HP]
-S_P = (f0/(C_TOTAL*h0/2544.5))
+S_P = (f0/(C_TOTAL*h0/2544.5));
 F_m0_dot = (C_TOTAL*h0*BTU_to_ftlbf)/V0;
 F = F_m0_dot*m0_dot;                                                % [lbf]
-S = (f0/(F_m0_dot))*3600
+S = (f0/(F_m0_dot))*3600;
 
 eta_P = C_TOTAL/(  (C_prop/eta_prop)  +  ((gamma0-1)/2)*  ((1+f0-beta)*((V9/a0)^2) - M0^2));
 

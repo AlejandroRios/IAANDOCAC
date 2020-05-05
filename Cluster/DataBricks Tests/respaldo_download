@@ -1,0 +1,120 @@
+from pyspark.sql import SQLContext
+from pyspark import SparkConf, SparkContext
+from pyspark.sql.types import StringType, IntegerType, FloatType, TimestampType, LongType, DoubleType
+import pyspark.sql.functions as f
+from pyspark.sql.window import Window
+import pandas as pd
+import numpy as np
+
+
+###########################################################################################################################
+############################################NEVER MODIFY THIS PORTION OF CODE############################################
+###########################################################################################################################
+
+#Required date time lib
+from datetime import datetime, timedelta
+
+#Function definition to read parquet files from our storage:
+def read_days_range_parquet(start_datetime, end_datetime):
+  '''Extract dataframe from parquet containing data from the start date to the end date. If the end date does not include any second in the datetime it WON'T be queried.
+  Attributes:
+  start_datetime(datetime): date of query start
+  end_datetime(datetime): date of query end
+  '''
+  #Calculation of Data Range
+  datetime_range = end_datetime - start_datetime
+    
+  #Datarange must be > 0
+  if(datetime_range.days) < 0:
+    print("Dates are wrongly inserted: start date must be minor than end date!")
+  else:
+    #Try/Except which verify the credentials to connect
+    try:
+      extra_hours = datetime_range.seconds/3600
+      if extra_hours > 0:
+        days_range = datetime_range.days + 1
+      else:
+        days_range = datetime_range.days
+
+      #Setting up the config
+
+      #ADL directory:
+      adl_directory = "adl://airsensealldata.azuredatalakestore.net/parquetfiles-allsources-schema-v4/"
+      #Calling the Secret and the KEY-VALUEs
+      spark.conf.set("dfs.adls.oauth2.access.token.provider.type", "ClientCredential")
+      spark.conf.set("dfs.adls.oauth2.client.id", dbutils.secrets.get(scope = "airsenseTeam", key = "adl-id"))
+      spark.conf.set("dfs.adls.oauth2.credential", dbutils.secrets.get(scope = "airsenseTeam", key = "adl-password"))
+      spark.conf.set("dfs.adls.oauth2.refresh.url", dbutils.secrets.get(scope = "airsenseTeam", key = "adl-refresh-url"))
+
+      #gather starting string of the files to retrieve
+      dates_list = [(start_datetime + timedelta(days = i)).strftime("%Y-%m-%d") for i in range(days_range)]
+      print(dates_list)
+      file_list = dbutils.fs.ls(adl_directory)
+      date_intersection_list = [i.name for i in file_list if i.name[0:len(dates_list[0])] in dates_list]
+      df = None
+
+      #raise exception if wrong amount of days are retreived:
+      if len(dates_list) != len(date_intersection_list):
+        #print("at least data for one day is missing. List of missing dates:")
+        file_list_reduced = [i.name[0:len(dates_list[0])] for i in file_list]
+        dates_missing = [i for i in dates_list if i not in file_list_reduced]
+        #print(dates_missing)
+        #print("continuing with retrieval of matching files")
+      for file_name in date_intersection_list:
+        try:
+          #print("retrieving " + file_name)
+          filename = adl_directory + file_name
+          df = sqlContext.read.format("org.apache.spark.sql.execution.datasources.parquet.ParquetFileFormat").load(filename)
+          #print('parquet file found for file ' + file_name +'; dataframe generated')
+          if file_name == date_intersection_list[0]:
+            total_df = df
+          else:
+            total_df = total_df.union(df)
+
+        except Exception as ex:
+          print("error retrieving " + file_name)
+          #print(ex)
+      return total_df
+    except Exception as ex:
+      print(ex)
+  
+###########################################################################################################################
+############################################NEVER MODIFY THIS PORTION OF CODE############################################
+###########################################################################################################################
+
+
+start_time = datetime(2019,7,1)
+end_time = datetime(2019,7,2)
+
+dbFlight = read_days_range_parquet(start_time, end_time)
+
+dbFlight = dbFlight.where(dbFlight.source == "FR24")
+
+df = dbFlight.where((dbFlight.origin == "GRU") & (dbFlight.destination == "LAD"))
+
+df = df.where(df.missionId == 555409168)
+
+df_filtered = df.where(df.alt >= 20000)
+
+df_filtered.select("missionId").distinct().count()
+
+df_filtered.count()
+
+display(df_filtered.sort(f.col("missionId"),f.col("posTime")))
+
+display(df_filtered)
+
+df_filtered.write.format('csv').save('dbfs:/FileStore/ALJ/csv_extract_2020_04_22')
+
+
+#########################################################################################################################
+
+
+
+cat part*.csv >> allFlights.csv
+
+/home/alejandro/Documents/DataBase/2020_04_22
+
+dbfs:/FileStore/ALJ/csv_extract_2020_04_22
+
+dbfs cp -r dbfs:/FileStore/ALJ/csv_extract_2020_04_22 /home/alejandro/Documents/DataBase/2020_04_22

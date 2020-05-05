@@ -222,45 +222,45 @@ theta0 = Tt0/Tstd;
 T04_SLS = Tmax/theta0;
 TR = Tmax/T04_SLS;
 
-% %  %-------------------------------------------------------------------------
-% % fprintf('\n Shaft power %i [kW]',round(P_S_kW))
-% % fprintf('\n Thrust core jet exhaust  %i [N]',round(F_jet_net))
-% % fprintf('\n Total effective power %i [ehp] ',round(P_eq))
-% % fprintf('\n Thrust-specific fuel consumption shaft %5.3f [lb/h/ehp]  ',BSFC_shaft*kgsecW2lbhrhp)
-% % fprintf('\n Thrust-specific fuel consumption %5.3f [lb/h/ehp]  ',BSFC_eq*kgsecW2lbhrhp)
-% % fprintf('\n Turbine inlet total temperature %6.0f [K] ',T04)
-% % fprintf('\n Mass flow rate through the LP compressor %5.2f kg/s ',m_dot_a)
-% % fprintf('\n Fuel mass fraction %5.4f  ',f)
-% % fprintf('\n Mach number at exit %6.3f ',M_e)
-% % fprintf('\n Fuel flow rate %6.0f [kg/h]',m_dot_f*3600)
-% % 
-% %  %-------------------------------------------------------------------------
-% %  figure(1)
-% %  Tplot=[T0, T0,T02 , T03_HP, T04, T05, T06, T07, T8];
-% %  staPlot=[0 1 2 3 4 5 6 7 8];
-% %  plot(staPlot,Tplot,'b')
-% %  text(1,T0,'LP Compressor','Rotation',90)
-% %  text(2,T0,'HP Compressor','Rotation',90)
-% %  text(3,T0,'Combustor','Rotation',90)
-% %  text(4,T0,'HP Turbine','Rotation',90)
-% %  text(5,T0,'LP Turbine','Rotation',90)
-% %  text(6,T0,'Free Turbine','Rotation',90)
-% %  text(7,T0,'Entering the Nozzle','Rotation',90)
-% %  xlabel('Station')
-% %  ylabel('Total Temperature [K]')
-% %  figure (2)
-% %  Pplot=[P0, P0,P03_LP, P03_HP, P04, P05, P06, P07, P07];
-% %  plot(staPlot,round(Pplot),'r')
-% %  text(1,P0,'LP Compressor','Rotation',90)
-% %  text(2,P0,'HP Compressor','Rotation',90)
-% %  text(3,P0,'Combustor','Rotation',90)
-% %  text(4,P0,'HP Turbine','Rotation',90)
-% %  text(5,P0,'LP Turbine','Rotation',90)
-% %  text(6,P0,'Free Turbine','Rotation',90)
-% %  text(7,P0,'Entering the Nozzle','Rotation',90)
-% %  xlabel('Station')
-% %  ylabel('Total Pressure [kPa]')
-% % %--------------------------------------------------------------------------
+ %-------------------------------------------------------------------------
+% fprintf('\n Shaft power %i [kW]',round(P_S_kW))
+% fprintf('\n Thrust core jet exhaust  %i [N]',round(F_jet_net))
+% fprintf('\n Total effective power %i [ehp] ',round(P_eq))
+% fprintf('\n Thrust-specific fuel consumption shaft %5.3f [lb/h/ehp]  ',BSFC_shaft*kgsecW2lbhrhp)
+% fprintf('\n Thrust-specific fuel consumption %5.3f [lb/h/ehp]  ',BSFC_eq*kgsecW2lbhrhp)
+% fprintf('\n Turbine inlet total temperature %6.0f [K] ',T04)
+% fprintf('\n Mass flow rate through the LP compressor %5.2f kg/s ',m_dot_a)
+% fprintf('\n Fuel mass fraction %5.4f  ',f)
+% fprintf('\n Mach number at exit %6.3f ',M_e)
+% fprintf('\n Fuel flow rate %6.0f [kg/h]',m_dot_f*3600)
+
+ %-------------------------------------------------------------------------
+ figure(1)
+ Tplot=[T0, T0,T02 , T03_HP, T04, T05, T06, T07, T8];
+ staPlot=[0 1 2 3 4 5 6 7 8];
+ plot(staPlot,Tplot,'b')
+ text(1,T0,'LP Compressor','Rotation',90)
+ text(2,T0,'HP Compressor','Rotation',90)
+ text(3,T0,'Combustor','Rotation',90)
+ text(4,T0,'HP Turbine','Rotation',90)
+ text(5,T0,'LP Turbine','Rotation',90)
+ text(6,T0,'Free Turbine','Rotation',90)
+ text(7,T0,'Entering the Nozzle','Rotation',90)
+ xlabel('Station')
+ ylabel('Total Temperature [K]')
+ figure (2)
+ Pplot=[P0, P0,P03_LP, P03_HP, P04, P05, P06, P07, P07];
+ plot(staPlot,round(Pplot),'r')
+ text(1,P0,'LP Compressor','Rotation',90)
+ text(2,P0,'HP Compressor','Rotation',90)
+ text(3,P0,'Combustor','Rotation',90)
+ text(4,P0,'HP Turbine','Rotation',90)
+ text(5,P0,'LP Turbine','Rotation',90)
+ text(6,P0,'Free Turbine','Rotation',90)
+ text(7,P0,'Entering the Nozzle','Rotation',90)
+ xlabel('Station')
+ ylabel('Total Pressure [kPa]')
+%--------------------------------------------------------------------------
 
 
 function f = functionT05(X)

@@ -8,6 +8,9 @@ function [T, h, Pr, phi, Cp, R, gam, a] = FAIR(Item, f, T, h, Pr, phi)
     fts2ms = 0.3048;
     
     T = T/R2K;
+    h = h/BTUlbm2Jkg;
+    Pr = Pr/psia2pa;
+    phi = phi/BTUlbR2JKgK;
     
 
     if f>0.0676

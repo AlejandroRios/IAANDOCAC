@@ -62,6 +62,3 @@ W0 = fuelfractionsizing(sf,fixedW,FF,'false','false')
 
 d_TO = (1.21*W0/S)/(g*rho*CL*T_W)
 
-print(W0)
-print(W0/S)
-print(d_TO)
