@@ -1,0 +1,55 @@
+    On-Design Calcs (ONX V5.20)              Date: 10/05/2020 05:58:48 p.m.
+    File: C:\users\alejandro\My Documents\ITA\PhD\MDO\Performance\Engines\onx\teste3.onx
+                    Turboprop Engine with Conv. Nozzle
+                 using Modified Specific Heat (MSH) Model
+    **********************      Input Data      **********************
+          Mach No   =  0.400               Eta Prop     =  0.830
+          Alt (m)   =   5000               Eta Gear     =  0.980
+          T0 (K)    = 255.68               Pi d (max)   =  0.962
+          P0 (kPa)  = 54.048               Pi b         =  0.970
+          Density   =.7363213              Pi n         =  0.917
+           (kg/m^3)                      Efficiency
+          Cp c      = 1.0048 kJ/kg-K       Burner       =  0.995
+          Cp t      = 1.2351 kJ/kg-K       Mech Hi Pr   =  0.990
+          Gamma c   = 1.4000               Mech Lo Pr   =  0.980
+          Gamma t   = 1.4000               
+          Tt4 max   = 1466.2 K             HP Comp      =  0.886 (ecH)
+          h - fuel  =  43100 kJ/kg         HP Turbine   =  0.861 (etH)
+          CTO Low   = 0.0000               LP Turbine   =  0.900 (etL)
+          CTO High  = 0.0000               Pwr Mech Eff L =  1.000
+          Cooling Air #1 = 10.000 %        Pwr Mech Eff H =  1.000
+          Cooling Air #2 = 10.000 %        Bleed Air      = 10.000 %
+    *************************    RESULTS    *************************
+          Tau r     =  1.032               a0 (m/sec)   =  320.5
+          Pi r      =  1.117               V0 (m/sec)   =  128.2
+          Pi d      =  0.962               Mass Flow    =    6.7 kg/sec
+          TauL      =  7.049               Area Zero    =  0.071 m^2
+          PTO Low   =   0.00 KW            Area Zero*   =  0.045 m^2
+          PTO High  =   0.00 KW
+          Pi c      = 12.100               Eta P        = 0.8298
+          Tau c     = 2.2339               Tau m1       = 0.9177
+          Eta c     = 0.8419               Tau m2       = 0.9424
+          Pi tH     = 0.3223               Eta tH       = 0.8795
+          Tau tH    = 0.7569
+          Pi tL     = 0.2932               Eta tL       = 0.9150
+          Tau tL    = 0.7294
+          P0/P9     = 1.0000
+          Pt9/P9    =  1.093               M9           = 0.3582
+          f         = 0.02577
+          f o       = 0.01804
+          CC        = 0.0313
+          CProp     = 0.9134
+          CTotal    = 0.9447
+          F/mdot    =1893.086 N/(kg/s)
+          S         = 9.5271 (mg/s)/N
+          P/mdot    = 242.72 kW/(kg/s)
+          SP        =74.3074 (mg/s)/kW
+          T9/T0     = 2.6697
+          V9/V0     =  1.622
+          M9/M0     =  0.896
+          A9/A0     = 1.8568
+          A9/A8     = 1.0000
+          Thrust    =  12684 N
+          Power     =   1626 kW
+          Thermal Eff    =  31.22 %
+          Propulsive Eff =  82.43 %

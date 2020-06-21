@@ -15,9 +15,9 @@ switch (Item)
             [T, h, Pr, phi, cp, R, gamma, a] = FAIR(2, f, T);
         else
             Pr = Prt/PtdP;
-            [T, h, Pr, phi, cp, R, gamma, a] = FAIR(3, f, NaN, NaN, Pr);
+            [T, h, Pr, phi, cp, R, gamma, a] = FAIR(3, f, [], [], Pr);
         end
-        Vp2 = 2*(ht - h);
+        Vp2 = 2*(ht - h)*g_c;
         if Vp2 < 0
             M = 0;
             T = Tt;

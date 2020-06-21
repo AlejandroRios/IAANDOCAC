@@ -1,10 +1,10 @@
 function [T, h, Pr, phi, Cp, R, gam, a] = FAIR(Item, f, T, h, Pr, phi)
 %Derived from equations
 % Convertion factors
-    R2K = 0.556;
+    R2K = 0.5556;
     BTUlbm2Jkg = 2326;
-    psia2pa = 6894.76;
-    BTUlbR2JKgK = 4.184*1000;
+    psia2pa = 6895;
+    BTUlbR2JKgK = 4184;
     fts2ms = 0.3048;
     
     if f>0.0676
@@ -21,7 +21,8 @@ function [T, h, Pr, phi, Cp, R, gam, a] = FAIR(Item, f, T, h, Pr, phi)
         case 2 %h is known
             if nargin>3
                 h = h/BTUlbm2Jkg;
-                T = fminbnd(@(T)abs(h-findh(f,T)),166,2222);
+                T = fminbnd(@(T)abs(h-findh(f,T)),166.667,2222.222);
+%                 T = fminsearch(@(T)abs(h-findh(f,T)),200);
                 [h, Pr, phi, Cp, R, gam, a] = unFAIR(T, f);
             else
                 error('h must be defined for case 2');
@@ -29,7 +30,8 @@ function [T, h, Pr, phi, Cp, R, gam, a] = FAIR(Item, f, T, h, Pr, phi)
          case 3 %Pr is known
             if nargin>4
                 Pr = Pr/psia2pa;
-                T = fminbnd(@(T)abs(Pr-findPr(f,T)),166,2222);
+                T = fminbnd(@(T)abs(Pr-findPr(f,T)),166,2222.222);
+%                 T = fminsearch(@(T)abs(Pr-findPr(f,T)),200);
                 [h, Pr, phi, Cp, R, gam, a] = unFAIR(T, f);
             else
                 error('Pr must be defined for case 2');
@@ -37,7 +39,8 @@ function [T, h, Pr, phi, Cp, R, gam, a] = FAIR(Item, f, T, h, Pr, phi)
           case 4 %phi is known
             if nargin>5
                 phi = phi/BTUlbR2JKgK;
-                T = fminbnd(@(T)abs(phi-findphi(f,T)),166, 2222);
+                T = fminbnd(@(T)abs(phi-findphi(f,T)),166.667,2222.222);
+%                 T = fminsearch(@(T)abs(phi-findphi(f,T)),200);
                 [h, Pr, phi, Cp, R, gam, a] = unFAIR(T, f);
             else
                 error(' must be defined for case 2');
@@ -118,14 +121,18 @@ function [Cp_p, h_p, phi_p] = AFPROP_P(T)
     h_ref  = 30.58153;  %BTU ./lbm
     phi_ref = 0.6483398; %BTU ./( lbm R)
     [Cp_p, h_p, phi_p] = AFPROP(T, A0, A1, A2, A3, A4, A5, A6, A7, h_ref, phi_ref);
+    
+    
+    
+    
 end
 
 function [Cp, h, phi] = AFPROP(T, A0, A1, A2, A3, A4, A5, A6, A7, h_ref, phi_ref)
     Cp = A0 + A1.*T + A2.*T.^2 + A3.*T.^3 +...
            A4.*T.^4 + A5.*T.^5 + A6.*T.^6 + A7.*T.^7;
 
-    h = h_ref + A0.*T + A1./2.*T.^2 + A2./3.*T.^3 + A3./4.*T.^4 +...
-          A4./5.*T.^5 + A5./6.*T.^6 + A6./7.*T.^7 + A7./8.*T.^8;
+    h = h_ref + A0.*T + (A1./2).*T.^2 + (A2./3).*T.^3 + (A3./4).*T.^4 +...
+          (A4./5).*T.^5 + (A5./6).*T.^6 + (A6./7).*T.^7 + (A7./8).*T.^8;
 
     phi = phi_ref + A0.*log(T) + A1.*T + A2./2.*T.^2 + A3./3.*T.^3 +...
             A4./4.*T.^4 + A5./5.*T.^5 + A6./6.*T.^6 + A7./7.*T.^7;

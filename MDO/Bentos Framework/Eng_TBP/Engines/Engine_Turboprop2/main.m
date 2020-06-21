@@ -13,10 +13,6 @@ N2lb = 0.2248;
 %% Input data
 M0 = 0.5;
 altitude = 6000; % [m]
-Tmax =1295;
-b = 0.06; % bleed
-% Mode 0 design point | Mode 1 off design
-mode = 1;
 
 [P_S_kW,V0,BSFC_eq,BSFC_shaft,F_jet_net,P_eq] = Turboprop_func(mode,b,Tmax, M0,altitude)
 

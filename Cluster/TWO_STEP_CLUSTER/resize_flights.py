@@ -27,10 +27,10 @@ def resize(df,Nflights,chunk_size,cluster_type):
     # for i in range(6): 
     for i in range(len(Nflights)-1): 
     # for i in range(1000):
-
+        print(len(Nflights)-1)
         # Separate vector by flights
         flights = df.iloc[Nflights.index[i]:Nflights.index[i+1]]
-
+        print(flights)
         # Resizing vector of flights lat and lon
         lat = flights['lat']
         xlat = np.arange(lat.size)

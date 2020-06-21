@@ -13,7 +13,7 @@ Vguess = (M*at)/(1+((gammat-1)/2)*M^2);
 fminsearch(@vals, Vguess);
 function Verror = vals(V)
     h = ht - V^2/(2);
-    [T, ~, Pr, ~, ~, R, gamman, a] = FAIR(2, f, NaN, h);
+    [T, ~, Pr, ~, ~, R, gamman, a] = FAIR(2, f, [], h);
     Vn = M*a;
     if V ~= 0 
         Verror = abs((V-Vn)/V);
@@ -23,6 +23,6 @@ function Verror = vals(V)
 end
 TtdT = Tt/T;
 PtdP = Prt/Pr;
-MFP = M/PtdP*sqrt((gamman*g_c)/R*TtdT);
+MFP = (M/PtdP)*sqrt((gamman*g_c)/R*TtdT);
 end
 

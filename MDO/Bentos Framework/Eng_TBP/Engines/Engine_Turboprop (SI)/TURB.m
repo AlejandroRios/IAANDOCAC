@@ -9,10 +9,10 @@ while true % Label 1
     [hte, Prte, phite, cpte, Rte, gammate, ate] = FAIR (1, f, T_te);
     Pi_t = (MFPi/MFPe)*AidAe*sqrt(T_te/Tti);
     Prtei = Pi_t*Prti;
-    [Ttei, htei, ~, phitei, cptei, Rtei, gammatei, atei] = FAIR(3, f, NaN, NaN, Prtei);
+    [Ttei, htei, ~, phitei, cptei, Rtei, gammatei, atei] = FAIR(3, f,[],[], Prtei);
     hte = hti - Etat*(hti - htei);
     Tau_t = (hte/hti);
-    [Tten, ~, Prte, phite, cpte, Rte, gammate, ate] = FAIR(2, f, NaN, hte);
+    [Tten, ~, Prte, phite, cpte, Rte, gammate, ate] = FAIR(2, f,[], hte);
     Tte_error = abs(T_te - Tten);
     if Tte_error > 0.01
         T_te = Tten;
